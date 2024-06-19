@@ -23,7 +23,6 @@
     "expo-device": "~6.0.2",
     "expo-image-picker": "~15.0.5",
     "expo-notifications": "^0.28.9",
-    "expo-permissions": "^14.4.0",
     "expo-sms": "~12.0.1",
     "express": "^4.19.2",
     "firebase": "^10.12.0",
