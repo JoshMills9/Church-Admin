@@ -69,7 +69,7 @@ export default function LogIn ({navigation}){
             </View>
 
             <View style={styles.loginbtnView}>
-                <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:70, height:70,elevation:6, alignItems:"center",alignSelf:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
+                <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:70, height:70, alignItems:"center",alignSelf:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
                     {showActivity ? <ActivityIndicator size={"small"} color={"white"}/>
                     :
                     <Feather  name="arrow-right" size={30} color="white" />

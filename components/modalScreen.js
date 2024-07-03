@@ -25,7 +25,7 @@ export default function ModalScreen({route}){
                             </View>
 
                             <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                                <Text style={{fontSize:28,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Dashboard</Text>
+                                <Text style={{fontSize:25,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Dashboard</Text>
                             </View>
                     </View>
 
@@ -118,47 +118,50 @@ export default function ModalScreen({route}){
                 </ScrollView>
 
 
-                <View>
-                    <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center", height:55,borderTopWidth:1, borderColor:"lightgray", backgroundColor:"white"}}>
-                    <Pressable>
-                        {({pressed})=>(
-                        <View style={{alignItems:"center"}}>
-                            <MaterialIcons name="dashboard" size={23} color={pressed || isActive ? "navy" :"gray"} />
-                            <Text style={{color: pressed || isActive ? "navy": "gray",fontWeight:"500", fontSize:12}}>
-                                More
-                            </Text>
+                <View style={{backgroundColor:"rgba(25,25,25,0.05)"}}>
+                        <View style={{backgroundColor:"white",elevation:5,position:"absolute", width:70,height:70,bottom:20, borderRadius:50,justifyContent:"center",alignItems:"center", alignSelf:"center"}}>
+                            <Pressable onPress={()=> navigation.replace("Church Admin")}>
+                               
+                                <View style={{alignItems:"center",}}>
+                                    <Ionicons name="home-outline" size={27} color={"gray"}   />
+                                    <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
+                                        Home
+                                    </Text>
+                                </View>
+                           
+                            </Pressable>
                         </View>
-                        )}
-                    </Pressable>
-
-                    <Pressable onPress={()=> navigation.replace("Church Admin")} >
-                       
-                        <View style={{alignItems:"center",}}>
-                            <Ionicons name="home-outline" size={24} color={"gray"}  />
-                            <Text style={{color: "gray",fontWeight:"500", fontSize:12}}>
-                                Home
-                            </Text>
-                        </View>
-                       
                         
-                    </Pressable>
-
-                    <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})} >
+                        <View  style={{flexDirection:"row", justifyContent:"space-between"}}>
                     
-                        <View style={{alignItems:"center"}}>
-                            <Ionicons name="settings-outline" size={24} color= "gray"  />
-                            <Text style={{color: "gray",fontWeight:"500", fontSize:12}}>
-                                Settings
-                            </Text>
+                            <Pressable  style={{height:55,width:"40%",elevation:7, borderTopRightRadius:100, borderBottomRightRadius:100, alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
+                            {({pressed})=>(
+                                    <View style={{alignItems:"center"}}>
+                                        <MaterialIcons name="dashboard" size={27} color={pressed || isActive ? "rgba(0, 0, 128, 0.8)" :"gray"} />
+                                        <Text style={{color: pressed || isActive ? "rgba(0, 0, 128, 0.8)" : "gray",fontWeight:"500", fontSize:12}}>
+                                            More
+                                        </Text>
+                                    </View>
+                                    )}
+                            </Pressable>
+                         
+
+                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  style={{height:55,width:"40%",elevation:7,borderBottomLeftRadius:100, borderTopLeftRadius:100,alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
+                                    
+                                    <View style={{alignItems:"center"}}>
+                                        <Ionicons name="settings-outline" size={27} color= "gray"  />
+                                        <Text style={{color: "gray",fontWeight:"500", fontSize:12}}>
+                                            Settings
+                                        </Text>
+                                    </View>
+                            
+                            </Pressable>
+                            
+                    
                         </View>
-                
-                    </Pressable>
-                    </View>
-            
-            </View>
+                </View>
         </View>
     );
 };
-
 
 

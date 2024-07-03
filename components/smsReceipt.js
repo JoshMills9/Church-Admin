@@ -235,7 +235,7 @@ export default function SmsReceipt({navigation}){
                         <TextInput multiline={true} style={{width:"80%",paddingHorizontal:20, height:50, backgroundColor:"white", borderRadius:50,fontSize:18, fontWeight:"500"}} value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
                         <TouchableOpacity onPress={()=> {sendSMS();setSms("")}} >
-                            <Ionicons name="send" size={30}  color={"white"}/>
+                            <Ionicons name="arrow-up-circle-sharp" size={50}  color={"white"}/>
                         </TouchableOpacity>
                     </View>
                 </View>

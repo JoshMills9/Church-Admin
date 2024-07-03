@@ -166,7 +166,7 @@ export default function SendSMS({navigation}){
                                 </View>
 
 
-                            <View style={{ width:"15%",backgroundColor:"white",height:40,alignItems:"center",justifyContent:"center",elevation:5, borderTopRightRadius:15,borderBottomRightRadius:15}}>
+                            <View style={{ width:"15%",backgroundColor:"white",height:39,alignItems:"center",justifyContent:"center",elevation:4, borderTopRightRadius:15,borderBottomRightRadius:15}}>
                                 <TouchableOpacity onPress={()=> setshow(true)}>
                                     <Ionicons name="search" size={28} color={"gray"}/>
                                 </TouchableOpacity>
@@ -191,9 +191,10 @@ export default function SendSMS({navigation}){
              keyExtractor={(item)=> item.FirstName&&item.SecondName}
 
              ListEmptyComponent={()=>(
-                <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
+                <>{!Show && <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
                    <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
                 </View>
+                    }</>
                 )}
    
 
@@ -202,7 +203,7 @@ export default function SendSMS({navigation}){
                 return(
                     <View style={{flex:1,marginVertical:5, marginHorizontal:10}}>
                                             
-
+                    {!Show &&
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                         <View style={{height:40,width:"18%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:5}}>
                             {item.Image ?
@@ -216,13 +217,14 @@ export default function SendSMS({navigation}){
                         </View>
 
                         <>
-                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false); setGetNumber(item.Number1)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
+                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false);setshow(true); setGetNumber(item.Number1)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
                                 <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
                                 <MaterialIcons name="arrow-right" size={25} color="gray" />
                                 </>
                             </TouchableHighlight>
                         </>
                     </View>
+                        }
                     </View>
              )}}
             />
@@ -236,7 +238,7 @@ export default function SendSMS({navigation}){
                         <TextInput multiline={true} style={{width:"80%",paddingHorizontal:20, height:50, backgroundColor:"white", borderRadius:50,fontSize:18, fontWeight:"500"}} value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
                         <TouchableOpacity onPress={()=> {sendSMS();setSms("")}} >
-                            <Ionicons name="send" size={30}  color={"white"}/>
+                            <Ionicons name="arrow-up-circle-sharp" size={50}  color={"white"}/>
                         </TouchableOpacity>
                     </View>
                 </View>

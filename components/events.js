@@ -4,7 +4,7 @@ import { TextInput, View, Text, Image, TouchableOpacity,Alert,ActivityIndicator,
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
-import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs } from "firebase/firestore";
+import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs,deleteDoc, } from "firebase/firestore";
 import { getAuth, } from 'firebase/auth';
 
 
@@ -19,7 +19,7 @@ export default function Events({navigation, route}){
     const [showSubmitting, setSubmitting] = useState(false)
     const auth = getAuth()
     const db = getFirestore()
-
+    const [Delete,SetDelete] = useState(false)
 
     //useEffect and function to select image
     useEffect(() => {
@@ -171,8 +171,6 @@ export default function Events({navigation, route}){
     const handleUpdate = async () => {
             
             try {
-
-
                 // Step 1: Retrieve user email from Firebase authentication
                 const user = auth.currentUser;
                 if (!user) {
@@ -221,6 +219,50 @@ export default function Events({navigation, route}){
                 setSubmitting(false); 
             }
         }
+
+
+        const handleDeleteEvent = async (documentId) => {
+            try {
+
+                       // Step 1: Retrieve user email from Firebase authentication
+                       const user = auth.currentUser;
+                       if (!user) {
+                           throw new Error("No user signed in");
+                       }
+                       const userEmail = user.email;
+               
+                       // Step 2: Fetch church details based on user email
+                       const tasksCollectionRef = collection(db, 'UserDetails');
+                       const querySnapshot = await getDocs(tasksCollectionRef);
+               
+                       if (!querySnapshot.empty) {
+                           // Filter tasks to find matching church based on user email
+                           const tasks = querySnapshot.docs.map(doc => ({
+                               id: doc.id,
+                               ...doc.data().userDetails
+                           }));
+               
+                const church = tasks.find(item => item.email === userEmail);
+
+                const userDetailsDocRef = doc(db, 'UserDetails', church.id);
+                
+                // Reference to the Members subcollection within UserDetails
+                const membersCollectionRef = collection(userDetailsDocRef, 'Events');
+
+
+                const docRef = doc(membersCollectionRef, documentId); 
+
+                await deleteDoc(docRef);
+
+                alert("Success!")
+                SetDelete(false)
+                navigation.replace("Church Admin")
+         
+            }} catch (error) {
+                console.error("Error deleting document: ", error);
+                SetDelete(false)
+            }
+        };
             
     
 
@@ -235,7 +277,7 @@ export default function Events({navigation, route}){
                         </View>
 
                         <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 24, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>Create Events</Text>
+                            <Text style={{ fontSize: 24, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
                         </View>
                 </View>
 
@@ -299,11 +341,11 @@ export default function Events({navigation, route}){
                         </TouchableOpacity>
 
                         {name &&
-                            <TouchableOpacity onPress={()=>{ }} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"white"}}>
-                                {showSubmitting ? 
-                                    <ActivityIndicator  color="navy"/> 
+                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"white"}}>
+                                {Delete ? 
+                                    <ActivityIndicator  color="red"/> 
                                     :
-                                    <Text style={{fontSize:20,fontWeight:"700", color:"orangered"}}>
+                                    <Text style={{fontSize:20,fontWeight:"700", color:"red"}}>
                                         Delete
                                     </Text>
                                 }
