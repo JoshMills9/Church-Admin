@@ -137,11 +137,11 @@ export default function SendSMS({navigation}){
                 <View>
                         <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }}>
                                 <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
+                                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                                 </View>
 
                                 <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                                    <Text style={{ fontSize: 26, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>Prepare SMS</Text>
+                                    <Text style={{ fontSize: 20, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>Prepare SMS</Text>
                                     <Ionicons name="chatbubbles-sharp" size={26} color={"rgba(0, 0, 128, 0.8)"} />
                                 </View>
                         </View>

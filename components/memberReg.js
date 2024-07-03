@@ -328,8 +328,9 @@ export default function AddMembers(props){
                             <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 26, color: "navy", fontWeight: "800" }}>Registration</Text>
+                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around", flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
+                            <Text style={{ fontSize: 20, color: "navy", fontWeight: "800" }}>Registration</Text>
+                            <Ionicons name="person-add-sharp" size={26} color={"navy"} />
                         </View>
                     </View>
                 </>
@@ -347,7 +348,7 @@ export default function AddMembers(props){
             </View>
 
             <View style={{flexDirection:"row",marginTop:30, justifyContent:"space-between"}}>
-                <View style={{flexDirection:"row", justifyContent:"space-between", width:"50%",alignItems:"center"}}>
+                <View style={{flexDirection:"row", justifyContent:"space-between", width:"45%",alignItems:"center"}}>
 
                     <TouchableOpacity onPress={() => {setNewDateShow(true);showMode("date", "BirthDate");setDisplay("calendar")}}>
                         <Ionicons name="calendar-outline" size={37} color={"navy"}/>
@@ -356,10 +357,10 @@ export default function AddMembers(props){
                     <TextInput readOnly={true}   style={{width:"80%", borderWidth:1,borderColor:"lightgray",backgroundColor:"white", height:45, borderRadius:10,padding:10, fontSize:15}}   placeholder={NewDateShow ? formattedDateOfBirth : (props.info ? props.info[0].Date_Of_Birth : "Date of Birth" )} />
                 </View>
 
-                <View style={{flexDirection:"row", justifyContent:"space-between", width:"50%",alignItems:"center"}}>
+                <View style={{flexDirection:"row", justifyContent:"space-between", width:"45%",alignItems:"center"}}>
 
                 <TouchableOpacity onPress={() => {setNewDateShow(true);showMode("date","RegDate");setDisplay("calendar")}}>
-                    <Ionicons name="calendar-outline" size={37} color={"midnightblue"}/>
+                    <Ionicons name="calendar-outline" size={37} color={"navy"}/>
                 </TouchableOpacity>
 
                 <TextInput readOnly={true}  style={{width:"80%", borderWidth:1,borderColor:"lightgray",backgroundColor:"white", height:45, borderRadius:10,padding:10, fontSize:15}}   placeholder={NewDateShow ? formattedRegDate : (props.info ? props.info[0].Registration_Date : "Registration Date" ) } />
@@ -492,11 +493,11 @@ export default function AddMembers(props){
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 
                 
-                <TouchableOpacity onPress={pickImage} style={{borderWidth:1,borderColor:"gray", width:"40%",height:40,alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderRadius:10,padding:5}}><Text  style={{fontSize:16}}>Upload a photo</Text><Ionicons name="images" size={23} color={"gray"}/></TouchableOpacity>
+                <TouchableOpacity onPress={pickImage} style={{borderWidth:1,borderColor:"gray", width:"40%",height:40,alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderRadius:10,padding:5}}><Text  style={{fontSize:16}}>{props?.info? "Update photo" : "Upload a photo"}</Text><Ionicons name="images" size={23} color={"gray"}/></TouchableOpacity>
 
                 {(selectedImage || props?.info) && (
-                    <View style={{borderWidth:1, borderRadius:50,height:80,width:80, alignItems:"center",justifyContent:"center", borderColor:"navy", backgroundColor:"white"}}>
-                        <Image source={{ uri: selectedImage || props?.info[0].Image}} style={{ width: 65, height: 65 ,borderRadius:50}} />
+                    <View style={{borderWidth:1, borderRadius:50,height:80,width:80, alignItems:"center",justifyContent:"center", borderColor:"lightgray", backgroundColor:"white"}}>
+                        <Image source={{ uri: selectedImage || props?.info[0].Image}} style={{ width: 70, height: 70 ,borderRadius:50}} />
                     </View>
                     )
                 }
@@ -516,7 +517,7 @@ export default function AddMembers(props){
 
             </ScrollView>
 
-            {show && (<DateTimePicker testID="dateTimePicker" value={Birthdate || regDate} mode={mode} 
+            {show && (<DateTimePicker testID="dateTimePicker" value={props?.info ? Birthdate : Birthdate || regDate} mode={mode} 
              display={display} onChange={onchange} />
             )}
         </View>

@@ -9,12 +9,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from "@react-navigation/native";
 
 
 
 
-
-export default function SignUp({ navigation }) {
+export default function SignUp() {
 
     const [signUpEmail, setSignUpEmail] = useState('');
     const [signUpPassword, setSignUpPassword] = useState("");
@@ -22,6 +22,10 @@ export default function SignUp({ navigation }) {
     const [showIndicator, setShowIndicator] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null);
     const [upload, setUpload] = useState(false)
+    const [ViewPass, setViewPass] = useState(true)
+
+    const navigation = useNavigation()
+
     //add user  to  database
     const db = getFirestore();
     const auth = getAuth(); 
@@ -75,44 +79,34 @@ export default function SignUp({ navigation }) {
       console.error('Error picking image: ', error);
     }
   };
+
    
 
 
     return(
         <View style={styles.container}>
-        <StatusBar barStyle={"dark-content"} backgroundColor={"white"}/>
 
-        <View style={styles.logoView}>
-            <View style={{height:95,width:"100%", justifyContent:"center", alignItems:"center"}}>
-                <Image style={{width:80, height:80,}} source={require("../assets/add-user.png")} />
-            </View>
-
-            <View style={{marginTop:10}}>
-                <Text style={styles.welcomeTxt}>Registration</Text>
-            </View>
-        </View>
-        
-       
+    
         <View style={[styles.searchView,{height:300}]}>
             
             <View>
-                <FontAwesome5 style={{position:"absolute", left:20, top:20,zIndex:2}}  name="home" size={22} color="rgba(0, 0, 128, 0.8)" />
-                <TextInput style={{backgroundColor:"white", width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17}} value={Username} onChangeText ={(text) => setUsername(text)}  keyboardType="default" inputMode="text" placeholder="Church Name" placeholderTextColor={"dimgray"}  cursorColor={"dimgray"}/>
+                <FontAwesome5 style={{position:"absolute", left:20, top:20,zIndex:2}}  name="home" size={22} color="rgba(0, 0, 128, 0.6)" />
+                <TextInput style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}}value={Username} onChangeText ={(text) => setUsername(text)}  keyboardType="default" inputMode="text" placeholder="Church Name" placeholderTextColor={"dimgray"}  cursorColor={"dimgray"}/>
             </View>
             
             <View>
-                <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color="rgba(0, 0, 128, 0.8)" />
-                <TextInput style={{backgroundColor:"white", width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="default" inputMode="text" placeholder="Email" placeholderTextColor={"dimgray"} textContentType="emailAddress"  cursorColor={"dimgray"}/>
+                <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color="rgba(0, 0, 128, 0.6)" />
+                <TextInput style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="default" inputMode="text" placeholder="Email" placeholderTextColor={"dimgray"} textContentType="emailAddress"  cursorColor={"dimgray"}/>
             </View>
 
             <View>
-                <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color="rgba(0, 0, 128, 0.8)" />
-                <TextInput style={{backgroundColor:"white", width:"100%", height:60, borderRadius:50,paddingHorizontal:55,fontSize:17}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password" secureTextEntry={true} placeholderTextColor={"dimgray"} cursorColor={"dimgray"}/>
-                <TouchableOpacity style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color="rgba(0, 0, 128, 0.8)"/></TouchableOpacity>
+                <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color="rgba(0, 0, 128, 0.6)" />
+                <TextInput style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password" secureTextEntry={ViewPass} placeholderTextColor={"dimgray"} cursorColor={"dimgray"}/>
+                <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color="rgba(0, 0, 128, 0.6)"/></TouchableOpacity>
             </View>
 
 
-            <TouchableOpacity style={{flexDirection:"row",elevation:3, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:"white", height:30}} onPress={pickImage} >
+            <TouchableOpacity style={{flexDirection:"row",elevation:2, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:"white", height:40}} onPress={pickImage} >
                 <>
                     <Text style={{fontWeight:"500",color:"gray"}}>{upload ? "Uploaded" :"Upload Logo"}</Text>
                     <Ionicons name="image" size={20} color={upload? "rgba(0, 0, 128, 0.8)" :  "gray"}/>
@@ -121,32 +115,18 @@ export default function SignUp({ navigation }) {
            
         </View>
 
-        <View style={styles.loginbtnView}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:50, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
+        <View style={{marginBottom:30}}>
+            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:60, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
             { showIndicator ? <ActivityIndicator size={"small"} color={"white"}/> :
-                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:"white"}]}>SignUp</Text>
+                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:"white"}]}>Register</Text>
             }
             </TouchableOpacity>
             
         </View>
 
-        <View style={[styles.socialView,{height:160,}]}>
 
-                <View >
-                    <Text style={{ color: "dimgray", }}>———— Or Sign Up With ————</Text>
-                </View>
-
-            <View style={{flexDirection:"row", justifyContent:"space-evenly", width:"80%", alignItems:"center"}}>
-                <TouchableOpacity style={{backgroundColor:"white", elevation:6, borderRadius:15, width:55,height:55, alignItems:"center",justifyContent:"center"}}><Image style={{width:25,height:25}} source={require("../assets/google.png")}/></TouchableOpacity>
-                <TouchableOpacity style={{backgroundColor:"white", elevation:6, borderRadius:15, width:55,height:55, alignItems:"center",justifyContent:"center"}}><Image style={{width:25,height:25}}  source={require("../assets/facebook.png")}/></TouchableOpacity>
-                <TouchableOpacity style={{backgroundColor:"white", elevation:6, borderRadius:15, width:55,height:55, alignItems:"center",justifyContent:"center"}}><Image style={{width:25,height:25}}  source={require("../assets/apple.png")}/></TouchableOpacity>
-            </View>
-        </View>
-
-        <View style={styles.options}> 
-            <Text style={styles.text}>Have an account? </Text><TouchableOpacity onPress={() => navigation.navigate("LogIn")}><Text style={[styles.text,{color:"rgba(0, 0, 128, 0.8)"}]}>LogIn here</Text></TouchableOpacity>
         </View>
     
-    </View>
+
     )
 }

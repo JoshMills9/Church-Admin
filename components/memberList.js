@@ -95,8 +95,9 @@ export default function MemberList ({navigation}){
                         <Ionicons name="arrow-back" size={35}  color={"rgba(0, 0, 128, 0.8)"} onPress={()=> navigation.navigate('ModalScreen',{username:"", ChurchName:""})}/>
                     </View>
 
-                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                        <Text style={{fontSize:28,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Members List</Text>
+                    <View style={{height:70, width:"80%",flexDirection:"row", alignItems:"center", justifyContent:"space-around", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
+                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Members List</Text>
+                        <Ionicons name="people-sharp" size={26} color={"navy"} />
                     </View>
             </View>
 
@@ -118,7 +119,7 @@ export default function MemberList ({navigation}){
                                             
 
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                        <View style={{height:40,width:"18%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:5}}>
+                        <View style={{height:40,width:"16%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:3}}>
                             {item.Image ?
                                         <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                         :
@@ -130,7 +131,7 @@ export default function MemberList ({navigation}){
                         </View>
 
                         <>
-                            <TouchableHighlight onPress={()=>{getMember(item.FirstName, item.SecondName)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
+                            <TouchableHighlight onPress={()=>{getMember(item.FirstName, item.SecondName)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10,elevation:1, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
                                 <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
                                 <MaterialIcons name="arrow-right" size={25} color="gray" />
                                 </>

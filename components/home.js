@@ -154,7 +154,6 @@ export default function Home({navigation}){
 
     useEffect(()=>{
         if(birthDayComing){
-      
     }
     },[birthDayComing])
 
@@ -199,32 +198,45 @@ export default function Home({navigation}){
 
                                         </View>
 
+                                        <View style={{width:305,elevation:9,backgroundColor:"white",height:120, borderRadius:20}}>
+                                       <FlatList 
+                                        ListEmptyComponent={()=>(
+                                            <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:305,backgroundColor:"white",height:120, borderRadius:15}}>         
+                                                        <TouchableOpacity onPress={()=> navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"" })} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                            <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
+                                                            <MaterialIcons name="edit" size={24} color={"white"} />
+                                                        </TouchableOpacity>
 
-                                        <View style={{elevation:9,backgroundColor:"white",flexDirection:"row", width:300,height:120, borderRadius:15}}>
+                                                        <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                            <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>No Upcoming Event</Text>
+                                                        </View>
+                                     
+                                            </ImageBackground>
+                                        )}
 
-                                       
-                                            {events?.map((item) =>
-                                                    ( <View style={{width:305}}>
-                                                        <Animated.View  style={[slideInStyle]}>
-                                                            
-                                                            <Image source={{uri: item.Image }}  style={{width:305,height:120,borderRadius:15}} resizeMode="cover" />
+                                        data={events?.sort((a, b) => b.createdAt - a.createdAt)}
+                                        showsVerticalScrollIndicator={false}
+                                        renderItem={({item, index})=>{
+                                            return(
+                                                <View style={{width:305,backgroundColor:"white",height:120, borderRadius:15}}>
+                                                    <Animated.View  style={[slideInStyle]}>
+                                                                
+                                                        <Image source={{uri: item.Image }}  style={{width:305,height:120,borderRadius:15}} resizeMode="cover" />
 
-                                                            <TouchableOpacity onPress={()=> navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate })} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
-                                                                <MaterialIcons name="edit" size={24} color={"white"} />
-                                                            </TouchableOpacity>
+                                                        <TouchableOpacity onPress={()=> navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate })} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                            <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
+                                                            <MaterialIcons name="edit" size={24} color={"white"} />
+                                                        </TouchableOpacity>
 
-                                                            <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
-                                                            </View>
-                                                        </Animated.View>
-                                                    </View>
-                                                
-                                            ))}
-                                    
+                                                        <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                            <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
+                                                        </View>
+                                                    </Animated.View>
+                                                </View>
+                                            )
+                                        }}
+                                        />
                                     </View>
-                                    
-
                                         
                             </View>
 
@@ -269,8 +281,21 @@ export default function Home({navigation}){
 
 
 
-                    <View style={{backgroundColor:"rgba(25,25,25,0.05)"}}>
-                        <View style={{backgroundColor:"white",elevation:5,position:"absolute",bottom:40, width:70,height:70,marginBottom:-20, borderRadius:50,justifyContent:"center",alignItems:"center", alignSelf:"center"}}>
+                    <View>
+                        
+                        <View  style={{flexDirection:"row",backgroundColor:"white", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"lightgray"}}>
+                           
+                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName})}>
+                                    
+                                    <View style={{alignItems:"center"}}>
+                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
+                                        <Text style={{fontWeight:"500",fontSize:12, color:"gray"}}>
+                                            More
+                                        </Text>
+                                    </View>
+                                    
+                            </Pressable>
+
                             <Pressable>
                                 {({pressed})=>(
                                 <View style={{alignItems:"center",}}>
@@ -281,23 +306,8 @@ export default function Home({navigation}){
                                 </View>
                                     )}
                             </Pressable>
-                        </View>
-                        
-                        <View  style={{flexDirection:"row", justifyContent:"space-between"}}>
-                           
-                            <Pressable onPress={()=> navigation.replace("ModalScreen", {username:username, ChurchName: ChurchName})} style={{height:55,width:"40%",elevation:7, borderTopRightRadius:100, borderBottomRightRadius:100, alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
-                                    
-                                    <View style={{alignItems:"center"}}>
-                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
-                                        <Text style={{fontWeight:"500",fontSize:12, color:"gray"}}>
-                                            More
-                                        </Text>
-                                    </View>
-                                    
-                            </Pressable>
-                         
-
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username:username, ChurchName: ChurchName})} style={{height:55,width:"40%",elevation:7,borderBottomLeftRadius:100, borderTopLeftRadius:100,alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
+           
+                            <Pressable onPress={()=> navigation.navigate("Settings", {username:username, ChurchName: ChurchName})} >
                                     
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-outline" size={27} color= "gray"  />

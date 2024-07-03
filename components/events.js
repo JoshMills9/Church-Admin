@@ -97,7 +97,6 @@ export default function Events({navigation, route}){
 
 
 
-
     //Function to handle submit
     const handleSubmit = async () => {
         try {
@@ -139,7 +138,8 @@ export default function Events({navigation, route}){
                 StartDate: formattedDate,
                 Guests: guestName,
                 About: about,
-                Image: selectedImage
+                Image: selectedImage,
+                createdAt: new Date().getTime(),
             };
     
             // Set a document within the Members subcollection
@@ -203,7 +203,8 @@ export default function Events({navigation, route}){
                             StartDate: formattedDate || start,
                             Guests: guestName || guest,
                             About: about || About,
-                            Image: selectedImage || image
+                            Image: selectedImage || image,
+                            createdAt: new Date().getTime(),
                         }
                     });
             
@@ -276,8 +277,9 @@ export default function Events({navigation, route}){
                             <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen', {username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 24, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
+                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
+                            <Text style={{ fontSize: 20, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
+                            <Ionicons name="calendar-sharp" size={26} color={"navy"} />
                         </View>
                 </View>
 
@@ -287,7 +289,7 @@ export default function Events({navigation, route}){
                 <ScrollView contentContainerStyle={{justifyContent:"space-between",height:600, paddingBottom:40}}>
                 <View style={{borderRadius:10,borderWidth:1,borderColor:"lightgray", justifyContent:"center",height:250}}>
                     
-                    <Image source={{ uri: selectedImage || image }} style={{  height: 250 }} resizeMode="stretch"/>
+                    <Image source={(selectedImage  || image) ? { uri: selectedImage || image } : require("../assets/new1.jpg")} style={{  height: 250 }} resizeMode="cover"/>
                    
                     <TouchableOpacity onPress={pickImage} style={{position:"absolute", right:10, backgroundColor: 'rgba(0, 0, 0, 0.5)',width:selectedImage || image ? 90 :140, height:45, bottom:10, flexDirection:"row",borderRadius:10,paddingHorizontal:5, justifyContent:"space-between",alignItems:"center"}} >
                         <Text style={{color:"white", fontSize: selectedImage || image ? 18:15 ,fontWeight:"800"}}>{selectedImage || image ? "Edit":"Upload photo"}</Text>

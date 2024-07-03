@@ -106,11 +106,12 @@ export default function Attendance ({navigation}){
                 <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
                         <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
+                            <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 24, color: "navy", fontWeight: "800" }}>Record Church Attendance</Text>
+                        <View style={{ height: 70, width: "80%", alignItems: "center",flexDirection:"row", justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
+                            <Text style={{ fontSize:18, color: "navy", fontWeight: "800" }}>Record Church Attendance</Text>
+                            <Ionicons name="book-sharp" size={26} color={"navy"} />
                         </View>
                 </View>
 

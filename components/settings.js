@@ -1,8 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState ,useRef} from "react";
 import { TextInput, View, Text,Pressable, FlatList, Image, TouchableOpacity,Alert, StatusBar, Modal, Switch, ScrollView } from "react-native";
-import styles from "./styles";
-import { FontAwesome } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -374,8 +371,21 @@ export default function Settings ({route}){
 
 
             
-            <View style={{backgroundColor:"rgba(25,25,25,0.05)"}}>
-                        <View style={{backgroundColor:"white",elevation:5,position:"absolute", width:70,height:70,bottom:20, borderRadius:50,justifyContent:"center",alignItems:"center", alignSelf:"center"}}>
+            <View >
+                <View  style={{flexDirection:"row",backgroundColor:"white", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"lightgray"}}>
+                       
+                    
+                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName})} >
+                           
+                                    <View style={{alignItems:"center"}}>
+                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
+                                        <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
+                                            More
+                                        </Text>
+                                    </View>
+                                   
+                            </Pressable>
+
                             <Pressable onPress={()=> navigation.replace("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
@@ -386,23 +396,9 @@ export default function Settings ({route}){
                                 </View>
                            
                             </Pressable>
-                        </View>
-                        
-                        <View  style={{flexDirection:"row", justifyContent:"space-between"}}>
-                    
-                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName})} style={{height:55,width:"40%",elevation:7, borderTopRightRadius:100, borderBottomRightRadius:100, alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
-                           
-                                    <View style={{alignItems:"center"}}>
-                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
-                                        <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
-                                            More
-                                        </Text>
-                                    </View>
-                                   
-                            </Pressable>
                          
 
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  style={{height:55,width:"40%",elevation:7,borderBottomLeftRadius:100, borderTopLeftRadius:100,alignItems:"center",justifyContent:"center", backgroundColor:"white"}}>
+                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  >
                                 {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-sharp" size={27} color={pressed || isActive ? "rgba(0, 0, 128, 0.8)" :"gray"} />
@@ -414,7 +410,7 @@ export default function Settings ({route}){
                             </Pressable>
                             
                     
-                        </View>
+                    </View>
                 </View>
 
             {modalVisible && <Support  />}

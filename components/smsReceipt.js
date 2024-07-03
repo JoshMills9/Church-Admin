@@ -137,11 +137,11 @@ export default function SmsReceipt({navigation}){
                 <View>
                         <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }}>
                                 <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
+                                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                                 </View>
 
                                 <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                                    <Text style={{ fontSize: 26, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>SMS Receipt</Text>
+                                    <Text style={{ fontSize: 20, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>SMS Receipt</Text>
                                     <Ionicons name="receipt" size={26} color={"rgba(0, 0, 128, 0.8)"} />
                                 </View>
                         </View>
@@ -189,9 +189,10 @@ export default function SmsReceipt({navigation}){
              data={showMembers?.filter(member => (member.FirstName && member.SecondName) && (member.FirstName && member.SecondName).includes(search) )}
 
              ListEmptyComponent={()=>(
-                <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                   <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
-                </View>
+                <>{!Show && <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
+                <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
+             </View>
+                 }</>
                 )}
    
 
@@ -215,7 +216,7 @@ export default function SmsReceipt({navigation}){
                         </View>
 
                         <>
-                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false); setGetNumber(item.Number1)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
+                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false); setGetNumber(item.Number1);setshow(true)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
                                 <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
                                 <MaterialIcons name="arrow-right" size={25} color="gray" />
                                 </>

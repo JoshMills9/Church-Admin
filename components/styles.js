@@ -4,29 +4,31 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
 
     container:{
-        flex:1,
-        paddingHorizontal:20,
-        paddingVertical:15,
-        
+        flex:1,       
         justifyContent:"space-between"
     },
 
     logoView:{
         backgroundColor:"rgba(0, 0, 128, 0.8)",
-        padding:10,
         width: "100%",
-        alignSelf:"flex-start",
-        borderTopRightRadius:100,
-        borderBottomRightRadius:100,
-        borderBottomLeftRadius:90,
-        
+        alignSelf:"flex-start", 
+        height:450
     },
 
+    main :{
+        height:520,
+        position:"absolute",
+        bottom:0,
+        width:"100%",
+        backgroundColor:"white",
+        padding:15,
+        borderTopRightRadius:50,
+        borderTopLeftRadius:50
+    },
     welcomeTxt:{
         color:"white",
-        fontSize:25,
+        fontSize:38,
         fontWeight:"500",
-        alignSelf:"center"
     },
 
     text:{
@@ -35,8 +37,8 @@ const styles = StyleSheet.create({
 
     searchView:{
         justifyContent:"space-evenly",
-        height:250,
-
+        height:230,
+        marginTop:15
     },
 
    
@@ -45,8 +47,8 @@ const styles = StyleSheet.create({
        justifyContent:"space-around",
        alignItems:"center",
        width:"100%",
-       height:150,
-       marginTop:5,
+       height:120,
+       marginTop:20,
 
     },
 

@@ -16,9 +16,15 @@ import Details from './components/details';
 import Attendance from './components/attendance';
 import SmsReceipt from './components/smsReceipt';
 import Events from './components/events';
+import makePledgeScreen from './components/makePledgeScreen';
+import AllPledges from './components/allPledges';
+
 
 
 const Stack = createNativeStackNavigator();
+
+
+
 
 export default function MyStack (){
   return (
@@ -49,9 +55,9 @@ export default function MyStack (){
         
         <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
 
-        <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
-  
-
+        <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+      
+        <Stack.Screen name='Make Pledge' component={makePledgeScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
         
       </Stack.Navigator>
     </NavigationContainer>

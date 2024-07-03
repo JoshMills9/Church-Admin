@@ -41,9 +41,9 @@ export default function Details ({navigation, route}){
 
 
     return(
-        <View style={{flex:1,justifyContent:"space-between"}}>
+        <View style={{flex:1,justifyContent:"space-between",backgroundColor:"white"}}>
               <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
-                    <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
+                <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
                         <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
                             <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('MemberList')} />
                         </View>
@@ -53,11 +53,11 @@ export default function Details ({navigation, route}){
                         </View>
                 </View>
                 
-                <View style={{marginHorizontal:15, height:550 ,paddingVertical:10,justifyContent:"center",}}>
+                <View style={{marginHorizontal:15, height:700 ,paddingVertical:10,justifyContent:"center",}}>
                     <ScrollView>
                     <View style={{justifyContent:"center", alignSelf:"center", borderRadius:15, borderWidth:1,borderColor:"gray",width:120,height:120}}>
                         {member[0].Image ? 
-                            <Image source={{uri: member[0].Image}}  style={{width:100,alignSelf:"center", height:100, borderRadius:50}} />
+                            <Image source={{uri: member[0].Image}}  style={{width:110,alignSelf:"center", height:110, borderRadius:55}} />
                             : <MaterialIcons name="person"  size={120} color={"gray"}/>
                         }
                     </View>

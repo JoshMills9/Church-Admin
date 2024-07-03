@@ -109,8 +109,9 @@ export default function UpdateMemberInfo ({navigation}){
                             <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 26, color: "navy", fontWeight: "800" }}>Update Member Data</Text>
+                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
+                            <Text style={{ fontSize: 20, color: "navy", fontWeight: "800" }}>Update Member Data</Text>
+                            <Ionicons name="pencil-sharp" size={26} color={"navy"} />
                         </View>
                 </View>
 
@@ -143,7 +144,7 @@ export default function UpdateMemberInfo ({navigation}){
                         
 
                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                            <View style={{height:40,width:"18%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:5}}>
+                            <View style={{height:40,width:"16%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:3}}>
                                 {item.Image ?
                                             <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                             :
@@ -155,7 +156,7 @@ export default function UpdateMemberInfo ({navigation}){
                             </View>
 
                             <>
-                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
+                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25,elevation:1, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
                                     <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
                                     <MaterialIcons name="arrow-right" size={25} color="gray" />
                                     </>
