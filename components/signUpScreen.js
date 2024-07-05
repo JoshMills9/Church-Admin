@@ -116,7 +116,7 @@ export default function SignUp() {
         </View>
 
         <View style={{marginBottom:30}}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:60, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
+            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:60, marginTop:20, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
             { showIndicator ? <ActivityIndicator size={"small"} color={"white"}/> :
                 <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:"white"}]}>Register</Text>
             }

@@ -100,6 +100,7 @@ export default function Pledge(){
 
         // Example data for a member document within the subcollection
         const Pledge = {
+            Tite: pledgeTitle,
             FullName: fullName,
             PledgeDate: formattedDate,
             Amount: Amount,

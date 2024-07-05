@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useLayoutEffect, useRef} from "react";
 import { View , ImageBackground,Image, Text,useWindowDimensions, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Alert, SafeAreaView} from "react-native";
 import styles from "./styles";
 import { Feather } from '@expo/vector-icons';
@@ -11,10 +11,9 @@ import Animated, {
     withTiming,
     Easing,
 } from "react-native-reanimated";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword,sendPasswordResetEmail } from "firebase/auth";
 
 import SignUp from "./signUpScreen";
-
 
 
 
@@ -27,12 +26,12 @@ export default function LogIn ({navigation}){
     const [error,setError] = useState("")
     const [Switch, setSwitch] = useState(true)
     const [ViewPass, setViewPass] = useState(true)
-
-
+    const [showForgotPassword, setShowForgotPassword] = useState(false)
+    const reset = useRef(null)
 
 
   // Function to log in a user
-    const auth = getAuth();
+    const auth = getAuth(app);
 
     const Login = async () => {
         try {
@@ -96,10 +95,10 @@ export default function LogIn ({navigation}){
 
 
 
-  useEffect(()=>{
+  useLayoutEffect(()=>{
     startAnimation()
     StartAnimation()
-  },[navigation,Switch])
+  },[Switch,showForgotPassword])
   
   const SlideInAnimation = useSharedValue(200); // Initial off-screen position
 
@@ -117,23 +116,55 @@ export default function LogIn ({navigation}){
     };
   });
 
-    
+
+    const ForgotPassword = () =>{
+        return(
+            <Animated.View style={[{position:"absolute", width:380,height:220, borderRadius:15,bottom:20,right:15,backgroundColor:"white",elevation:5, padding:20 }, animatedstyle]}>
+                <View style={{flexDirection:"row", justifyContent:"space-between",marginBottom:20, alignItems:"center"}}>
+                    <Text style={{fontSize:25,fontWeight:"500"}}>Forgot Password?</Text>
+                    <MaterialIcons name="close" size={30} color={"red"}  onPress={()=>setShowForgotPassword(!showForgotPassword)}/>  
+                </View>
+                
+                <View>
+                    <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"rgba(0, 0, 128, 0.6)"}/>
+                    <TextInput ref={reset} style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={"dimgray"} value={email} onChangeText={(txt)=>setEmail(txt)}  textContentType="emailAddress" cursorColor={"dimgray"}/>
+                    <TouchableOpacity onPress={handleResetPassword} style={{marginTop:20, width:"80%", borderRadius:20, backgroundColor:"navy", height:50, alignItems:"center", justifyContent:"center", alignSelf:"center"}}><Text style={{color:"white",fontSize:16}}>Reset Password</Text></TouchableOpacity>
+                </View>
+            </Animated.View>
+        )
+    }
+
+
+    const [email, setEmail] = useState('');
+
+        const handleResetPassword = () => {
+            sendPasswordResetEmail(auth, email)
+            .then(() => {
+                Alert.alert("Success","reset link sent, check your email.")
+                setEmail("");
+                setShowForgotPassword(!showForgotPassword)
+            })
+            .catch((error) => {
+                alert(error.code);
+                alert(error.message);
+                // ..
+            });
+          };
+
+      
+      
 
     return(
-        <SafeAreaView style={styles.container}>
+        <ImageBackground style={styles.container} source={require("../assets/new1.jpg")}>
+
 
             <View style={styles.logoView}>
-                <ImageBackground style={{flex:1}} source={require("../assets/new1.jpg")} >
-                    
-                    <View style={{position:"absolute", bottom:130,left:25}}>
                         <Animated.View style={animatedStyle}>
                             <Text style={styles.welcomeTxt}>Church</Text><Text style={styles.welcomeTxt}>Administrator</Text>
                         </Animated.View>
                         <Animated.View style={animatedstyle}>
                             <Text style={{color:"lightgray",fontSize:14,marginTop:5}}>{Switch ? "Welcome back!" : "Register to enjoy the best administration experience"}</Text>
                         </Animated.View>
-                    </View>
-                </ImageBackground>
             </View>
 
 
@@ -141,16 +172,17 @@ export default function LogIn ({navigation}){
 
 
                 <View style={{backgroundColor:"rgba(0, 0, 139, 0.1)",borderRadius:50,height:60,padding:5,width:"100%",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
-                    <TouchableOpacity onPress={()=> {setSwitch(true);setStep(1)}} style={{backgroundColor: Switch ? "white" : "transparent" ,width:"50%",elevation: Switch ? 3 : 0,justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
+                    <TouchableOpacity onPress={()=> {setSwitch(true);setStep(1)}} style={{backgroundColor: Switch ? "white" : "transparent" ,width:"50%",elevation: Switch ? 4 : 0,justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
                         <Text style={{fontSize:16, color: Switch ? "black" : "dimgray",fontWeight: Switch ? "bold" : "normal"}}>LogIn</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={()=> {setSwitch(false);setStep(2)}} style={{backgroundColor: step === 2 ? "white" : "transparent",elevation: !Switch ? 3 : 0 ,width:"50%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
+                    <TouchableOpacity onPress={()=> {setSwitch(false);setStep(2)}} style={{backgroundColor: step === 2 ? "white" : "transparent",elevation: !Switch ? 4 : 0 ,width:"50%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
                         <Text style={{fontSize:16, color: !Switch ? "black" : "dimgray",fontWeight: !Switch ? "bold" : "normal"}}>Register</Text>
                     </TouchableOpacity>
-                </View>
 
-                {(Switch && step === 1) ? 
+                </View>
+                    {(Switch && step === 1) ? 
+               
                     <Animated.View style={formStep1Style}>
             
                     <View style={styles.searchView}>
@@ -166,7 +198,7 @@ export default function LogIn ({navigation}){
                         </View>
 
                         <View style={{flexDirection:"row",justifyContent:"flex-end", alignItems:"center"}}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{setShowForgotPassword(!showForgotPassword)}}>
                                 <Text style={[styles.text,{color:"rgba(0, 0, 128, 0.6)"}]}>
                                     Forgot Password?
                                 </Text>
@@ -203,11 +235,15 @@ export default function LogIn ({navigation}){
                     <Animated.View style={[{flex:1},formStep2Style]}>
                         <SignUp />
                     </Animated.View>
+         
                     )
                 }
 
             </View>
-        </SafeAreaView>
+
+            {showForgotPassword && <ForgotPassword />}
+
+        </ImageBackground>
      
     )
 }

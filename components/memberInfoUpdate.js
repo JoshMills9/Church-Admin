@@ -124,7 +124,7 @@ export default function UpdateMemberInfo ({navigation}){
             
             <FlatList 
 
-             data={showMembers?.filter(member => (member.FirstName && member.SecondName).includes(search) )}
+             data={showMembers?.filter(member => (member.FirstName && member.SecondName).includes(search))}
              key={(index,item)=> item.id}
 
              ListEmptyComponent={()=> 
@@ -144,20 +144,18 @@ export default function UpdateMemberInfo ({navigation}){
                         
 
                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                            <View style={{height:40,width:"16%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:3}}>
-                                {item.Image ?
-                                            <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
-                                            :
-                                            <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
-                                                <Fontisto name="person"  size={20} color={"gray"}/>
-                                            </View>
-                             
-                                }
-                            </View>
 
                             <>
-                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25,elevation:1, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
-                                    <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
+                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="#ccc" style={{height:40, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
+                                    <>{item.Image ?
+                                                <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
+                                                :
+                                                <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                    <Fontisto name="person"  size={20} color={"gray"}/>
+                                                </View>
+                                
+                                    }
+                                    <Text style={{fontSize:18,fontWeight:"400",}}>{item.FirstName} {item.SecondName}</Text>
                                     <MaterialIcons name="arrow-right" size={25} color="gray" />
                                     </>
                                 </TouchableHighlight>

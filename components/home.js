@@ -240,7 +240,7 @@ export default function Home({navigation}){
                                         
                             </View>
 
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 6, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
+                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
                             <View style={{}}>
                                 <Text style={[styles.Update, { alignSelf: "center" }]}>
                                     Updates For {monthOfYear}
@@ -257,7 +257,7 @@ export default function Home({navigation}){
                             </View>
                         </View>
 
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 6, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
+                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
                         <View style={{}}>
                             <Text style={[styles.Update, { alignSelf: "center" }]}>
                                 Update On Members

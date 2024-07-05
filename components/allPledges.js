@@ -84,8 +84,9 @@ export default function AllPledges(){
                 )}
                 renderItem={({item, index})=>(
                     <View >
-                        <TouchableOpacity onPress={()=>{Alert.alert("","CONFIRM PAYMENT",[{text:"Redeemed",onPress: ()=>{}},{text:"Remove",onPress:()=>{},style:"cancel"}])}} style={{backgroundColor:"rgba(255, 255, 255, 0.8)",elevation:5, margin:10,justifyContent:"space-evenly",padding:20, height:150,borderRadius:10,}}>
+                        <TouchableOpacity onPress={()=>{Alert.alert("","CONFIRM PAYMENT",[{text:"Redeemed",onPress: ()=>{}},{text:"Remove",onPress:()=>{},style:"cancel"}])}} style={{backgroundColor:"rgba(255, 255, 255, 0.8)",elevation:5, margin:10,justifyContent:"space-evenly",padding:20, height:155,borderRadius:10,}}>
                             <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}><Text style={{marginBottom:15,fontSize:16, color:"gray"}}>Date Issued :</Text><Text style={{marginBottom:15,fontSize:16}}> {item.PledgeDate}</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Title Of Pledge :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.PledgeTitle}</Text></View>
                             <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Name :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.FullName}</Text></View>
                             <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Amount :</Text><Text style={{marginBottom:10,fontSize:16}}>GHC {item.Amount}.00</Text></View>
                             <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Mode Of Payment :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.ModeOfPayment}</Text></View>

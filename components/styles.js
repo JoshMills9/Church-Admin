@@ -4,26 +4,24 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
 
     container:{
-        flex:1,       
-        justifyContent:"space-between"
+        flex:1,
+        justifyContent:"flex-end"       
     },
 
     logoView:{
-        backgroundColor:"rgba(0, 0, 128, 0.8)",
         width: "100%",
-        alignSelf:"flex-start", 
-        height:450
+        justifyContent:"flex-end",
+        paddingVertical:35,
+        paddingHorizontal:20
     },
 
     main :{
         height:520,
-        position:"absolute",
-        bottom:0,
         width:"100%",
         backgroundColor:"white",
         padding:15,
         borderTopRightRadius:50,
-        borderTopLeftRadius:50
+        borderTopLeftRadius:50,
     },
     welcomeTxt:{
         color:"white",
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
        alignItems:"center",
        width:"100%",
        height:120,
-       marginTop:20,
+       marginTop:10,
 
     },
 

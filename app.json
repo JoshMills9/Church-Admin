@@ -2,7 +2,6 @@
   "expo": {
     "name": "Church-Admin",
     "slug": "Church-Admin",
-    "scheme": "Church-Admin",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/Icon.png",
@@ -29,6 +28,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "52c6f71f-c10e-4c0b-84bc-6ce0190e91a2"
+      }
     }
   }
 }

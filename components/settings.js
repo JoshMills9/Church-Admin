@@ -101,6 +101,8 @@ export default function Settings ({route}){
           console.error('Error picking image: ', error);
         }
       };
+
+   
 /*
       useEffect(()=>{
         if(selectedImage !== null){
