@@ -51,10 +51,10 @@ export default function Pledge(){
     const formattedDate = `${monthOfYear} ${dayOfMonth} ${year}`;
 
     const Mode = () =>(
-        <View style={{width:200,height:120,position:"absolute",top:210,elevation:8,right:100,borderRadius:8, backgroundColor:"white"}}>
-           <TouchableHighlight underlayColor="#ccc" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Mobile Money")}}><Text style={{fontSize:16,fontWeight:"500"}}>1. Mobile Money</Text></TouchableHighlight>
-           <TouchableHighlight underlayColor="#ccc" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Cash")}}><Text style={{fontSize:16,fontWeight:"500"}}>2. Cash</Text></TouchableHighlight>
-           <TouchableHighlight underlayColor="#ccc" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Check")}}><Text style={{fontSize:16,fontWeight:"500"}}>3. Check</Text></TouchableHighlight>
+        <View style={{width:200,height:120,position:"absolute",top:210,elevation:8,right:100,borderRadius:8, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+           <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Mobile Money")}}><Text style={{fontSize:16,fontWeight:"500", color:"rgba(240, 240, 240, 1)"}}>1. Mobile Money</Text></TouchableHighlight>
+           <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Cash")}}><Text style={{fontSize:16,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>2. Cash</Text></TouchableHighlight>
+           <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" style={{padding:8,borderRadius:5}} onPress={()=>{setMode(prevMode=>!prevMode);setPayment("Check")}}><Text style={{fontSize:16,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>3. Check</Text></TouchableHighlight>
         </View>
     )
 
@@ -138,35 +138,35 @@ export default function Pledge(){
 
 
     return(
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
             <View>
-                <TextInput value={fullName} onChangeText={(txt) => setFullName(txt)}  inputMode="text" placeholder="Full Name" style={{width:"100%", borderColor:"lightgray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"white"}}/>
+                <TextInput value={fullName} onChangeText={(txt) => setFullName(txt)}  inputMode="text" placeholder="Full Name" placeholderTextColor={"rgba(240, 240, 240, 1)"} style={{width:"100%", borderColor:"gray",color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
             <View style={{marginVertical:30,justifyContent:"space-between",flexDirection:"row"}}>
-                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)}  inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"lightgray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"white"}}/>
-                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} inputMode="numeric" placeholder="Amount" style={{width:"45%", borderColor:"lightgray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"white"}}/>
+                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="numeric" placeholder="Amount" style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:"rgba(240, 240, 240, 1)",padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center"}}>
-                <Text style={{fontSize:18}}>Mode of Payment</Text>
-                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor:"white",borderRadius:10, width:120,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? "black" : "gray"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
+                <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)"}}>Mode of Payment</Text>
+                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor:"rgba(50, 50, 50, 1)",borderRadius:10, width:120,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? " rgba(100, 200, 255, 1)" : "rgba(240, 240, 240, 1)"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center",marginVertical:30}}>
-                <Text style={{fontSize:18,marginRight:20}}>Select Date</Text>
-                <Ionicons name="calendar-number" size={40} color={"rgba(0, 0, 128, 0.8)"} onPress={()=> {setShowPicker(true); setDisplay(true)}}/>
-                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1, height:40,padding:10,borderColor:"lightgray"}}>{formattedDate}</Text>}
+                <Text style={{fontSize:18,marginRight:20,color:"rgba(240, 240, 240, 1)"}}>Select Date</Text>
+                <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"} onPress={()=> {setShowPicker(true); setDisplay(true)}}/>
+                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1, height:40,padding:10,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}>{formattedDate}</Text>}
             </View>
 
             <View>
-                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"lightgray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"white"}}/>
+                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
 
-            <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit()}} style={{marginTop:40,alignItems:"center",backgroundColor:"white",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
-                {submitting ?  <ActivityIndicator  color="navy"/> : <Text style={{fontSize:17,fontWeight:"500",color:"navy"}}>Pledge</Text>}
+            <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit()}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
+                {submitting ?  <ActivityIndicator  color="navy"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
             </TouchableOpacity>
 
           {mode && Mode()} 

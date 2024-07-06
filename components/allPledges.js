@@ -71,7 +71,7 @@ export default function AllPledges(){
         <View style={{flex:1}}>
 
             <View style={{padding:10}}>
-                <Text style={{fontSize:16}}>
+                <Text style={{fontSize:16, color:"rgba(240, 240, 240, 1)"}}>
                     Total No. of Pledges : {NoOfPleges ? NoOfPleges : "-"}
                 </Text>
             </View>
@@ -80,17 +80,17 @@ export default function AllPledges(){
                 data={Pledges?.sort((a, b) => b.createdAt - a.createdAt)}
                 keyExtractor={(index, item)=> item.id?.toString()}
                 ListEmptyComponent={()=>(
-                    <View style={{alignItems:"center"}}><Text>Fetching Data ...</Text></View>
+                    <View style={{alignItems:"center",}}><Text style={{color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text></View>
                 )}
                 renderItem={({item, index})=>(
                     <View >
-                        <TouchableOpacity onPress={()=>{Alert.alert("","CONFIRM PAYMENT",[{text:"Redeemed",onPress: ()=>{}},{text:"Remove",onPress:()=>{},style:"cancel"}])}} style={{backgroundColor:"rgba(255, 255, 255, 0.8)",elevation:5, margin:10,justifyContent:"space-evenly",padding:20, height:155,borderRadius:10,}}>
-                            <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}><Text style={{marginBottom:15,fontSize:16, color:"gray"}}>Date Issued :</Text><Text style={{marginBottom:15,fontSize:16}}> {item.PledgeDate}</Text></View>
-                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Title Of Pledge :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.PledgeTitle}</Text></View>
-                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Name :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.FullName}</Text></View>
-                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Amount :</Text><Text style={{marginBottom:10,fontSize:16}}>GHC {item.Amount}.00</Text></View>
-                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Mode Of Payment :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.ModeOfPayment}</Text></View>
-                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"gray"}}>Duration :</Text><Text style={{marginBottom:10,fontSize:16}}>{item.Duration}</Text></View>
+                        <TouchableOpacity onPress={()=>{Alert.alert("","CONFIRM PAYMENT",[{text:"Redeemed",onPress: ()=>{}},{text:"Remove",onPress:()=>{},style:"cancel"}])}} style={{backgroundColor:"rgba(50, 50, 50, 1)",elevation:5, margin:10,justifyContent:"space-evenly",padding:20, height:155,borderRadius:10,}}>
+                            <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}><Text style={{marginBottom:15,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Date Issued :</Text><Text style={{marginBottom:15,fontSize:16, color:" rgba(100, 200, 255, 1)"}}> {item.PledgeDate}</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Title Of Pledge :</Text><Text style={{marginBottom:10,fontSize:16, color:" rgba(100, 200, 255, 1)"}}>{item.PledgeTitle}</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Name :</Text><Text style={{marginBottom:10,fontSize:16, color:" rgba(100, 200, 255, 1)"}}>{item.FullName}</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Amount :</Text><Text style={{marginBottom:10,fontSize:16, color:" rgba(100, 200, 255, 1)"}}>GHC {item.Amount}.00</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Mode Of Payment :</Text><Text style={{marginBottom:10,fontSize:16,color:" rgba(100, 200, 255, 1)"}}>{item.ModeOfPayment}</Text></View>
+                            <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}><Text style={{marginBottom:10,fontSize:16, color:"rgba(240, 240, 240, 1)"}}>Duration :</Text><Text style={{marginBottom:10,fontSize:16, color:" rgba(100, 200, 255, 1)"}}>{item.Duration}</Text></View>
                         </TouchableOpacity>
                     </View>
                 )}

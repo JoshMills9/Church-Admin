@@ -4,8 +4,13 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
 
     container:{
+        flex:1,      
+    },
+
+    overlay:{
         flex:1,
-        justifyContent:"flex-end"       
+        backgroundColor:"rgba(0, 0, 0, 0.3)",
+        justifyContent:"flex-end"   
     },
 
     logoView:{
@@ -18,7 +23,7 @@ const styles = StyleSheet.create({
     main :{
         height:520,
         width:"100%",
-        backgroundColor:"white",
+        backgroundColor:"rgba(30, 30, 30, 1)",
         padding:15,
         borderTopRightRadius:50,
         borderTopLeftRadius:50,
@@ -58,7 +63,7 @@ const styles = StyleSheet.create({
     },
     Update:{
         fontSize:28,
-        color:"rgba(0, 0, 128, 0.8)",
+        color:"rgba(100, 200, 255, 1)",
         fontWeight:"500",
         
     },
@@ -69,6 +74,7 @@ const styles = StyleSheet.create({
         textAlign:"justify",
         padding:3,
         marginTop:10,
+        color:"rgba(240, 240, 240, 1)"
     }
 })
 

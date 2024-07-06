@@ -85,19 +85,19 @@ export default function MemberList ({navigation}){
 
    
     return(
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-            <StatusBar barStyle={"dark-content"} backgroundColor={"white"}/>
+            <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
             <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
-                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"white",elevation:6}}>
-                        <Ionicons name="arrow-back" size={35}  color={"rgba(0, 0, 128, 0.8)"} onPress={()=> navigation.navigate('ModalScreen',{username:"", ChurchName:""})}/>
+                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
+                        <Ionicons name="arrow-back" size={35}  color={"rgba(240, 240, 240, 1)"} onPress={()=> navigation.navigate('ModalScreen',{username:"", ChurchName:""})}/>
                     </View>
 
-                    <View style={{height:70, width:"80%",flexDirection:"row", alignItems:"center", justifyContent:"space-around", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Members List</Text>
-                        <Ionicons name="people-sharp" size={26} color={"navy"} />
+                    <View style={{height:70, width:"80%",flexDirection:"row", alignItems:"center", justifyContent:"space-around", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Members List</Text>
+                        <Ionicons name="people-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                     </View>
             </View>
 
@@ -107,7 +107,7 @@ export default function MemberList ({navigation}){
 
              ListEmptyComponent={()=>(
              <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
+                <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
              </View>
              )}
 
@@ -121,16 +121,18 @@ export default function MemberList ({navigation}){
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                        
                             <>
-                                <TouchableHighlight onPress={()=>{getMember(item.FirstName, item.SecondName)}} underlayColor="#ccc" style={{height:40, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                                    <>{item.Image ?
-                                                <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
-                                                :
-                                                <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
-                                                    <Fontisto name="person"  size={20} color={"gray"}/>
-                                                </View>
-                                
-                                    }
-                                    <Text style={{fontSize:18,fontWeight:"400",}}>{item.FirstName} {item.SecondName}</Text>
+                                <TouchableHighlight onPress={()=>{getMember(item.FirstName, item.SecondName)}} underlayColor="rgba(70, 70, 70, 1)" style={{height:50, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                                    <><View style={{flexDirection:"row", justifyContent:"flex-start",alignItems:"center"}}>
+                                        {item.Image ?
+                                                    <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
+                                                    :
+                                                    <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                        <Fontisto name="person"  size={20} color={"gray"}/>
+                                                    </View>
+                                    
+                                        }
+                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)",marginLeft:20}}>{item.FirstName} {item.SecondName}</Text>
+                                    </View>
                                     <MaterialIcons name="arrow-right" size={25} color="gray" />
                                     </>
                                 </TouchableHighlight>

@@ -15,16 +15,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.joshmills.ChurchAdmin"
+      "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/Icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.joshmills.Churchadmin"
+      "package": "com.joshmills.ChurchAdmin"
     },
     "web": {
       "favicon": "./assets/favicon.png"

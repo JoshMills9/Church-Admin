@@ -1,13 +1,12 @@
 import React, {useLayoutEffect, useState, useEffect} from "react";
-import { View, Text, Pressable, Modal, StatusBar, Image, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
+import { View, Text, Pressable, Modal, StatusBar,ToastAndroid, Linking,Image, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
 import styles from "./styles";
-
 import { Ionicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
+
 import { MaterialIcons } from '@expo/vector-icons';
 import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
 import { getAuth,} from 'firebase/auth';
-import { Badge } from "react-native-paper";
+import { Badge ,FAB} from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
@@ -37,6 +36,11 @@ export default function Home({navigation}){
     const [NoOfEvent, setNoOfEvent] = useState(null)
     const auth = getAuth();
     const db = getFirestore();
+
+    const [loading,setLoading] = useState(false)
+    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
+    const phoneNumber = '+233241380745';
+    const message = "Hello there!";
 
     const date = new Date();
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -115,8 +119,9 @@ export default function Home({navigation}){
                     Alert.alert("Server Error!",error)
                 }
             }catch(error){
+                ToastAndroid.show(error.message, ToastAndroid.SHORT);
                 Alert.alert("Error",error.message)
-                console.log("Error fetching data:", error);
+               
             }
         };
     
@@ -162,19 +167,19 @@ export default function Home({navigation}){
 
 
     return(
-        <View  style={{flex:1, justifyContent:"space-between"}}>
+        <View  style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)", justifyContent:"space-between"}}>
 
 
-                <StatusBar barStyle={"dark-content"} backgroundColor={"white"}/>
+                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
                         <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
-                                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"white",elevation:5}}>
-                                        <Ionicons name="laptop-outline" size={35} color={"navy"} />
+                                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:5}}>
+                                        <Ionicons name="laptop-outline" size={35} color={"rgba(240, 240, 240, 1)"} />
                                     </View>
 
-                                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:3, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white"}}>
-                                        <Text style={{fontSize:25,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Church Administrator</Text>
+                                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:3, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                                        <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Church Administrator</Text>
                                     </View>
                         </View>
 
@@ -186,22 +191,22 @@ export default function Home({navigation}){
                             <View style={{marginTop:10, marginBottom:10,alignItems:"flex-start",justifyContent:"space-between" , flexDirection:"row",borderRadius:15, width:"100%"}}>
                                         <View style={{justifyContent:"space-between", height:120, width:"18%"}}>
                                         
-                                            <View style={{height:55,width:65,justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:6}}>
-                                                <MaterialIcons  name="notifications-active" color={"rgba(0, 0, 128, 0.7)"} size={30}/>
+                                            <View style={{height:55,width:65,justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
+                                                <MaterialIcons  name="notifications-active" color={" rgba(100, 200, 255, 1)"} size={30}/>
                                                 {events && <Badge style={{position:"absolute",top:10,right:20}} size={18}>{NoOfEvent ? NoOfEvent : 0}</Badge>}   
                                             </View>
 
-                                            <View style={{height:55,width:65,justifyContent:"center", borderBottomLeftRadius:20,borderTopRightRadius:50,padding:10, backgroundColor:"white",elevation:6}}>
-                                                <MaterialIcons  name="monetization-on" color={"rgba(0, 0, 128, 0.7)"} size={30}/>
+                                            <View style={{height:55,width:65,justifyContent:"center", borderBottomLeftRadius:20,borderTopRightRadius:50,padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
+                                                <MaterialIcons  name="monetization-on" color={" rgba(100, 200, 255, 1)"} size={30}/>
                                                 <Badge style={{position:"absolute",top:9,right:16}} size={18}>100</Badge>
                                             </View>
 
                                         </View>
 
-                                        <View style={{width:305,elevation:9,backgroundColor:"white",height:120, borderRadius:20}}>
+                                        <View style={{width:305,elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:20}}>
                                        <FlatList 
                                         ListEmptyComponent={()=>(
-                                            <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:305,backgroundColor:"white",height:120, borderRadius:15}}>         
+                                            <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>         
                                                         <TouchableOpacity onPress={()=> navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"" })} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                             <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
                                                             <MaterialIcons name="edit" size={24} color={"white"} />
@@ -218,7 +223,7 @@ export default function Home({navigation}){
                                         showsVerticalScrollIndicator={false}
                                         renderItem={({item, index})=>{
                                             return(
-                                                <View style={{width:305,backgroundColor:"white",height:120, borderRadius:15}}>
+                                                <View style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>
                                                     <Animated.View  style={[slideInStyle]}>
                                                                 
                                                         <Image source={{uri: item.Image }}  style={{width:305,height:120,borderRadius:15}} resizeMode="cover" />
@@ -240,7 +245,7 @@ export default function Home({navigation}){
                                         
                             </View>
 
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
+                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
                             <View style={{}}>
                                 <Text style={[styles.Update, { alignSelf: "center" }]}>
                                     Updates For {monthOfYear}
@@ -257,7 +262,7 @@ export default function Home({navigation}){
                             </View>
                         </View>
 
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "white" }}>
+                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
                         <View style={{}}>
                             <Text style={[styles.Update, { alignSelf: "center" }]}>
                                 Update On Members
@@ -279,11 +284,11 @@ export default function Home({navigation}){
 
                                     
 
-
+                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}}  icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:60, position:"absolute" ,zIndex:9, bottom:70, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
 
                     <View>
                         
-                        <View  style={{flexDirection:"row",backgroundColor:"white", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"lightgray"}}>
+                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                            
                             <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName})}>
                                     
@@ -299,8 +304,8 @@ export default function Home({navigation}){
                             <Pressable>
                                 {({pressed})=>(
                                 <View style={{alignItems:"center",}}>
-                                    <Ionicons name="home" size={27} color={pressed || isActive ? "rgba(0, 0, 128, 0.8)" :"gray"}   />
-                                    <Text style={{color: pressed || isActive ? "rgba(0, 0, 128, 0.8)": "gray",fontWeight:"500", fontSize:12}}>
+                                    <Ionicons name="home" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"}   />
+                                    <Text style={{color: pressed || isActive ? "rgba(100, 200, 255, 1)": "gray",fontWeight:"500", fontSize:12}}>
                                         Home
                                     </Text>
                                 </View>

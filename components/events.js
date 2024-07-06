@@ -270,16 +270,16 @@ export default function Events({navigation, route}){
 
 
     return(
-        <View style={{flex:1, justifyContent:"space-between" ,}}>
-                <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
+        <View style={{flex:1, justifyContent:"space-between" ,backgroundColor:"rgba(30, 30, 30, 1)"}}>
+                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 7 }}>
-                            <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen', {username:"", ChurchName:""})} />
+                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 7 }}>
+                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.replace('ModalScreen', {username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 20, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
-                            <Ionicons name="calendar-sharp" size={26} color={"navy"} />
+                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>
+                            <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
+                            <Ionicons name="calendar-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                         </View>
                 </View>
 
@@ -287,9 +287,9 @@ export default function Events({navigation, route}){
                 
                 
                 <ScrollView contentContainerStyle={{justifyContent:"space-between",height:600, paddingBottom:40}}>
-                <View style={{borderRadius:10,borderWidth:1,borderColor:"lightgray", justifyContent:"center",height:250}}>
+                <View style={{borderRadius:10,borderWidth:1,borderColor:"gray", justifyContent:"center",height:250}}>
                     
-                    <Image source={(selectedImage  || image) ? { uri: selectedImage || image } : require("../assets/new1.jpg")} style={{  height: 250 }} resizeMode="cover"/>
+                    <Image source={(selectedImage  || image) ? { uri: selectedImage || image } : require("../assets/new1.jpg")} style={{  height: 250 , width:420, alignSelf:"center", borderRadius:15 }} resizeMode="cover"/>
                    
                     <TouchableOpacity onPress={pickImage} style={{position:"absolute", right:10, backgroundColor: 'rgba(0, 0, 0, 0.5)',width:selectedImage || image ? 90 :140, height:45, bottom:10, flexDirection:"row",borderRadius:10,paddingHorizontal:5, justifyContent:"space-between",alignItems:"center"}} >
                         <Text style={{color:"white", fontSize: selectedImage || image ? 18:15 ,fontWeight:"800"}}>{selectedImage || image ? "Edit":"Upload photo"}</Text>
@@ -304,24 +304,24 @@ export default function Events({navigation, route}){
                     
                 
                         <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"lightgray"}} value={eventName} onChangeText={(text) => setEventName(text)} placeholder={name ? name : "Event name"}/>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10,color:"rgba(240, 240, 240, 1)", borderWidth:1,padding:15,borderColor:"gray"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} value={eventName} onChangeText={(text) => setEventName(text)} placeholder={name ? name : "Event name"}/>
                         </View>
 
-                        <View style={{borderWidth:1,borderColor:"lightgray", height:70, flexDirection:"row",borderRadius:10,padding:15, alignItems:"center" ,}}>
+                        <View style={{borderWidth:1,borderColor:"gray", height:70, flexDirection:"row",borderRadius:10,padding:15, alignItems:"center" ,}}>
                             <TouchableOpacity onPress={() => {showMode("date");setDisplay("calendar");setValue(true)}}>
-                                <Ionicons name="calendar-number" size={40} color={"rgba(0, 0, 128, 0.8)"}/>
+                                <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"}/>
                             </TouchableOpacity>
                             
-                            <Text style={{fontSize:18,marginLeft:20}}>{value ? formattedDate : (start ? start : "Start date")}</Text>
+                            <Text style={{fontSize:18,marginLeft:20,color:"rgba(240, 240, 240, 1)"}}>{value ? formattedDate : (start ? start : "Start date")}</Text>
 
                         </View>
 
                         <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"lightgray"}}  value={guestName} onChangeText={(text) => setGuestName(text)} placeholder={guest ? guest :  "Guests"}/>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} value={guestName} onChangeText={(text) => setGuestName(text)} placeholder={guest ? guest :  "Guests"}/>
                         </View>
 
                         <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"lightgray"}} value={about} onChangeText={(text) => setAbout(text)} placeholder={About? About : "What are the details"}/>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"} value={about} onChangeText={(text) => setAbout(text)} placeholder={About? About : "What are the details"}/>
                         </View>
 
                      
@@ -332,22 +332,22 @@ export default function Events({navigation, route}){
                 </ScrollView>
 
                     <View style={{flexDirection: name ? "row" : "column" , justifyContent:"space-between",paddingHorizontal:20}}>
-                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(): handleSubmit())}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"white"}}>
+                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(): handleSubmit())}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
                         {showSubmitting ? 
-                            <ActivityIndicator  color="navy"/> 
+                            <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
                             :
-                            <Text style={{fontSize:20,fontWeight:"700", color:"navy"}}>
+                            <Text style={{fontSize:20,fontWeight:"700", color:" rgba(100, 200, 255, 1)"}}>
                                 {name ? "Edit" : "Create"}
                             </Text>
                         }
                         </TouchableOpacity>
 
                         {name &&
-                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"white"}}>
+                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
                                 {Delete ? 
                                     <ActivityIndicator  color="red"/> 
                                     :
-                                    <Text style={{fontSize:20,fontWeight:"700", color:"red"}}>
+                                    <Text style={{fontSize:20,fontWeight:"700", color:"orangered"}}>
                                         Delete
                                     </Text>
                                 }

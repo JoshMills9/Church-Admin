@@ -117,25 +117,27 @@ export default function LogIn ({navigation}){
   });
 
 
+
+
+  const [email, setEmail] = useState('');
+
     const ForgotPassword = () =>{
         return(
-            <Animated.View style={[{position:"absolute", width:380,height:220, borderRadius:15,bottom:20,right:15,backgroundColor:"white",elevation:5, padding:20 }, animatedstyle]}>
+            <Animated.View style={[{position:"absolute", width:380,height:220, borderRadius:15,bottom:20,right:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:5, padding:20 }, animatedstyle]}>
                 <View style={{flexDirection:"row", justifyContent:"space-between",marginBottom:20, alignItems:"center"}}>
-                    <Text style={{fontSize:25,fontWeight:"500"}}>Forgot Password?</Text>
+                    <Text style={{fontSize:25,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>Forgot Password?</Text>
                     <MaterialIcons name="close" size={30} color={"red"}  onPress={()=>setShowForgotPassword(!showForgotPassword)}/>  
                 </View>
                 
                 <View>
-                    <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"rgba(0, 0, 128, 0.6)"}/>
-                    <TextInput ref={reset} style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={"dimgray"} value={email} onChangeText={(txt)=>setEmail(txt)}  textContentType="emailAddress" cursorColor={"dimgray"}/>
-                    <TouchableOpacity onPress={handleResetPassword} style={{marginTop:20, width:"80%", borderRadius:20, backgroundColor:"navy", height:50, alignItems:"center", justifyContent:"center", alignSelf:"center"}}><Text style={{color:"white",fontSize:16}}>Reset Password</Text></TouchableOpacity>
+                    <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"gray"}/>
+                    <TextInput ref={reset} style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={"rgba(240, 240, 240, 1)"} value={email} onChangeText={(txt)=>setEmail(txt)}  textContentType="emailAddress" cursorColor={"dimgray"}/>
+                    <TouchableOpacity onPress={handleResetPassword} style={{marginTop:20, width:"80%", borderRadius:20, backgroundColor:"transparent", height:50, alignItems:"center", justifyContent:"center", alignSelf:"center"}}><Text style={{color:" rgba(100, 200, 255, 1)",fontSize:18}}>Reset Password</Text></TouchableOpacity>
                 </View>
             </Animated.View>
         )
     }
 
-
-    const [email, setEmail] = useState('');
 
         const handleResetPassword = () => {
             sendPasswordResetEmail(auth, email)
@@ -145,7 +147,6 @@ export default function LogIn ({navigation}){
                 setShowForgotPassword(!showForgotPassword)
             })
             .catch((error) => {
-                alert(error.code);
                 alert(error.message);
                 // ..
             });
@@ -155,94 +156,94 @@ export default function LogIn ({navigation}){
       
 
     return(
-        <ImageBackground style={styles.container} source={require("../assets/new1.jpg")}>
+        <ImageBackground style={styles.container} resizeMode="cover" source={require("../assets/new1.jpg")}>
+            <View style={styles.overlay}>
+                <StatusBar barStyle={"light-content"}  backgroundColor={"rgba(25, 25, 25, 1)"}/>
+                <View style={styles.logoView}>
+                            <Animated.View style={animatedStyle}>
+                                <Text style={styles.welcomeTxt}>Church</Text><Text style={styles.welcomeTxt}>Administrator</Text>
+                            </Animated.View>
+                            <Animated.View style={animatedstyle}>
+                                <Text style={{color:"lightgray",fontSize:14,marginTop:5}}>{Switch ? "Welcome back!" : "Register to enjoy the best administration experience"}</Text>
+                            </Animated.View>
+                </View>
 
 
-            <View style={styles.logoView}>
-                        <Animated.View style={animatedStyle}>
-                            <Text style={styles.welcomeTxt}>Church</Text><Text style={styles.welcomeTxt}>Administrator</Text>
+                <View style={styles.main}>
+
+
+                    <View style={{backgroundColor:"rgba(70, 70, 70, 0.2)",borderRadius:50,height:60,padding:5,width:"100%",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
+                        <TouchableOpacity onPress={()=> {setSwitch(true);setStep(1)}} style={{backgroundColor: Switch ? "rgba(50, 50, 50, 1)" : "transparent" ,width:"50%",elevation: Switch ? 5 : 0,justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
+                            <Text style={{fontSize:16, color: Switch ? " rgba(100, 200, 255, 1)" : "lightgray",fontWeight: Switch ? "bold" : "normal"}}>LogIn</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={()=> {setSwitch(false);setStep(2)}} style={{backgroundColor: step === 2 ? "rgba(50, 50, 50, 1)" : "transparent",elevation: step === 2 ? 5 : 0 ,width:"50%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
+                            <Text style={{fontSize:16, color: !Switch ? " rgba(100, 200, 255, 1)" : "lightgray",fontWeight: !Switch ? "bold" : "normal"}}>Register</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                        {(Switch && step === 1) ? 
+                
+                        <Animated.View style={formStep1Style}>
+                
+                        <View style={styles.searchView}>
+                            <View>
+                                <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"dimgray"}/>
+                                <TextInput style={{ width:"100%",color:"white", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={"lightgray"} value={signUpEmail} onChangeText={(text)=> setSignUpEmail(text)} textContentType="emailAddress" cursorColor={"gray"}/>
+                            </View>
+
+                            <View>
+                                <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color={"dimgray"} />
+                                <TextInput style={{ width:"100%",color:"white", height:60,borderColor:"gray",borderWidth:1, borderRadius:50,paddingHorizontal:55,fontSize:17}}  keyboardType="visible-password" inputMode="text" placeholder="Password" secureTextEntry={ViewPass} textContentType="password" value={loginPassword} onChangeText={(txt) => setLoginPassword(txt)} placeholderTextColor={"lightgray"}  cursorColor={"dimgray"}/>
+                                <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color={"dimgray"} /></TouchableOpacity>
+                            </View>
+
+                            <View style={{flexDirection:"row",justifyContent:"flex-end", alignItems:"center"}}>
+                            <TouchableOpacity onPress={()=>{setShowForgotPassword(!showForgotPassword)}}>
+                                    <Text style={[styles.text,{color:" rgba(100, 200, 255, 1)"}]}>
+                                        Forgot Password?
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+
+
+
+                        <View style={styles.loginbtnView}>
+                            <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:"100%", height:60, alignItems:"center",alignSelf:"center", justifyContent:"center",backgroundColor:"rgba(50, 50, 50, 1)", borderRadius:50,elevation:5}}>
+                                {showActivity ? <ActivityIndicator size={"small"} color={" rgba(100, 200, 255, 1)"}/>
+                                :
+                                <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:18, fontWeight:"500"}}>LogIn</Text>
+                                }
+                                </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.socialView}>
+                            <View >
+                                <Text style={{ color: "dimgray", }}>————Or Login With————</Text>
+                            </View>
+
+                            <View style={{flexDirection:"row", justifyContent:"space-evenly", width:"100%", alignItems:"center"}}>
+                                <TouchableOpacity style={{borderWidth:1,borderColor:"gray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25, marginRight:10}} source={require("../assets/google.png")}/><Text style={{fontSize:16, color:"lightgray"}}>Google</Text></TouchableOpacity>
+                                <TouchableOpacity style={{borderWidth:1,borderColor:"gray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25,marginRight:10, tintColor:"lightgray"}}  source={require("../assets/apple.png")}/><Text style={{fontSize:16,color:"lightgray"}}>Apple</Text></TouchableOpacity>
+                            </View>
+                        </View>
+
                         </Animated.View>
-                        <Animated.View style={animatedstyle}>
-                            <Text style={{color:"lightgray",fontSize:14,marginTop:5}}>{Switch ? "Welcome back!" : "Register to enjoy the best administration experience"}</Text>
+                        :
+                        step === 2 && (
+                        <Animated.View style={[{flex:1},formStep2Style]}>
+                            <SignUp />
                         </Animated.View>
-            </View>
-
-
-            <View style={styles.main}>
-
-
-                <View style={{backgroundColor:"rgba(0, 0, 139, 0.1)",borderRadius:50,height:60,padding:5,width:"100%",flexDirection:"row",justifyContent:"space-between",alignItems:"center"}}>
-                    <TouchableOpacity onPress={()=> {setSwitch(true);setStep(1)}} style={{backgroundColor: Switch ? "white" : "transparent" ,width:"50%",elevation: Switch ? 4 : 0,justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
-                        <Text style={{fontSize:16, color: Switch ? "black" : "dimgray",fontWeight: Switch ? "bold" : "normal"}}>LogIn</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={()=> {setSwitch(false);setStep(2)}} style={{backgroundColor: step === 2 ? "white" : "transparent",elevation: !Switch ? 4 : 0 ,width:"50%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50}}>
-                        <Text style={{fontSize:16, color: !Switch ? "black" : "dimgray",fontWeight: !Switch ? "bold" : "normal"}}>Register</Text>
-                    </TouchableOpacity>
+            
+                        )
+                    }
 
                 </View>
-                    {(Switch && step === 1) ? 
-               
-                    <Animated.View style={formStep1Style}>
-            
-                    <View style={styles.searchView}>
-                        <View>
-                            <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"rgba(0, 0, 128, 0.6)"}/>
-                            <TextInput style={{ width:"100%", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"lightgray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={"dimgray"} value={signUpEmail} onChangeText={(text)=> setSignUpEmail(text)} textContentType="emailAddress" cursorColor={"dimgray"}/>
-                        </View>
 
-                        <View>
-                            <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color={"rgba(0, 0, 128, 0.6)"} />
-                            <TextInput style={{backgroundColor:"white", width:"100%", height:60,borderColor:"lightgray",borderWidth:1, borderRadius:50,paddingHorizontal:55,fontSize:17}}  keyboardType="default" inputMode="text" placeholder="Password" secureTextEntry={ViewPass} value={loginPassword} onChangeText={(txt) => setLoginPassword(txt)} placeholderTextColor={"dimgray"} cursorColor={"dimgray"}/>
-                            <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color={"rgba(0, 0, 128, 0.6)"} /></TouchableOpacity>
-                        </View>
-
-                        <View style={{flexDirection:"row",justifyContent:"flex-end", alignItems:"center"}}>
-                        <TouchableOpacity onPress={()=>{setShowForgotPassword(!showForgotPassword)}}>
-                                <Text style={[styles.text,{color:"rgba(0, 0, 128, 0.6)"}]}>
-                                    Forgot Password?
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-
-
-
-                    <View style={styles.loginbtnView}>
-                        <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:"100%", height:60, alignItems:"center",alignSelf:"center", justifyContent:"center",backgroundColor:"rgba(0, 0, 128, 0.8)", borderRadius:50}}>
-                            {showActivity ? <ActivityIndicator size={"small"} color={"white"}/>
-                            :
-                            <Text style={{color:"white", fontSize:18, fontWeight:"500"}}>LogIn</Text>
-                            }
-                            </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.socialView}>
-                        <View >
-                            <Text style={{ color: "dimgray", }}>————Or Login With————</Text>
-                        </View>
-
-                        <View style={{flexDirection:"row", justifyContent:"space-evenly", width:"100%", alignItems:"center"}}>
-                            <TouchableOpacity style={{borderWidth:1,borderColor:"lightgray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25, marginRight:10}} source={require("../assets/google.png")}/><Text style={{fontSize:16}}>Google</Text></TouchableOpacity>
-                            <TouchableOpacity style={{borderWidth:1,borderColor:"lightgray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25,marginRight:10}}  source={require("../assets/apple.png")}/><Text style={{fontSize:16}}>Apple</Text></TouchableOpacity>
-                        </View>
-                    </View>
-
-                    </Animated.View>
-                    :
-                    step === 2 && (
-                    <Animated.View style={[{flex:1},formStep2Style]}>
-                        <SignUp />
-                    </Animated.View>
-         
-                    )
-                }
-
+                {showForgotPassword && <ForgotPassword />}
             </View>
-
-            {showForgotPassword && <ForgotPassword />}
-
         </ImageBackground>
      
     )

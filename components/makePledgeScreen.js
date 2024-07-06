@@ -19,14 +19,24 @@ export default function MakePledge({navigation}){
     const screenWidth = useWindowDimensions().width;
 
     // State to manage current step
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(0);
 
     // Animation styles for form steps
     const formStep1Style = useAnimatedStyle(() => ({
         transform: [
             {
                 translateX: withTiming(
-                    step === 1 ? 0 : step > 1 ? -screenWidth : screenWidth
+                    step === 0 ? 0 : step === 1 ? -screenWidth : screenWidth
+                ),
+            },
+        ],
+    }));
+
+    const formStep2Style = useAnimatedStyle(() => ({
+        transform: [
+            {
+                translateX: withTiming(
+                    step === 1 ? 0 : step === 0 ? screenWidth : -screenWidth
                 ),
             },
         ],
@@ -34,18 +44,18 @@ export default function MakePledge({navigation}){
 
 
     return(
-        <View style={{flex:1,justifyContent:"space-between"}}>
+        <View style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-            <StatusBar barStyle={"dark-content"} backgroundColor={"white"}/>
+            <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
             <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:10}}>
-                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"white",elevation:6}}>
-                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
+                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
+                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                     </View>
 
-                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"space-around",flexDirection:"row", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(0, 0, 128, 0.8)"}}>Make Pledge</Text>
-                        <Ionicons name="cash" size={26} color={"rgba(0, 0, 128, 0.8)"} />
+                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"space-around",flexDirection:"row", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Make Pledge</Text>
+                        <Ionicons name="cash" size={26} color={"rgba(240, 240, 240, 1)"} />
                     </View>
             </View>
 
@@ -56,17 +66,25 @@ export default function MakePledge({navigation}){
                         <ButtonGroup
                             buttons={['MAKE PLEDGE','ALL PLEDGES']}
                             selectedIndex={selectedIndex}
-                            onPress={(value) => {setSelectedIndex(value);}}
-                            containerStyle={{  elevation:5, borderRadius:15, alignSelf:"center"}}
-                            selectedButtonStyle={{backgroundColor:"rgba(0, 0, 128, 0.8)"}}                      
+                            onPress={(value) => {setSelectedIndex(value); setStep(selectedIndex === 1 ? selectedIndex-1: selectedIndex+1)}}
+                            containerStyle={{  elevation:5, borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", borderColor:"gray", alignSelf:"center"}}
+                            selectedButtonStyle={{backgroundColor:" rgba(100, 200, 255, 0.8)"}}                      
                         />
                 </View>
 
-                <Animated.View style={[{backgroundColor:"whitesmoke",flex:1,padding:15},formStep1Style]}>
+                <View style={[{flex:1,padding:15}]}>
                     
-                {selectedIndex === 0 ?  <Pledge /> : <AllPledges />}
+                {( selectedIndex === 0) ? 
+                    <Animated.View style={[{flex:1},formStep1Style]}>
+                        <Pledge /> 
+                    </Animated.View>
+                        : (selectedIndex > 0) &&
+                    <Animated.View style={[{flex:1},formStep2Style]}>
+                        <AllPledges />
+                    </Animated.View>
+                   }
 
-                </Animated.View>                           
+                </View>                           
 
             </View>
 

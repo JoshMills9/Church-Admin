@@ -101,24 +101,24 @@ export default function Attendance ({navigation}){
     }
 
     return(
-        <View style={{flex:1,}}>  
+        <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>  
 
-                <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
+                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
-                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
+                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
+                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center",flexDirection:"row", justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize:18, color: "navy", fontWeight: "800" }}>Record Church Attendance</Text>
-                            <Ionicons name="book-sharp" size={26} color={"navy"} />
+                        <View style={{ height: 70, width: "80%", alignItems: "center",flexDirection:"row", justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>
+                            <Text style={{ fontSize:18, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Record Church Attendance</Text>
+                            <Ionicons name="book-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                         </View>
                 </View>
 
             <View style={{padding:10}}>
 
             <View>
-                <Searchbar  elevation={1} style={{backgroundColor:'white',marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                <Searchbar  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6, color:"rgba(240, 240, 240, 1)"}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={"rgba(240, 240, 240, 1)"} iconColor="rgba(240, 240, 240, 1)" placeholder="Search member by name"/>
             </View>
 
             
@@ -130,7 +130,7 @@ export default function Attendance ({navigation}){
              ListEmptyComponent={()=> 
                 (show ? 
                 <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                    <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
+                    <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
                 </View>
                 : 
                 <View></View>
@@ -140,11 +140,11 @@ export default function Attendance ({navigation}){
 
              renderItem={({item , index}) => {
                 return(
-                    <View style={{flex:1,paddingHorizontal:20}}>
+                    <View style={{flex:1,paddingHorizontal:20,marginTop:10}}>
                         
 
                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                            <View style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"white",elevation:2}}>
+                            <View style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
                                 {item.Image ?
                                             <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                             :
@@ -154,7 +154,7 @@ export default function Attendance ({navigation}){
                              
                                 }
                                 
-                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
+                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
                             
                             </View>
 
@@ -164,8 +164,8 @@ export default function Attendance ({navigation}){
                                 checked={check1}
                                 onPress={() => setCheck1(!check1)}
                                 size={24}
-                                checkedColor="navy"
-                                containerStyle={{backgroundColor:"white",width:"15%", borderLeftWidth:1, borderColor:"lightgray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
+                                checkedColor="rgba(240, 240, 240, 1)"
+                                containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
                                 uncheckedColor="gray"
                                 />
                                                     

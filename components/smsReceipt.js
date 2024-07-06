@@ -1,5 +1,5 @@
 import React ,{useLayoutEffect, useState} from "react";
-import { View, Text ,StatusBar ,TextInput, Platform,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
+import { View, Text ,StatusBar ,TextInput, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
 import *  as SMS from 'expo-sms'
 
 import { Ionicons } from '@expo/vector-icons';
@@ -95,7 +95,7 @@ export default function SmsReceipt({navigation}){
             getNumber, // Array of recipient phone numbers
             sms // Message body
           );
-          Alert.alert('Success', 'SMS sent successfully!');
+          ToastAndroid.show('Sms sent successfully!', ToastAndroid.SHORT);
           setGetNumber("")
           setSearch("")
         } catch (error) {
@@ -131,25 +131,25 @@ export default function SmsReceipt({navigation}){
 
 
     return(
-        <View style={{flex:1, justifyContent:"space-between"}}>
+       <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-                <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
+                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                 <View>
                         <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }}>
-                                <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                                    <Ionicons name="arrow-back" size={35} color={"rgba(0, 0, 128, 0.8)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
+                                <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
+                                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                                 </View>
 
-                                <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                                    <Text style={{ fontSize: 20, color: "rgba(0, 0, 128, 0.8)", fontWeight: "800" }}>SMS Receipt</Text>
-                                    <Ionicons name="receipt" size={26} color={"rgba(0, 0, 128, 0.8)"} />
+                                <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                                    <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>SMS Receipt</Text>
+                                    <Ionicons name="chatbubbles-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                                 </View>
                         </View>
 
                         <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center",paddingHorizontal:10,marginBottom:15}}>
 
                              {Show ?
-                                <Searchbar  elevation={1} style={{backgroundColor:'white',marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                                <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
                             
                                 :
                                 <>
@@ -160,15 +160,16 @@ export default function SmsReceipt({navigation}){
                                         onPress={(value) => {
                                             setSelectedIndex(value);
                                         }}
-                                        containerStyle={{  elevation:5, borderBottomLeftRadius:15,borderTopLeftRadius:15}}
-                                        selectedButtonStyle={{backgroundColor:"rgba(0, 0, 128, 0.8)"}}                      
+                                        buttonContainerStyle={{borderColor:"gray"}}
+                                        containerStyle={{  elevation:5, borderBottomLeftRadius:15,borderTopLeftRadius:15, borderColor:"dimgray",  backgroundColor:"rgba(50, 50, 50, 1)"}}
+                                        selectedButtonStyle={{backgroundColor:" rgba(100, 200, 255, 0.8)"}}                      
                                         />
                                 </View>
 
 
-                            <View style={{ width:"15%",backgroundColor:"white",height:40,alignItems:"center",justifyContent:"center",elevation:5, borderTopRightRadius:15,borderBottomRightRadius:15}}>
+                            <View style={{ width:"15%",backgroundColor:"rgba(50, 50, 50, 1)",height:39,alignItems:"center",justifyContent:"center",elevation:4, borderTopRightRadius:15,borderBottomRightRadius:15}}>
                                 <TouchableOpacity onPress={()=> setshow(true)}>
-                                    <Ionicons name="search" size={28} color={"gray"}/>
+                                    <Ionicons name="search" size={28} color={"rgba(240, 240, 240, 1)"}/>
                                 </TouchableOpacity>
                             </View>
                             </>
@@ -179,7 +180,7 @@ export default function SmsReceipt({navigation}){
                 </View>
 
             {show && <View style={{flexDirection:"row",alignItems:"center",paddingHorizontal:20}}>
-                <Text style={{fontSize:15}}>Select All</Text>
+                <Text style={{fontSize:15,color:"rgba(240, 240, 240, 1)"}}>Select All</Text>
                 <RadioButton color="navy"  status={Members === "All" ? "checked" : "unchecked"}  onPress={()=> { Members === "" ? (setMembers("All"), setSearch('All Members'), setShow(false)) : (setMembers(""), setSearch('')) }} />
             </View>
             }       
@@ -188,41 +189,43 @@ export default function SmsReceipt({navigation}){
 
              data={showMembers?.filter(member => (member.FirstName && member.SecondName) && (member.FirstName && member.SecondName).includes(search) )}
 
+             keyExtractor={(item)=> item.FirstName&&item.SecondName}
+
              ListEmptyComponent={()=>(
                 <>{!Show && <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
-             </View>
-                 }</>
+                   <Text style={{fontSize:15,fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
+                </View>
+                    }</>
                 )}
    
 
 
-             keyExtractor={(item)=> item.FirstName&&item.SecondName}
              renderItem={({item , index}) => {
                 return(
                     <View style={{flex:1,marginVertical:5, marginHorizontal:10}}>
                                             
-
+                    {!Show &&
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                        <View style={{height:40,width:"18%",justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"white",elevation:5}}>
-                            {item.Image ?
-                                        <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
-                                        :
-                                        <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
-                                            <Fontisto name="person"  size={20} color={"gray"}/>
-                                        </View>
-                        
-                            }
-                        </View>
 
                         <>
-                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false); setGetNumber(item.Number1);setshow(true)}} underlayColor="#ccc" style={{height:40, width:"80%",paddingLeft:25, paddingRight:10, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:80,borderBottomLeftRadius:15, backgroundColor:"white" }}>
-                                <><Text style={{fontSize:18,fontWeight:"400"}}>{item.FirstName} {item.SecondName}</Text>
-                                <MaterialIcons name="arrow-right" size={25} color="gray" />
+                            <TouchableHighlight onPress={()=>{setSearch(item.FirstName + " " + item.SecondName); setShow(false);setshow(true); setGetNumber(item.Number1)}} underlayColor="rgba(70, 70, 70, 1)"  style={{height:50, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }} >
+                                <><View style={{flexDirection:"row", justifyContent:"flex-start",alignItems:"center"}}>
+                                            {item.Image ?
+                                                        <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
+                                                        :
+                                                        <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                            <Fontisto name="person"  size={20} color={"gray"}/>
+                                                        </View>
+                                        
+                                            }
+                                            <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)",marginLeft:20}}>{item.FirstName} {item.SecondName}</Text>
+                                        </View>
+                                        <MaterialIcons name="arrow-right" size={25} color="gray" />
                                 </>
                             </TouchableHighlight>
                         </>
                     </View>
+                        }
                     </View>
              )}}
             />
@@ -230,13 +233,13 @@ export default function SmsReceipt({navigation}){
 
 
             <View style={{marginTop:10}}>
-                <View style={{backgroundColor:"lightgray", width:"100%", justifyContent:"center",height:70}}>
+                <View style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"100%", justifyContent:"center",height:70}}>
                     
                     <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
-                        <TextInput multiline={true} style={{width:"80%",paddingHorizontal:20, height:50, backgroundColor:"white", borderRadius:50,fontSize:18, fontWeight:"500"}} value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
+                        <TextInput multiline={true} style={{width:"80%",paddingHorizontal:20, height:50, borderColor:"gray",borderWidth:1,color:"rgba(240, 240, 240,1)", borderRadius:50,fontSize:18, fontWeight:"500"}}  value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
                         <TouchableOpacity onPress={()=> {sendSMS();setSms("")}} >
-                            <Ionicons name="arrow-up-circle-sharp" size={50}  color={"white"}/>
+                            <Ionicons name="arrow-up-circle-sharp" size={50}  color={"rgba(240, 240, 240, 0.5)"}/>
                         </TouchableOpacity>
                     </View>
                 </View>

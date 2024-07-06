@@ -101,24 +101,24 @@ export default function UpdateMemberInfo ({navigation}){
     }
 
     return(
-        <View style={{flex:1,}}>  
+        <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>  
 
-                <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
+                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
-                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "white", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color={"navy"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
+                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)", elevation: 5 }}>
+                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "white" }}>
-                            <Text style={{ fontSize: 20, color: "navy", fontWeight: "800" }}>Update Member Data</Text>
-                            <Ionicons name="pencil-sharp" size={26} color={"navy"} />
+                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                            <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Update Member Data</Text>
+                            <Ionicons name="pencil-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                         </View>
                 </View>
 
             <View style={{padding:10}}>
 
             <View>
-                <Searchbar  elevation={1} style={{backgroundColor:'white',marginBottom:5}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                <Searchbar  elevation={1}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"white",marginBottom:5}}  value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
             </View>
 
             
@@ -130,7 +130,7 @@ export default function UpdateMemberInfo ({navigation}){
              ListEmptyComponent={()=> 
                 (show ? 
                 <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                    <Text style={{fontSize:15,fontWeight:"300"}}>Fetching Data ...</Text>
+                    <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
                 </View>
                 : 
                 <View></View>
@@ -146,16 +146,18 @@ export default function UpdateMemberInfo ({navigation}){
                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
 
                             <>
-                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="#ccc" style={{height:40, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"white" }}>
-                                    <>{item.Image ?
+                                <TouchableHighlight onPress={()=> {setSearch(item.FirstName + " " + item.SecondName); setShow(false); getMember(item.FirstName ,item.SecondName); setSelectedMember(true)}} underlayColor="rgba(70, 70, 70, 1)" style={{height:50, width:"100%",paddingHorizontal:10,elevation:2, alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderBottomRightRadius:50, borderTopRightRadius:50, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
+                                    <><View style={{flexDirection:"row", justifyContent:"flex-start",alignItems:"center"}}>
+                                        {item.Image ?
                                                 <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                                 :
                                                 <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
                                                     <Fontisto name="person"  size={20} color={"gray"}/>
                                                 </View>
                                 
-                                    }
-                                    <Text style={{fontSize:18,fontWeight:"400",}}>{item.FirstName} {item.SecondName}</Text>
+                                        }
+                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>{item.FirstName} {item.SecondName}</Text>
+                                    </View>
                                     <MaterialIcons name="arrow-right" size={25} color="gray" />
                                     </>
                                 </TouchableHighlight>
