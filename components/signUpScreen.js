@@ -23,7 +23,7 @@ export default function SignUp() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [upload, setUpload] = useState(false)
     const [ViewPass, setViewPass] = useState(true)
-
+    const newAdmin = true
     const navigation = useNavigation()
 
     //add user  to  database
@@ -54,7 +54,7 @@ export default function SignUp() {
       setSignUpPassword('');
       Alert.alert("Sign Up Success", "Account Created Succesfully!");
       setShowIndicator(false)
-      navigation.navigate("Church Admin");
+      navigation.navigate("Users", {email: signUpEmail , password: signUpPassword , newAdmin : newAdmin});
     } catch (error) {
       Alert.alert(error.message);
       setShowIndicator(false)
@@ -84,10 +84,10 @@ export default function SignUp() {
 
 
     return(
-        <View style={styles.container}>
+        <View style={[styles.container,{justifyContent:"flex-start"}]}>
         
     
-        <View style={[styles.searchView,{height:300}]}>
+        <View style={[styles.searchView,{height:300,}]}>
             
             <View>
                 <FontAwesome5 style={{position:"absolute", left:20, top:20,zIndex:2}}  name="home" size={22} color="dimgray" />
@@ -116,7 +116,7 @@ export default function SignUp() {
         </View>
 
         <View style={{marginBottom:30}}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:60, marginTop:20, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(50, 50, 50, 1)", borderRadius:50,elevation:5}}>
+            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(50, 50, 50, 1)", borderRadius:50,elevation:3}}>
             { showIndicator ? <ActivityIndicator size={"small"} color={" rgba(100, 200, 255, 1)"}/> :
                 <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:" rgba(100, 200, 255, 1)"}]}>Register</Text>
             }

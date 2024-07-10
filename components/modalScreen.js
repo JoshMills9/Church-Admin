@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, Text, StatusBar, Image, Modal, ScrollView,Pressable} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
+
+
 
 
 export default function ModalScreen({route}){
-    const {username, ChurchName} = route.params
+    const {username, ChurchName, mainEmail, admin, role , newAdmin, users, events} = route.params
     const navigation = useNavigation();
     const [isActive, setActive] = useState(true)
-    
+  
 
+ 
     return (
         <View style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
     
@@ -36,13 +38,13 @@ export default function ModalScreen({route}){
                         <View style={{marginTop:10,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
 
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Registration")}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Registration", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events} )}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="person-add-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Register Member</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Update Member Data")}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Update Member Data", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
                                         <Ionicons name="pencil-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Update Member Data</Text>
                                 </TouchableOpacity>
@@ -52,13 +54,13 @@ export default function ModalScreen({route}){
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("MemberList")}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("MemberList", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="people-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Members List</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Attendance")}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
                                         <Ionicons name="book-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Record Church Attendance</Text>
                                 </TouchableOpacity>
@@ -67,13 +69,13 @@ export default function ModalScreen({route}){
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Events",{id: "" ,image : null, name: "", guest: "", About: "", start:"" })}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {admin === true ? navigation.navigate("Events",{id: "" ,image : null, name: "", guest: "", About: "", start:"" ,username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events}) : alert("Accessible to Admins only!")}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="calendar-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Create Event</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Send SMS")}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {admin === true ? navigation.navigate("Send SMS", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events}) : alert("Accessible to Admins only!")}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
                                         <Ionicons name="chatbox-ellipses-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}} >Prepare SMS</Text>
                                 </TouchableOpacity>
@@ -82,13 +84,13 @@ export default function ModalScreen({route}){
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Receipt")}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {admin === true ? navigation.navigate("Receipt", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events}) :  alert("Accessible to Admins only!")}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="receipt-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>SMS Receipt</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> navigation.navigate("Make Pledge")} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {admin === true ? navigation.navigate("Make Pledge", {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events}) : alert("Accessible to Admins only!")}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
                                         <Ionicons name="cash-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}} >Make Pledge</Text>
                                 </TouchableOpacity>
@@ -132,7 +134,7 @@ export default function ModalScreen({route}){
                             </Pressable>
 
 
-                            <Pressable onPress={()=> navigation.replace("Church Admin")}>
+                            <Pressable onPress={()=> navigation.replace("Church Admin", {mainEmail: mainEmail, admin: admin, newAdmin: newAdmin})}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={"gray"}   />
@@ -144,7 +146,7 @@ export default function ModalScreen({route}){
                             </Pressable>
                          
 
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  >
+                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName, mainEmail: mainEmail , admin : admin , role : role, newAdmin: newAdmin, users: users, events: events})}  >
                                     
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-outline" size={27} color= "gray"  />

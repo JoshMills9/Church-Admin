@@ -17,9 +17,9 @@ import Attendance from './components/attendance';
 import SmsReceipt from './components/smsReceipt';
 import Events from './components/events';
 import makePledgeScreen from './components/makePledgeScreen';
-import AllPledges from './components/allPledges';
-
-
+import { Payments } from './components/payments';
+import Users from './components/users';
+import { Notifications } from './components/notifications';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,8 +32,10 @@ export default function MyStack (){
       <Stack.Navigator initialRouteName='LogIn'  >
 
         <Stack.Screen name="LogIn" component={LogIn} options={{headerShown:false, animation:"fade_from_bottom"}} />
-      
+
         <Stack.Screen name="SignUp" component={SignUp}  options={{headerShown:false, animation:"slide_from_left"}} />
+        
+        <Stack.Screen name="Users" component={Users}  options={{headerShown:false, animation:"slide_from_right"}} />
 
         <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'fade_from_bottom'}}/>
 
@@ -59,6 +61,10 @@ export default function MyStack (){
       
         <Stack.Screen name='Make Pledge' component={makePledgeScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
         
+        <Stack.Screen name='Payment' component={Payments} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+        
+        <Stack.Screen name='Notification' component={Notifications} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -16,7 +16,8 @@ import { getFirestore, setDoc} from "firebase/firestore";
 
 
 export default function Settings ({route}){
-    const {username, ChurchName} = route.params
+    const {username, ChurchName, mainEmail, admin, users, role, newAdmin, events} = route.params
+
     const navigation = useNavigation()
     const [isActive, setActive] = useState(true)
     const [isModal, setModal] = useState(false)
@@ -65,7 +66,8 @@ export default function Settings ({route}){
             .then(() => {
                 // Sign-out successful.
                 ToastAndroid.show("You've Signed Out!", ToastAndroid.LONG);
-                navigation.navigate("LogIn")
+                admin === true ? navigation.navigate("LogIn")
+                : navigation.navigate("Users",{email:"", password :"", email: mainEmail})
             })
             .catch((error) => {
                 // An error happened.
@@ -208,11 +210,11 @@ export default function Settings ({route}){
 
                         <View >
                             <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)",}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                {ChurchName?.ChurchName.toUpperCase()}
+                                {ChurchName?.ChurchName?.toUpperCase() || ChurchName?.toUpperCase()}
                             </Text>
 
-                            <Text style={{fontSize:17,fontWeight:"400",color:"gray",marginTop:2}}>
-                                {username}
+                            <Text style={{fontSize:15,fontWeight:"400",color:"gray",marginTop:2}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                ({role ? role : "Admin"}) {username}
                             </Text>
                         </View>
                     </View>
@@ -255,7 +257,7 @@ export default function Settings ({route}){
                             </>
                         </TouchableHighlight>
 
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
+                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Notification",{username: username , ChurchName : ChurchName, users : users, admin: admin ,newAdmin: newAdmin, role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
                             <>
                             <View style={{marginRight:15}}>
                                 <Ionicons name="notifications-outline" size={30}  color={"gray"}/>
@@ -330,7 +332,7 @@ export default function Settings ({route}){
                     </View>
                 </View>
 
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", backgroundColor:"rgba(50, 50, 50, 1)",elevation:1, borderRadius:15,marginTop:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
+                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Payment",{username: username , ChurchName : ChurchName, users : users, admin: admin, newAdmin: newAdmin , role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", backgroundColor:"rgba(50, 50, 50, 1)",elevation:1, borderRadius:15,marginTop:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
                             <>
                             <View style={{flexDirection:"row",alignItems:"center"}}>
                                 <View style={{marginRight:15}}>
@@ -380,7 +382,7 @@ export default function Settings ({route}){
                 <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                        
                     
-                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName})} >
+                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , mainEmail: mainEmail, admin:admin, role: role, newAdmin: newAdmin, users: users, events: events})} >
                            
                                     <View style={{alignItems:"center"}}>
                                         <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
@@ -391,7 +393,7 @@ export default function Settings ({route}){
                                    
                             </Pressable>
 
-                            <Pressable onPress={()=> navigation.replace("Church Admin")}>
+                            <Pressable onPress={()=> navigation.replace("Church Admin",{mainEmail: mainEmail, admin : admin, newAdmin: newAdmin})}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={"gray"}   />

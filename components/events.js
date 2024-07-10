@@ -9,7 +9,8 @@ import { getAuth, } from 'firebase/auth';
 
 
 export default function Events({navigation, route}){
-    const {name,About,start,image,guest,id} = route.params
+    
+    const {username, ChurchName,name,About,start,image,guest,id, mainEmail, admin, role,newAdmin, users, events} = route.params
 
     const [selectedImage, setSelectedImage] = useState(null);
 
@@ -211,7 +212,7 @@ export default function Events({navigation, route}){
                     Alert.alert("Success","Event updated successfully!")
 
                     setSubmitting(false)
-                    navigation.replace("Church Admin")
+                    navigation.replace("Church Admin", {mainEmail: mainEmail, admin: admin, newAdmin: newAdmin})
                 }
                     
             } catch (error) {
@@ -257,7 +258,7 @@ export default function Events({navigation, route}){
 
                 alert("Success!")
                 SetDelete(false)
-                navigation.replace("Church Admin")
+                navigation.replace("Church Admin", {mainEmail: mainEmail, admin: admin, newAdmin: newAdmin})
          
             }} catch (error) {
                 console.error("Error deleting document: ", error);
@@ -274,7 +275,7 @@ export default function Events({navigation, route}){
                 <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                         <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 7 }}>
-                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.replace('ModalScreen', {username:"", ChurchName:""})} />
+                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen', {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events})} />
                         </View>
 
                         <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 7, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>

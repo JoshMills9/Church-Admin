@@ -7,12 +7,17 @@ import { getFirestore,collection,getDocs, doc } from "firebase/firestore";
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getAuth, } from 'firebase/auth';
+import { useNavigation } from "@react-navigation/native";
 
 
 
 
 
-export default function UpdateMemberInfo ({navigation}){
+export default function UpdateMemberInfo ({route}){
+
+    const {params} = route || {}
+
+    const navigation = useNavigation()
 
     const [selectedMember, setSelectedMember]=useState(false)
     const [search, setSearch] = useState("")
@@ -106,7 +111,7 @@ export default function UpdateMemberInfo ({navigation}){
                 <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                     <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
                         <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.replace('ModalScreen',{username:"", ChurchName:""})} />
+                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName, mainEmail: params.mainEmail, admin: params.admin, role: params.role , newAdmin: params.newAdmin, users: params.users, events: params.events})} />
                         </View>
 
                         <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around",flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)" }}>

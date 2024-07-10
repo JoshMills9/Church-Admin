@@ -146,7 +146,7 @@ export default function Pledge(){
 
             <View style={{marginVertical:30,justifyContent:"space-between",flexDirection:"row"}}>
                 <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
-                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="numeric" placeholder="Amount" style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:"rgba(240, 240, 240, 1)",padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="numeric" placeholder={ "Amount"} style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:"rgba(240, 240, 240, 1)",padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center"}}>

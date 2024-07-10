@@ -6,12 +6,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getAuth,} from 'firebase/auth';
+import { useNavigation } from "@react-navigation/native";
 
 
 
-export default function MemberList ({navigation}){
-
-
+export default function MemberList ({route}){
+    const {params} = route || {};
+    const navigation = useNavigation()
 
     const [showMembers, setshowMembers] = useState(null)
     const db = getFirestore()
@@ -80,7 +81,7 @@ export default function MemberList ({navigation}){
   
     const getMember =(first, second) =>{
         const Member = showMembers.filter(item => item.FirstName === first  && item.SecondName === second)
-        navigation.replace("Details", {member: Member , id : Id})
+        navigation.navigate("Details", {member: Member , id : Id, username: params?.username, ChurchName: params.ChurchName, mainEmail: params.mainEmail, admin: params.admin, role: params.role , newAdmin: params.newAdmin, users: params.users, events: params.events})
     }
 
    
@@ -92,7 +93,7 @@ export default function MemberList ({navigation}){
 
             <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
                     <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
-                        <Ionicons name="arrow-back" size={35}  color={"rgba(240, 240, 240, 1)"} onPress={()=> navigation.navigate('ModalScreen',{username:"", ChurchName:""})}/>
+                        <Ionicons name="arrow-back" size={35}  color={"rgba(240, 240, 240, 1)"} onPress={()=> navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName, mainEmail: params.mainEmail, admin: params.admin, role: params.role , newAdmin: params.newAdmin, users: params.users, events: params.events})}/>
                     </View>
 
                     <View style={{height:70, width:"80%",flexDirection:"row", alignItems:"center", justifyContent:"space-around", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>

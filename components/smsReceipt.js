@@ -15,7 +15,10 @@ import { ButtonGroup } from '@rneui/themed';
 
 
 
-export default function SmsReceipt({navigation}){
+export default function SmsReceipt({navigation, route}){
+
+    const {username, ChurchName, mainEmail, admin, role , newAdmin, users, events} = route.params || {}
+
 
     const [search, setSearch] = useState("")
     const [sms, setSms] = useState("")
@@ -137,7 +140,7 @@ export default function SmsReceipt({navigation}){
                 <View>
                         <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }}>
                                 <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
-                                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
+                                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen', {username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events: events})} />
                                 </View>
 
                                 <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)" }}>

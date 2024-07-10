@@ -6,25 +6,33 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
 import { getAuth,} from 'firebase/auth';
-import { Badge ,FAB} from "react-native-paper";
+import { ActivityIndicator, Badge ,FAB} from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 import Animated, {
-useSharedValue,
-useAnimatedStyle,
-withTiming,
-Easing,
-withRepeat
+    useSharedValue,
+    withRepeat,
+    withTiming,
+    EasingNode,
+    useAnimatedStyle,
+    Easing
 
 } from 'react-native-reanimated';
+import { useNavigation } from "@react-navigation/native";
 
 
 
 
 
-export default function Home({navigation}){
-
+export default function Home({route}){
+    const {mainEmail, admin, newAdmin} = route.params
+    const navigation = useNavigation()
+   
+    const [userEmail , setuserEmail] = useState("")
+    const [noOfUsers , setNoOfUsers] = useState(null)
+    const [notAdmin, setNotAdmin] = useState(null)
+    const [user, setUser] = useState(null)
     const [username, setUsername] = useState("");
     const [ChurchName, setChurchName] = useState(null);
     const [NumberOfEvent, setNumberOfEvent] = useState('');
@@ -38,16 +46,20 @@ export default function Home({navigation}){
     const db = getFirestore();
 
     const [loading,setLoading] = useState(false)
-    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${message}`;
     const phoneNumber = '+233241380745';
     const message = "Hello there!";
+    const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+
 
     const date = new Date();
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const monthOfYear = monthsOfYear[date.getMonth()];
 
 
+
+
     useLayoutEffect(() => {
+
         const getMember = async () => {
             try {
                 const user = auth.currentUser;
@@ -55,8 +67,11 @@ export default function Home({navigation}){
                     throw new Error("No user signed in");
                 }
                 const userEmail = user.email;
-                setUsername(userEmail);
+                setUsername(userEmail)
+    
+                setNotAdmin(userEmail === mainEmail ? true : false)
 
+            
                 // Fetch church details based on user email
                 const tasksCollectionRef = collection(db, 'UserDetails');
                 const querySnapshot = await getDocs(tasksCollectionRef);
@@ -66,12 +81,27 @@ export default function Home({navigation}){
                         id: doc.id,
                         ...doc.data().userDetails
                     }));
-
-                    const church = tasks.find(item => item.email === userEmail);
+      
+                    const church = tasks?.find(item => item.email === mainEmail);
                     setChurchName(church);
 
+                     // Fetch user
+                        const userDetailsDoc = doc(db, 'UserDetails', church?.id);
+                        const userCollectionRef = collection(userDetailsDoc, 'Users');
+                        const userSnapshot = await getDocs(userCollectionRef);
+    
+                        if (!userSnapshot.empty) {
+                            const userData = userSnapshot.docs.map(doc => ({
+                                id: doc.id,
+                                ...doc.data().User
+                            }));
+                            setUser(userData.find(item => item.email === userEmail))
+                            setNoOfUsers(userData)
+                        }
+                   
+
                     // Fetch events
-                    const userDetailsDocRef = doc(db, 'UserDetails', church.id);
+                    const userDetailsDocRef = doc(db, 'UserDetails', church?.id);
                     const eventsCollectionRef = collection(userDetailsDocRef, 'Events');
                     const eventsSnapshot = await getDocs(eventsCollectionRef);
 
@@ -119,8 +149,7 @@ export default function Home({navigation}){
                     Alert.alert("Server Error!",error)
                 }
             }catch(error){
-                ToastAndroid.show(error.message, ToastAndroid.SHORT);
-                Alert.alert("Error",error.message)
+                ToastAndroid.show(error.message, ToastAndroid.LONG);
                
             }
         };
@@ -130,37 +159,35 @@ export default function Home({navigation}){
    
     }, []); // Only run once when component mounts
 
+
+
     // Animation related state and functions
     const [animate, setAnimate] = useState(true);
 
     const slideAnimation = useSharedValue(0);
 
-    const startAnimation = () => {
-        slideAnimation.value = withRepeat(
-          withTiming(
-            -150 * NoOfEvent,
-            {
-              duration: 10500,
-              easing: Easing.linear,
-            },
-          ),
-          -1, // -1 means repeat indefinitely
-          true // true means reset the animation to the initial value after it completes each cycle
-        );
-      };
-            
-
+    useEffect(() => {
+        const interval = setInterval(() => {
+          startAnimation();
+        }, 15000); // Repeat every 15 seconds
     
-    const slideInStyle = useAnimatedStyle(() => {
+        return () => clearInterval(interval);
+      }, [navigation,events]);
+    
+      const startAnimation = () => {
+        slideAnimation.value = withTiming(-10, { duration: 180, easing: Easing.linear }, () => {
+          slideAnimation.value = withTiming(10, { duration: 180, easing: Easing.linear }, () => {
+            slideAnimation.value = withTiming(0, { duration: 130, easing: Easing.linear });
+          });
+        });
+      };
+    
+      const slideInStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ translateX: slideAnimation.value }],
+          transform: [{ translateX: slideAnimation.value }],
         };
-    });
-
-    useEffect(()=>{
-        if(birthDayComing){
-    }
-    },[birthDayComing])
+      });
+  
 
 
 
@@ -174,21 +201,30 @@ export default function Home({navigation}){
 
 
                         <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
+                                    { (events || newAdmin )?
                                     <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:5}}>
                                         <Ionicons name="laptop-outline" size={35} color={"rgba(240, 240, 240, 1)"} />
                                     </View>
+                                    :
+                                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:5}}>
+                                       <ActivityIndicator animating={!events} size={"small"} color="rgba(240, 240, 240, 1)"/>
+                                    </View>
+                                    }
 
+                                    {
+                                    (events || newAdmin ) &&
                                     <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:3, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)"}}>
                                         <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Church Administrator</Text>
                                     </View>
+                                    }
                         </View>
 
 
 
-                    <View style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:10}}>
+                    <View style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:20}}>
 
 
-                            <View style={{marginTop:10, marginBottom:10,alignItems:"flex-start",justifyContent:"space-between" , flexDirection:"row",borderRadius:15, width:"100%"}}>
+                            <View style={{ marginBottom:10,alignItems:"flex-start",justifyContent:"space-between" , flexDirection:"row",borderRadius:15, width:"100%"}}>
                                         <View style={{justifyContent:"space-between", height:120, width:"18%"}}>
                                         
                                             <View style={{height:55,width:65,justifyContent:"center", borderTopLeftRadius:20,borderBottomRightRadius:50,padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
@@ -204,43 +240,43 @@ export default function Home({navigation}){
                                         </View>
 
                                         <View style={{width:305,elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:20}}>
-                                       <FlatList 
-                                        ListEmptyComponent={()=>(
-                                            <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>         
-                                                        <TouchableOpacity onPress={()=> navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"" })} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                            <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
-                                                            <MaterialIcons name="edit" size={24} color={"white"} />
-                                                        </TouchableOpacity>
+                                        <FlatList 
+                                            ListEmptyComponent={()=>(
+                                                <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>         
+                                                            <TouchableOpacity onPress={()=> {notAdmin === true ? navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, newAdmin: newAdmin, users: noOfUsers, events: events ,role: user?.Role || "Admin" }) :  alert("Accessible to Admins only!")}} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
+                                                                <MaterialIcons name="edit" size={24} color={"white"} />
+                                                            </TouchableOpacity>
 
-                                                        <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                            <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>No Upcoming Event</Text>
-                                                        </View>
-                                     
-                                            </ImageBackground>
-                                        )}
+                                                            <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>No Upcoming Event</Text>
+                                                            </View>
+                                        
+                                                </ImageBackground>
+                                            )}
 
-                                        data={events?.sort((a, b) => b.createdAt - a.createdAt)}
-                                        showsVerticalScrollIndicator={false}
-                                        renderItem={({item, index})=>{
-                                            return(
-                                                <View style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>
-                                                    <Animated.View  style={[slideInStyle]}>
-                                                                
-                                                        <Image source={{uri: item.Image }}  style={{width:305,height:120,borderRadius:15}} resizeMode="cover" />
+                                            data={events?.sort((a, b) => b.createdAt - a.createdAt)}
+                                            showsVerticalScrollIndicator={false}
+                                            renderItem={({item, index})=>{
+                                                return(
+                                                    <View style={{width:305,backgroundColor:"rgba(50, 50, 50, 1)",height:120, borderRadius:15}}>
+                                                        <Animated.View  style={[slideInStyle]}>
+                                                                    
+                                                            <Image source={{uri: item.Image }}  style={{width:305,height:120,borderRadius:15}} resizeMode="cover" />
 
-                                                        <TouchableOpacity onPress={()=> navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate })} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                            <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
-                                                            <MaterialIcons name="edit" size={24} color={"white"} />
-                                                        </TouchableOpacity>
+                                                            <TouchableOpacity onPress={()=> {notAdmin === true ? navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate , username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, newAdmin: newAdmin, users: noOfUsers, events: events ,role: user?.Role || "Admin" }) : alert("Accessible to Admins only!")}} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
+                                                                <MaterialIcons name="edit" size={24} color={"white"} />
+                                                            </TouchableOpacity>
 
-                                                        <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                            <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
-                                                        </View>
-                                                    </Animated.View>
-                                                </View>
-                                            )
-                                        }}
-                                        />
+                                                            <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
+                                                            </View>
+                                                        </Animated.View>
+                                                    </View>
+                                                )
+                                            }}
+                                            />
                                     </View>
                                         
                             </View>
@@ -284,13 +320,13 @@ export default function Home({navigation}){
 
                                     
 
-                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}}  icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:60, position:"absolute" ,zIndex:9, bottom:70, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
+                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}}  icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:60, position:"absolute" ,zIndex:9, bottom:70,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
 
                     <View>
                         
                         <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                            
-                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName})}>
+                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username || user?.email, ChurchName: ChurchName, role: user?.Role,  mainEmail: mainEmail , admin: notAdmin, users: noOfUsers, newAdmin: newAdmin, events: events})}>
                                     
                                     <View style={{alignItems:"center"}}>
                                         <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
@@ -312,7 +348,7 @@ export default function Home({navigation}){
                                     )}
                             </Pressable>
            
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username:username, ChurchName: ChurchName})} >
+                            <Pressable onPress={()=> navigation.navigate("Settings", {username:username || user?.email, ChurchName: ChurchName, role: user?.Role,  mainEmail: mainEmail , admin: notAdmin, users: noOfUsers, newAdmin: newAdmin, events: events})} >
                                     
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-outline" size={27} color= "gray"  />

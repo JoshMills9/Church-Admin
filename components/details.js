@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { View, StatusBar,Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, } from "react-native";
 
 import { Ionicons } from '@expo/vector-icons';
-
-import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { doc,getFirestore, collection, deleteDoc } from 'firebase/firestore';
 
 
 export default function Details ({navigation, route}){
 
-    const {member,id } = route.params 
+    const {member,id ,username, ChurchName, mainEmail, admin, role , newAdmin, users, events} = route.params 
     const db = getFirestore()
 
     const [Delete, SetDelete] = useState(false)
@@ -47,7 +45,7 @@ export default function Details ({navigation, route}){
 
                 <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
                         <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color="rgba(240, 240, 240, 1)" onPress={() => navigation.replace('MemberList')} />
+                            <Ionicons name="arrow-back" size={35} color="rgba(240, 240, 240, 1)" onPress={() => navigation.replace('MemberList',{username: username, ChurchName: ChurchName, mainEmail: mainEmail, admin: admin, role: role , newAdmin: newAdmin, users: users, events:events})} />
                         </View>
 
                         <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>
@@ -55,10 +53,10 @@ export default function Details ({navigation, route}){
                         </View>
                 </View>
                 
-                <View style={{marginHorizontal:15, height:700 ,paddingVertical:10,justifyContent:"center",}}>
+                <View style={{marginHorizontal:15, height:500 ,paddingVertical:10,justifyContent:"center",}}>
                     <ScrollView>
                     <View style={{justifyContent:"center", alignSelf:"center", borderRadius:15, borderWidth:1,borderColor:"gray",width:120,height:120}}>
-                        {member[0].Image ? 
+                        {member[0]?.Image ? 
                             <Image source={{uri: member[0].Image}}  style={{width:110,alignSelf:"center", height:110, borderRadius:55}} />
                             : <MaterialIcons name="person"  size={120} color={"gray"}/>
                         }
