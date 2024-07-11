@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useState, useEffect} from "react";
-import { View, Text, Pressable, Modal, StatusBar,ToastAndroid, Linking,Image, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
+import { View, Text, Pressable, Modal, StatusBar,ToastAndroid, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
 import styles from "./styles";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -49,7 +49,8 @@ export default function Home({route}){
     const phoneNumber = '+233241380745';
     const message = "Hello there!";
     const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
-
+    const [refreshing, setRefreshing] = useState(true);
+    const [Refreshing, setrefreshing] = useState(false)
 
     const date = new Date();
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -58,106 +59,122 @@ export default function Home({route}){
 
 
 
-    useLayoutEffect(() => {
-
-        const getMember = async () => {
-            try {
-                const user = auth.currentUser;
-                if (!user) {
-                    throw new Error("No user signed in");
-                }
-                const userEmail = user.email;
-                setUsername(userEmail)
-    
-                setNotAdmin(userEmail === mainEmail ? true : false)
-
-            
-                // Fetch church details based on user email
-                const tasksCollectionRef = collection(db, 'UserDetails');
-                const querySnapshot = await getDocs(tasksCollectionRef);
-
-                if (!querySnapshot.empty) {
-                    const tasks = querySnapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data().userDetails
-                    }));
-      
-                    const church = tasks?.find(item => item.email === mainEmail);
-                    setChurchName(church);
-
-                     // Fetch user
-                        const userDetailsDoc = doc(db, 'UserDetails', church?.id);
-                        const userCollectionRef = collection(userDetailsDoc, 'Users');
-                        const userSnapshot = await getDocs(userCollectionRef);
-    
-                        if (!userSnapshot.empty) {
-                            const userData = userSnapshot.docs.map(doc => ({
-                                id: doc.id,
-                                ...doc.data().User
-                            }));
-                            setUser(userData.find(item => item.email === userEmail))
-                            setNoOfUsers(userData)
-                        }
-                   
-
-                    // Fetch events
-                    const userDetailsDocRef = doc(db, 'UserDetails', church?.id);
-                    const eventsCollectionRef = collection(userDetailsDocRef, 'Events');
-                    const eventsSnapshot = await getDocs(eventsCollectionRef);
-
-                    if (!eventsSnapshot.empty) {
-                        const eventsData = eventsSnapshot.docs.map(doc => ({
-                            id: doc.id,
-                            ...doc.data().Events
-                        }));
-                        setEvents(eventsData);
-                        setNoOfEvent(eventsData.length);
-                    }
-
-                    // Fetch members
-                    const membersCollectionRef = collection(userDetailsDocRef, 'Members');
-                    const membersSnapshot = await getDocs(membersCollectionRef);
-
-                    if (!membersSnapshot.empty) {
-                        const membersData = membersSnapshot.docs.map(doc => ({
-                            id: doc.id,
-                            ...doc.data().Member
-                        }));
-                        setTotalNumberOfMembers(membersData.length);
-
-
-                        const date = new Date();
-                        const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                        const monthOfYear = monthsOfYear[date.getMonth()];
-                  
-
-                        const monthAbr = monthOfYear.slice(0, 3);
-                        const upcomingBirthdays = membersData.filter(member => {
-                            const memberMonth = member.Date_Of_Birth.split(' ')[1];
-                            return memberMonth === monthAbr;
-                        });
-                        setBirthdaysComing(upcomingBirthdays.length);
-
-                        const newMembers = membersData.filter(member => {
-                            const memberMonth = member.Registration_Date.split(' ')[1];
-                            return memberMonth === monthAbr;
-                        });
-                        setNewMember(newMembers.length);
-                    }
-                   
-                }else{
-                    Alert.alert("Server Error!",error)
-                }
-            }catch(error){
-                ToastAndroid.show(error.message, ToastAndroid.LONG);
-               
+    const getMember = async () => {
+        try {
+            const user = auth.currentUser;
+            if (!user) {
+                throw new Error("No user signed in");
             }
-        };
-    
+            const userEmail = user.email;
+            setUsername(userEmail)
 
+            setNotAdmin(userEmail === mainEmail ? true : false)
+
+        
+            // Fetch church details based on user email
+            const tasksCollectionRef = collection(db, 'UserDetails');
+            const querySnapshot = await getDocs(tasksCollectionRef);
+
+            if (!querySnapshot.empty) {
+                const tasks = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data().userDetails
+                }));
+  
+                const church = tasks?.find(item => item.email === mainEmail);
+                setChurchName(church);
+
+                 // Fetch user
+                    const userDetailsDoc = doc(db, 'UserDetails', church?.id);
+                    const userCollectionRef = collection(userDetailsDoc, 'Users');
+                    const userSnapshot = await getDocs(userCollectionRef);
+
+                    if (!userSnapshot.empty) {
+                        const userData = userSnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data().User
+                        }));
+                        setUser(userData.find(item => item.email === userEmail))
+                        setNoOfUsers(userData)
+                    }
+               
+
+                // Fetch events
+                const userDetailsDocRef = doc(db, 'UserDetails', church?.id);
+                const eventsCollectionRef = collection(userDetailsDocRef, 'Events');
+                const eventsSnapshot = await getDocs(eventsCollectionRef);
+
+                if (!eventsSnapshot.empty) {
+                    const eventsData = eventsSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data().Events
+                    }));
+                    setEvents(eventsData);
+                    setNoOfEvent(eventsData.length);
+                }
+
+                setRefreshing(false)
+
+                // Fetch members
+                const membersCollectionRef = collection(userDetailsDocRef, 'Members');
+                const membersSnapshot = await getDocs(membersCollectionRef);
+
+                if (!membersSnapshot.empty) {
+                    const membersData = membersSnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data().Member
+                    }));
+                    setTotalNumberOfMembers(membersData.length);
+
+
+                    const date = new Date();
+                    const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                    const monthOfYear = monthsOfYear[date.getMonth()];
+              
+
+                    const monthAbr = monthOfYear.slice(0, 3);
+                    const upcomingBirthdays = membersData.filter(member => {
+                        const memberMonth = member.Date_Of_Birth.split(' ')[1];
+                        return memberMonth === monthAbr;
+                    });
+                    setBirthdaysComing(upcomingBirthdays.length);
+
+                    const newMembers = membersData.filter(member => {
+                        const memberMonth = member.Registration_Date.split(' ')[1];
+                        return memberMonth === monthAbr;
+                    });
+                    setNewMember(newMembers.length);
+                }
+               
+            }else{
+                Alert.alert("Server Error!","Check network connection")
+            };
+        }catch(error){
+            ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
+           
+        }
+
+    };
+
+
+    useLayoutEffect(() => {
         getMember();
-   
     }, []); // Only run once when component mounts
+
+    const onRefresh = () => {
+        setrefreshing(true);
+      
+        // Your refresh logic here
+        getMember(); // Example: Fetch new data from an API
+      
+        // After refreshing completes, set refreshing to false
+        setTimeout(() => {
+          setrefreshing(false);
+        }, 2000); // Simulating a delay
+      };
+      
+
+
 
 
 
@@ -201,29 +218,23 @@ export default function Home({route}){
 
 
                         <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
-                                    { (events || newAdmin )?
+                                    { !refreshing ?
                                     <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:5}}>
                                         <Ionicons name="laptop-outline" size={35} color={"rgba(240, 240, 240, 1)"} />
                                     </View>
-                                    :
+                                    : 
                                     <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:5}}>
-                                       <ActivityIndicator animating={!events} size={"small"} color="rgba(240, 240, 240, 1)"/>
+                                       <ActivityIndicator animating={refreshing} size={"small"} color="rgba(240, 240, 240, 1)"/>
                                     </View>
                                     }
 
-                                    {
-                                    (events || newAdmin ) &&
                                     <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:3, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)"}}>
                                         <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Church Administrator</Text>
                                     </View>
-                                    }
+                                   
                         </View>
 
-
-
-                    <View style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:20}}>
-
-
+                        <View   style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:20}}>
                             <View style={{ marginBottom:10,alignItems:"flex-start",justifyContent:"space-between" , flexDirection:"row",borderRadius:15, width:"100%"}}>
                                         <View style={{justifyContent:"space-between", height:120, width:"18%"}}>
                                         
@@ -281,43 +292,53 @@ export default function Home({route}){
                                         
                             </View>
 
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                            <View style={{}}>
-                                <Text style={[styles.Update, { alignSelf: "center" }]}>
-                                    Updates For {monthOfYear}
-                                </Text>
-                                <Text style={styles.updateTxt}>
-                                    Total No. Of Members:      <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
-                                </Text>
-                                <Text style={styles.updateTxt}>
-                                    Upcoming Events:               <Text style={{fontWeight:"500",}}>{NoOfEvent? NoOfEvent : "-"}</Text>
-                                </Text>
-                                <Text style={styles.updateTxt}>
-                                    Upcoming Birthdays:          <Text style={{fontWeight:"500"}}>{birthDayComing ? birthDayComing : "-"}</Text> 
-                                </Text>
-                            </View>
+                            <ScrollView refreshControl={
+                                <RefreshControl
+                                refreshing={Refreshing}
+                                onRefresh={onRefresh}
+                                colors={["rgba(240, 240, 240, 1)"]}
+                                progressBackgroundColor="rgba(50, 50, 50, 1)"
+                                />
+                                } 
+                                >
+
+                                <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
+                                    <View style={{}}>
+                                        <Text style={[styles.Update, { alignSelf: "center" }]}>
+                                            Updates For {monthOfYear}
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                            Total No. Of Members:      <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                            Upcoming Events:               <Text style={{fontWeight:"500",}}>{NoOfEvent? NoOfEvent : "-"}</Text>
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                            Upcoming Birthdays:          <Text style={{fontWeight:"500"}}>{birthDayComing ? birthDayComing : "-"}</Text> 
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
+                                    <View style={{}}>
+                                        <Text style={[styles.Update, { alignSelf: "center" }]}>
+                                            Update On Members
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                                Total No. Of Members:         <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                                Attendants/week:                   <Text style={{fontWeight:"500",}}>-</Text>
+                                        </Text>
+                                        <Text style={styles.updateTxt}>
+                                                New Members/month:          <Text style={{fontWeight:"500",}}>{newMember ? newMember : "-"}</Text>
+                                        </Text>
+                                    </View>
+                                </View>
+
+
+                            </ScrollView>
                         </View>
-
-                        <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                        <View style={{}}>
-                            <Text style={[styles.Update, { alignSelf: "center" }]}>
-                                Update On Members
-                            </Text>
-                            <Text style={styles.updateTxt}>
-                                    Total No. Of Members:         <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
-                            </Text>
-                            <Text style={styles.updateTxt}>
-                                    Attendants/week:                   <Text style={{fontWeight:"500",}}>-</Text>
-                            </Text>
-                            <Text style={styles.updateTxt}>
-                                    New Members/month:          <Text style={{fontWeight:"500",}}>{newMember ? newMember : "-"}</Text>
-                            </Text>
-                        </View>
-                    </View>
-
-
-                    </View>
-
                                     
 
                     <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}}  icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:60, position:"absolute" ,zIndex:9, bottom:70,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>

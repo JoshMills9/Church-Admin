@@ -6,12 +6,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ModalScreen from "./modalScreen";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableHighlight } from "react-native";
-import { getAuth , signOut} from "firebase/auth";
+import { getAuth , signOut, deleteUser} from "firebase/auth";
 import { FAB } from "react-native-paper";
 import email from 'react-native-email';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { getFirestore, setDoc} from "firebase/firestore";
+import { getFirestore, setDoc, collection, query, where, doc,getDocs,deleteDoc, updateDoc, deleteField} from "firebase/firestore";
 
 
 
@@ -144,6 +144,91 @@ export default function Settings ({route}){
 
 
 
+        
+        // Function to delete user details from auth
+        const deleteUserAccount = async () => {
+            const user = auth.currentUser;
+            try {
+                // Check if user is signed in
+                if (user) {
+                    // Delete the user
+                    await deleteUser(user);
+                    Alert.alert("---- Church Administrator ----",'😢 Account deleted successfully.💔');
+                    navigation.navigate("LogIn")
+                } else {
+                    // User is not signed in
+                    console.log('No user signed in.');
+                }
+            } catch (error) {
+                // Handle error
+                console.error('Error deleting user:', error.message);
+                // Display error message to the user or handle it appropriately
+            }
+        };
+
+
+
+     /* delete user details from db
+     const deleteFieldByEmail = async () => {
+        const usersCollectionRef = collection(db, 'UserDetails');
+    
+        const q = query(usersCollectionRef, where('userDetails.email', '==', mainEmail));
+    
+        try {
+            const querySnapshot = await getDocs(q);
+    
+            for (const document of querySnapshot.docs) {
+                const docRef = doc(db, `UserDetails/${document.id}`); // Add db here
+    
+                await updateDoc(docRef, {
+                    ["userDetails"]: deleteField()
+                });
+
+                console.log(`Field  deleted from document with ID: ${document.id}`);
+            }
+            deleteUserAccount()
+            return true;
+        } catch (error) {
+            console.error('Error deleting field:', error);
+            return false;
+        }
+    };
+
+
+*/
+
+const deleteFieldByEmail = async () => {
+    const usersCollectionRef = collection(db, 'UserDetails');
+    
+    try {
+        // Query for documents where userDetails.email matches mainEmail
+        const q = query(usersCollectionRef, where('userDetails.email', '==', mainEmail));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            // Assuming you want to delete the first document found
+            const doc = querySnapshot.docs[0]; // Get the first document
+
+            // Delete the document by its ID
+            await deleteDoc(doc.ref);
+
+            deleteUserAccount()
+            return true;
+        } else {
+            console.log(`No document found where userDetails.email matches ${mainEmail}`);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error deleting document:', error);
+        return false;
+    }
+}
+
+
+
+
+
+
     const Support = ()=>{
         return (
            <View style={{ position:"absolute",alignSelf:"center",padding:10,borderRadius:15,justifyContent:"space-between", bottom:130,right:20,height:200,width:"80%",elevation:5, backgroundColor:"rgba(30, 30, 30, 1)" }}>
@@ -222,153 +307,166 @@ export default function Settings ({route}){
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:25, marginTop:15, justifyContent:"space-between" }}>
-                <View >
+                    <View >
 
-                    <View>
-                        <Text style={{fontSize:18, fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>
-                            General
-                        </Text>
+                        <View>
+                            <Text style={{fontSize:18, fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>
+                                General
+                            </Text>
 
-                    </View>
-                    
-                    <View style={{backgroundColor:"rgba(50, 50, 50, 1)" ,elevation:1, marginTop:10, borderRadius:15, }}>
-
-                        <TouchableHighlight onPress={()=>{}} underlayColor="rgba(70, 70, 70, 1)" style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
-                            <> 
-                            <View style={{flexDirection:"row",alignItems:"center"}}>
-                                <View style={{marginRight:15}}>
-                                    <Ionicons name="invert-mode" size={30} color={"gray"}/>
-                                </View>
-
-                                <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                        Light mode
-                                    </Text>
-
-                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                        Change app looks
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <View>
-                                <Switch value={true}  thumbColor={"rgba(240, 240, 240, 1)"}  trackColor={"lightgray"}/>
-                            </View>
-                            </>
-                        </TouchableHighlight>
-
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Notification",{username: username , ChurchName : ChurchName, users : users, admin: admin ,newAdmin: newAdmin, role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
-                            <>
-                            <View style={{marginRight:15}}>
-                                <Ionicons name="notifications-outline" size={30}  color={"gray"}/>
-                            </View>
-
-                            <View style={{paddingRight:25,}}>
-                                <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                    Notifications
-                                </Text>
-
-                                <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                    Control how the app alerts you
-                                </Text>
-                            </View>
-                            </>
-                        </TouchableHighlight>
-
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
-                            <> 
-                            <View style={{marginRight:15}}>
-                                <Ionicons name="shield-checkmark-outline" size={30}  color={"gray"}/>
-                            </View>
-
-                            <View style={{paddingRight:25,}}>
-                                <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                    Privacy
-                                </Text>
-
-                                <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2,}}>
-                                    Manage how your data is handled and shared
-                                </Text>
-                            </View>
-                            </>
-                        </TouchableHighlight>
-
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
-                            <>
-                            <View style={{marginRight:15}}>
-                                <Ionicons name="lock-closed-outline" size={30} color={"gray"}/>
-                            </View>
-
-                            <View style={{paddingRight:25,}}>
-                                <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                    Security
-                                </Text>
-
-                                <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                    Customize security features to fit your needs
-                                </Text>
-                            </View>
-                            </>
-                        </TouchableHighlight>
-
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
-                            <>
-                            <View style={{marginRight:15}}>
-                                <Ionicons name="language-outline" size={30} color={"gray"} />
-                            </View>
-
-                            <View style={{paddingRight:25,}}>
-                                <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                    Language
-                                </Text>
-
-                                <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                    English
-                                </Text>
-                            </View>
-                            </>
-                        </TouchableHighlight>
-
-                    </View>
-                </View>
-
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Payment",{username: username , ChurchName : ChurchName, users : users, admin: admin, newAdmin: newAdmin , role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", backgroundColor:"rgba(50, 50, 50, 1)",elevation:1, borderRadius:15,marginTop:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
-                            <>
-                            <View style={{flexDirection:"row",alignItems:"center"}}>
-                                <View style={{marginRight:15}}>
-                                    <Ionicons name="cash-outline" size={30} color={"gray"}/>
-                                </View>
-
-                                <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                        Payments
-                                    </Text>
-
-                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                        Mobile money
-                                    </Text>
-                                </View>
-                            </View>
-
-                            <View>
-                                <MaterialIcons name="arrow-right" size={30} color={"gray"} />
-                            </View>
-                            </>
-                </TouchableHighlight>
-
-                
-
-                <TouchableOpacity onPress={handleSignOut} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
-                    
-                        <View style={{marginRight:15}}>
-                            <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
-                        </View>    
-                        
-                        <View >
-                            <Text style={{fontSize:19,fontWeight:"600", color:" rgba(100, 200, 255, 1)"}}>Log out</Text>
                         </View>
-             
-                </TouchableOpacity>
+                        
+                        <View style={{backgroundColor:"rgba(50, 50, 50, 1)" ,elevation:1, marginTop:10, borderRadius:15, }}>
+
+                            <TouchableHighlight onPress={()=>{}} underlayColor="rgba(70, 70, 70, 1)" style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
+                                <> 
+                                <View style={{flexDirection:"row",alignItems:"center"}}>
+                                    <View style={{marginRight:15}}>
+                                        <Ionicons name="invert-mode" size={30} color={"gray"}/>
+                                    </View>
+
+                                    <View style={{paddingRight:25,}}>
+                                        <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                            Light mode
+                                        </Text>
+
+                                        <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                            Change app looks
+                                        </Text>
+                                    </View>
+                                </View>
+
+                                <View>
+                                    <Switch value={true}  thumbColor={"rgba(240, 240, 240, 1)"}  trackColor={"lightgray"}/>
+                                </View>
+                                </>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Notification",{username: username , ChurchName : ChurchName, users : users, admin: admin ,newAdmin: newAdmin, role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
+                                <>
+                                <View style={{marginRight:15}}>
+                                    <Ionicons name="notifications-outline" size={30}  color={"gray"}/>
+                                </View>
+
+                                <View style={{paddingRight:25,}}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                        Notifications
+                                    </Text>
+
+                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                        Control how the app alerts you
+                                    </Text>
+                                </View>
+                                </>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                                <> 
+                                <View style={{marginRight:15}}>
+                                    <Ionicons name="shield-checkmark-outline" size={30}  color={"gray"}/>
+                                </View>
+
+                                <View style={{paddingRight:25,}}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                        Privacy
+                                    </Text>
+
+                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2,}}>
+                                        Manage how your data is handled and shared
+                                    </Text>
+                                </View>
+                                </>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                                <>
+                                <View style={{marginRight:15}}>
+                                    <Ionicons name="lock-closed-outline" size={30} color={"gray"}/>
+                                </View>
+
+                                <View style={{paddingRight:25,}}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                        Security
+                                    </Text>
+
+                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                        Customize security features to fit your needs
+                                    </Text>
+                                </View>
+                                </>
+                            </TouchableHighlight>
+
+                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
+                                <>
+                                <View style={{marginRight:15}}>
+                                    <Ionicons name="language-outline" size={30} color={"gray"} />
+                                </View>
+
+                                <View style={{paddingRight:25,}}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                        Language
+                                    </Text>
+
+                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                        English
+                                    </Text>
+                                </View>
+                                </>
+                            </TouchableHighlight>
+
+                        </View>
+                    </View>
+
+                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {admin === true ? navigation.navigate("Payment",{username: username , ChurchName : ChurchName, users : users, admin: admin, newAdmin: newAdmin , role: role , mainEmail : mainEmail, events: events}): alert("Accessible to admins only!")}} style={{flexDirection:"row", backgroundColor:"rgba(50, 50, 50, 1)",elevation:1, borderRadius:15,marginTop:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
+                                    <>
+                                    <View style={{flexDirection:"row",alignItems:"center"}}>
+                                        <View style={{marginRight:15}}>
+                                            <Ionicons name="cash-outline" size={30} color={"gray"}/>
+                                        </View>
+
+                                        <View style={{paddingRight:25,}}>
+                                            <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                                Payments
+                                            </Text>
+
+                                            <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                                Mobile money
+                                            </Text>
+                                        </View>
+                                    </View>
+
+                                    <View>
+                                        <MaterialIcons name="arrow-right" size={30} color={"gray"} />
+                                    </View>
+                                    </>
+                        </TouchableHighlight>
+
+                        
+
+                        <TouchableOpacity onPress={handleSignOut} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
+                            
+                                <View style={{marginRight:15}}>
+                                    <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
+                                </View>    
+                                
+                                <View >
+                                    <Text style={{fontSize:19,fontWeight:"600", color:" rgba(100, 200, 255, 1)"}}>Log out</Text>
+                                </View>
+                    
+                        </TouchableOpacity>
+
+                    
+                        <TouchableOpacity  onPress={() => {admin === true ? deleteFieldByEmail() : alert("Accessible to admin only!")}} style={{flexDirection:"row" , marginTop:5, height:60, alignItems:"center" , justifyContent:"center"}}>
+                                
+                                <View style={{marginRight:10}}>
+                                    <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
+                                </View>    
+                                
+                                <View >
+                                    <Text style={{fontSize:18,fontWeight:"600", color:"orangered"}}>Delete account</Text>
+                                </View>
+                    
+                        </TouchableOpacity>
 
                 </ScrollView>
 
@@ -393,7 +491,7 @@ export default function Settings ({route}){
                                    
                             </Pressable>
 
-                            <Pressable onPress={()=> navigation.replace("Church Admin",{mainEmail: mainEmail, admin : admin, newAdmin: newAdmin})}>
+                            <Pressable onPress={()=> navigation.navigate("Church Admin",{mainEmail: mainEmail, admin : admin, newAdmin: newAdmin})}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={"gray"}   />

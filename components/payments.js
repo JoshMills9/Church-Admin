@@ -41,7 +41,7 @@ export const Payments = ({route}) => {
             </View>
 
             <View>
-                <Text style={{fontSize: WindowHeight < 800 ? 35 : 45,marginTop: WindowHeight < 800 ? 10 : 15, color:"rgba(240, 240, 240, 1)"}}>Ghc {1000}.00</Text>
+                <Text style={{fontSize: WindowHeight < 800 ? 35 : 45,marginTop: WindowHeight < 800 ? 10 : 15, color:"rgba(240, 240, 240, 1)"}}>GH₵ {100}.00</Text>
             </View>
 
         </View>

@@ -21,7 +21,7 @@ export const Notifications = ({route}) => {
     const WindowHeight = useWindowDimensions().height
  
   return (
-    <View style={[styles.container,{justifyContent:"space-between",paddingHorizontal:20, paddingVertical:10}]}>
+    <View  style={[styles.container,{justifyContent:"space-between",paddingHorizontal:20, paddingVertical:10}]}>
         <View style={{flex:1, justifyContent:"space-between",marginTop:20}}>
             <View>
                 <AntDesign name="leftcircleo" size={35}  onPress={()=> navigation.navigate("Settings", {username : username , ChurchName : ChurchName , users: users, admin : admin,newAdmin: newAdmin, role: role, mainEmail: mainEmail, events: events})} color="rgba(240, 240, 240, 1)" />
@@ -48,7 +48,7 @@ export const Notifications = ({route}) => {
 
                     ListEmptyComponent={()=>{
                         return(
-                            <TouchableOpacity style={{backgroundColor:"rgba(50, 50, 50, 1)",height: WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15,marginVertical:5, justifyContent:"space-between", alignItems:"flex-start"}}>
+                            <TouchableOpacity style={{backgroundColor:"rgba(50, 50, 50, 1)",height: WindowHeight < 800 ? 85 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15,marginVertical:5, justifyContent:"space-between", alignItems:"flex-start"}}>
                             <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.7)"}}>Church Admin</Text>
                             <View style={{flexDirection:"row", alignItems:"flex-start", width:"100%", justifyContent:"space-between"}}>
                                 <Text  style={{fontSize:16, color:"rgba(240, 240, 240, 1)", width:"90%",paddingVertical:3}} numberOfLines={2}>Admin account created with email: {mainEmail}.</Text>
