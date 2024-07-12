@@ -154,7 +154,7 @@ export default function AllPledges() {
                     color: " rgba(100, 200, 255, 1)",
                   }}
                 >
-                  {item.PledgeTitle}
+                  {item.Title}
                 </Text>
               </View>
               <View

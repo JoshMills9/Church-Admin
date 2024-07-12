@@ -100,12 +100,12 @@ export default function Pledge(){
 
         // Example data for a member document within the subcollection
         const Pledge = {
-            Tite: pledgeTitle,
-            FullName: fullName,
-            PledgeDate: formattedDate,
-            Amount: Amount,
-            ModeOfPayment : payment,
-            Duration : duration,
+            Title: pledgeTitle || "N/A",
+            FullName: fullName || "N/A",
+            PledgeDate: formattedDate || "N/A",
+            Amount: Amount || "N/A",
+            ModeOfPayment : payment || "N/A",
+            Duration : duration || "N/A",
             createdAt: new Date().getTime(),
         };
 
@@ -161,12 +161,12 @@ export default function Pledge(){
             </View>
 
             <View>
-                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"gray", height:60,borderWidth:1,color:"rgba(240, 240, 240, 1)",borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
 
             <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit()}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
-                {submitting ?  <ActivityIndicator  color="navy"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
+                {submitting ?  <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
             </TouchableOpacity>
 
           {mode && Mode()} 

@@ -18,6 +18,9 @@ import SignUp from "./signUpScreen";
 
 
 
+
+
+
 export default function LogIn ({navigation}){
   
     const [signUpEmail, setSignUpEmail] = useState("")
