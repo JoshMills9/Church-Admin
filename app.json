@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Church-Admin",
+    "slug": "Church-Admin",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/Icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/Icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.joshmills.ChurchAdmin"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "52c6f71f-c10e-4c0b-84bc-6ce0190e91a2"
+      }
+    }
+  }
+}
