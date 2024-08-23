@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 
 
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp() {
 
@@ -80,6 +81,21 @@ export default function SignUp() {
     }
   };
 
+
+
+
+        //useEffect to save list to Storage
+        useEffect(() => {
+          const handleSave = async () => {
+              try {
+                  await AsyncStorage.setItem('UserEmail',signUpEmail);
+              } catch (e) {
+                console.error('Failed to save the data to the storage', e);
+              }
+            };
+            handleSave();
+          }, [signUpEmail]);
+      
    
 
 

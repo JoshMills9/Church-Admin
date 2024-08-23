@@ -14,6 +14,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { getFirestore, setDoc, collection, query, where, doc,getDocs,deleteDoc, updateDoc, deleteField} from "firebase/firestore";
 
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
+
 
 export default function Settings ({route}){
     const {username, ChurchName, events} = route.params
@@ -58,10 +63,19 @@ export default function Settings ({route}){
           });
       };
 
+      const removeData = async () => {
+        try {
+          await AsyncStorage.removeItem('UserEmail');
+          console.log('Data removed successfully!');
+        } catch (error) {
+          console.error('Error removing data:', error);
+        }
+      };
 
 
     //function to signout user
     const handleSignOut = () => {
+        removeData()
         signOut(auth)
             .then(() => {
                 // Sign-out successful.
@@ -140,8 +154,7 @@ export default function Settings ({route}){
     },[selectedImage])
         
 */
-
-
+  
 
         
         // Function to delete user details from auth

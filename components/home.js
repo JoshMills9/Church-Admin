@@ -75,17 +75,9 @@ export default function Home(){
 
 
 
+    const getMember = async (userEmail) => {
 
-    const getMember = async () => {
         try {
-            const user = auth.currentUser;
-            if (!user) {
-                throw new Error("No user signed in");
-            }
-            const userEmail = user.email;
-            setUsername(userEmail)
-
-        
             // Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
             const querySnapshot = await getDocs(tasksCollectionRef);
@@ -166,21 +158,39 @@ export default function Home(){
             };
         }catch(error){
             ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
+            console.log(error)
            
         }
 
     };
 
 
-    useLayoutEffect(() => {
-        getMember();
-    }, []); // Only run once when component mounts
+    
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              getMember(value)
+              setUsername(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, []);
+
+
+
 
     const onRefresh = () => {
         setrefreshing(true);
       
         // Your refresh logic here
-        getMember(); // Example: Fetch new data from an API
+        getMember(username); // Example: Fetch new data from an API
       
         // After refreshing completes, set refreshing to false
         setTimeout(() => {
