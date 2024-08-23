@@ -63,19 +63,21 @@ export default function Settings ({route}){
           });
       };
 
-      const removeData = async () => {
+      const clearAllData = async () => {
         try {
-          await AsyncStorage.removeItem('UserEmail');
-          console.log('Data removed successfully!');
+          await AsyncStorage.clear();
+          console.log('All data cleared!');
         } catch (error) {
-          console.error('Error removing data:', error);
+          console.error('Error clearing data:', error);
         }
       };
+      
+      
 
 
     //function to signout user
     const handleSignOut = () => {
-        removeData()
+        clearAllData()
         signOut(auth)
             .then(() => {
                 // Sign-out successful.

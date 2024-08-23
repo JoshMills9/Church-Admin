@@ -8,6 +8,8 @@ import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs,deleteD
 import { getAuth, } from 'firebase/auth';
 
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function Events({navigation, route}){
     const {name,About,start,image,guest,id} = route.params
 
@@ -20,6 +22,7 @@ export default function Events({navigation, route}){
     const auth = getAuth()
     const db = getFirestore()
     const [Delete,SetDelete] = useState(false)
+    const [username, setUsername] = useState("");
 
     //useEffect and function to select image
     useEffect(() => {
@@ -97,15 +100,28 @@ export default function Events({navigation, route}){
 
 
 
-    //Function to handle submit
-    const handleSubmit = async () => {
-        try {
-            // Step 1: Retrieve user email from Firebase authentication
-            const user = auth.currentUser;
-            if (!user) {
-                throw new Error("No user signed in");
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              setUsername(value)
+            } else {
+              console.log("no item")
             }
-            const userEmail = user.email;
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, []);
+
+
+
+
+    //Function to handle submit
+    const handleSubmit = async (email) => {
+        try {
     
             // Step 2: Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
@@ -118,7 +134,7 @@ export default function Events({navigation, route}){
                     ...doc.data().userDetails
                 }));
     
-                const church = tasks.find(item => item.email === userEmail);
+                const church = tasks.find(item => item.email === email);
 
     
                 if (!church) {
@@ -169,16 +185,10 @@ export default function Events({navigation, route}){
     };
 
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (email) => {
             
             try {
-                // Step 1: Retrieve user email from Firebase authentication
-                const user = auth.currentUser;
-                if (!user) {
-                    throw new Error("No user signed in");
-                }
-                const userEmail = user.email;
-        
+               
                 // Step 2: Fetch church details based on user email
                 const tasksCollectionRef = collection(db, 'UserDetails');
                 const querySnapshot = await getDocs(tasksCollectionRef);
@@ -190,7 +200,7 @@ export default function Events({navigation, route}){
                         ...doc.data().userDetails
                     }));
         
-                    const church = tasks.find(item => item.email === userEmail);
+                    const church = tasks.find(item => item.email === email);
 
                     // Reference to the UserDetails document
                     const userDetailsDocRef = doc(db, 'UserDetails', church.id);
@@ -223,15 +233,9 @@ export default function Events({navigation, route}){
         }
 
 
-        const handleDeleteEvent = async (documentId) => {
+        const handleDeleteEvent = async (documentId,email) => {
             try {
 
-                       // Step 1: Retrieve user email from Firebase authentication
-                       const user = auth.currentUser;
-                       if (!user) {
-                           throw new Error("No user signed in");
-                       }
-                       const userEmail = user.email;
                
                        // Step 2: Fetch church details based on user email
                        const tasksCollectionRef = collection(db, 'UserDetails');
@@ -244,7 +248,7 @@ export default function Events({navigation, route}){
                                ...doc.data().userDetails
                            }));
                
-                const church = tasks.find(item => item.email === userEmail);
+                const church = tasks.find(item => item.email === email);
 
                 const userDetailsDocRef = doc(db, 'UserDetails', church.id);
                 
@@ -333,7 +337,7 @@ export default function Events({navigation, route}){
                 </ScrollView>
 
                     <View style={{flexDirection: name ? "row" : "column" , justifyContent:"space-between",paddingHorizontal:20}}>
-                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(): handleSubmit())}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(username): handleSubmit(username))}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
                         {showSubmitting ? 
                             <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
                             :
@@ -344,7 +348,7 @@ export default function Events({navigation, route}){
                         </TouchableOpacity>
 
                         {name &&
-                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id, username); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
                                 {Delete ? 
                                     <ActivityIndicator  color="red"/> 
                                     :

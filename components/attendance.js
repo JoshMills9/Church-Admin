@@ -9,7 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { getAuth, } from 'firebase/auth';
 import { CheckBox } from "@rneui/themed";
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Attendance ({navigation, route}){
@@ -23,20 +23,13 @@ export default function Attendance ({navigation, route}){
     const [check1, setCheck1] = useState(false);
     const [showMembers, setshowMembers] = useState(null)
     const [churchName, setchurchName] = useState(null)
-  
 
     const db = getFirestore()
     const auth = getAuth()
     
-    useLayoutEffect(() =>{
-               // Step 1: Retrieve user email from Firebase authentication
-               const getMember = async() => {
+   
+               const GetMember = async(email) => {
 
-                    const user = auth.currentUser;
-                if (!user) {
-                    throw new Error("No user signed in");
-                }
-                const userEmail = user.email;
         
                 // Step 2: Fetch church details based on user email
                 const tasksCollectionRef = collection(db, 'UserDetails');
@@ -49,7 +42,7 @@ export default function Attendance ({navigation, route}){
                         ...doc.data().userDetails
                     }));
         
-                    const church = tasks.find(item => item.email === userEmail);
+                    const church = tasks.find(item => item.email === email);
                     setchurchName(church);
                     try {
                         // Reference to the UserDetails document
@@ -69,7 +62,7 @@ export default function Attendance ({navigation, route}){
                             setshowMembers(tasks)
                 
                     }else {
-                        console.log('No updates');
+                        alert('No updates');
                     }
                 }
                     catch (error) {
@@ -80,8 +73,24 @@ export default function Attendance ({navigation, route}){
                     }
 
                 }
-                getMember()
-    }, [db,churchName])
+          
+
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              GetMember(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, [db]);
 
 
    

@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, Pressable, Modal, StatusBar, Image, TouchableOpacity, ScrollView, FlatList, TouchableHighlight } from "react-native";
 import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
 
@@ -8,7 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { getAuth,} from 'firebase/auth';
 import { useNavigation } from "@react-navigation/native";
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function MemberList ({route}){
     const {params} = route || {};
@@ -19,16 +19,10 @@ export default function MemberList ({route}){
     const auth = getAuth()
     const [Id, setId] = useState(null)
 
+    const [username, setUsername] = useState("");
 
-    useLayoutEffect(() =>{
-         // Step 1: Retrieve user email from Firebase authentication
-         const getMember = async() => {
 
-            const user = auth.currentUser;
-        if (!user) {
-            throw new Error("No user signed in");
-        }
-        const userEmail = user.email;
+         const GetMember = async(email) => {
    
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -41,7 +35,7 @@ export default function MemberList ({route}){
                 ...doc.data().userDetails
             }));
 
-            const church = tasks.find(item => item.email === userEmail);
+            const church = tasks.find(item => item.email === email);
             setId(church.id)
 
             try {
@@ -75,8 +69,27 @@ export default function MemberList ({route}){
 
             
         }
-        getMember()
-    }, [db, navigation])
+   
+
+
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              setUsername(value)
+              GetMember(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, [db]);
+
 
   
     const getMember =(first, second) =>{

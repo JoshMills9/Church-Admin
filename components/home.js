@@ -171,6 +171,7 @@ export default function Home(){
           try {
             const value = await AsyncStorage.getItem('UserEmail');
             if (value !== '') {
+                console.log(value)
               getMember(value)
               setUsername(value)
             } else {

@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useLayoutEffect, useEffect } from "react";
 import { View, Text, FlatList, Alert } from "react-native";
 
 import {
@@ -15,6 +15,11 @@ import { getAuth } from "firebase/auth";
 import { TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
 export default function AllPledges() {
   const [Pledges, setPledges] = useState(null);
   const [NoOfPleges, setNoOfPledges] = useState(null);
@@ -25,14 +30,8 @@ export default function AllPledges() {
 
 
 
-  useLayoutEffect(() => {
-    const getMember = async () => {
+    const getMember = async (email) => {
       try {
-        const user = auth.currentUser;
-        if (!user) {
-          throw new Error("No user signed in");
-        }
-        const userEmail = user.email;
 
         // Fetch church details based on user email
         const tasksCollectionRef = collection(db, "UserDetails");
@@ -44,7 +43,7 @@ export default function AllPledges() {
             ...doc.data().userDetails,
           }));
 
-          const church = tasks.find((item) => item.email === userEmail);
+          const church = tasks.find((item) => item.email === email);
 
           // Fetch events
           const userDetailsDocRef = doc(db, "UserDetails", church.id);
@@ -68,8 +67,25 @@ export default function AllPledges() {
       }
     };
 
-    getMember();
+
+
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const value = await AsyncStorage.getItem('UserEmail');
+        if (value !== '') {
+          getMember(value)
+        } else {
+          console.log("no item")
+        }
+      } catch (error) {
+        console.error('Error checking onboarding status', error);
+      }
+    };
+    checkLoginStatus()
   }, []);
+
 
 
 

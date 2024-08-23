@@ -9,7 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { getAuth, } from 'firebase/auth';
 import { useNavigation } from "@react-navigation/native";
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -27,20 +27,15 @@ export default function UpdateMemberInfo ({route}){
     const [showMembers, setshowMembers] = useState(null)
     const [churchName, setchurchName] = useState(null)
   
-
+    const [username, setUsername] = useState("");
     const db = getFirestore()
     const auth = getAuth()
-    
-    useLayoutEffect(() =>{
-               // Step 1: Retrieve user email from Firebase authentication
-               const getMember = async() => {
 
-                    const user = auth.currentUser;
-                if (!user) {
-                    throw new Error("No user signed in");
-                }
-                const userEmail = user.email;
-        
+    
+
+               // Step 1: Retrieve user email from Firebase authentication
+               const GetMember = async(Email) => {
+
                 // Step 2: Fetch church details based on user email
                 const tasksCollectionRef = collection(db, 'UserDetails');
                 const querySnapshot = await getDocs(tasksCollectionRef);
@@ -52,7 +47,7 @@ export default function UpdateMemberInfo ({route}){
                         ...doc.data().userDetails
                     }));
         
-                    const church = tasks.find(item => item.email === userEmail);
+                    const church = tasks.find(item => item.email === Email);
                     setchurchName(church);
                     try {
                         // Reference to the UserDetails document
@@ -72,7 +67,7 @@ export default function UpdateMemberInfo ({route}){
                             setshowMembers(tasks)
                 
                     }else {
-                        console.log('No updates');
+                        alert('No updates');
                     }
                 }
                     catch (error) {
@@ -83,8 +78,27 @@ export default function UpdateMemberInfo ({route}){
                     }
 
                 }
-                getMember()
-    }, [db,churchName])
+          
+    
+
+
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              setUsername(value)
+              GetMember(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, [db]);
+
 
 
    

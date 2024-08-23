@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,7 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs,deleteDoc, } from "firebase/firestore";
 import { getAuth, } from 'firebase/auth';
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Pledge(){
     const [mode, setMode] = useState(false)
@@ -21,6 +21,8 @@ export default function Pledge(){
     const [date, setDate] = useState(new Date());
     const [showPicker, setShowPicker] = useState(false);
     const [display, setDisplay] = useState(false);
+    const [username, setUsername] = useState("");
+
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -62,16 +64,27 @@ export default function Pledge(){
     const auth = getAuth()
     const db = getFirestore()
 
+   
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              setUsername(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, []);
+
 
   //Function to handle submit
-  const handleSubmit = async () => {
+  const handleSubmit = async (email) => {
     try {
-        // Step 1: Retrieve user email from Firebase authentication
-        const user = auth.currentUser;
-        if (!user) {
-            throw new Error("No user signed in");
-        }
-        const userEmail = user.email;
 
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -84,7 +97,7 @@ export default function Pledge(){
                 ...doc.data().userDetails
             }));
 
-            const church = tasks.find(item => item.email === userEmail);
+            const church = tasks.find(item => item.email === email);
 
 
             if (!church) {
@@ -165,7 +178,7 @@ export default function Pledge(){
             </View>
 
 
-            <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit()}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
+            <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit(username)}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
                 {submitting ?  <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
             </TouchableOpacity>
 

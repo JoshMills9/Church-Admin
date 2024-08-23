@@ -1,4 +1,4 @@
-import React ,{useLayoutEffect, useState} from "react";
+import React ,{useLayoutEffect,useEffect, useState} from "react";
 import { View, Text ,StatusBar ,TextInput, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
 import *  as SMS from 'expo-sms'
 
@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ButtonGroup } from '@rneui/themed';
 
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SmsReceipt({navigation, route}){
@@ -33,15 +33,7 @@ export default function SmsReceipt({navigation, route}){
 
 
 
-    useLayoutEffect(() =>{
-         // Step 1: Retrieve user email from Firebase authentication
-         const getMember = async() => {
-
-            const user = auth.currentUser;
-        if (!user) {
-            throw new Error("No user signed in");
-        }
-        const userEmail = user.email;
+         const getMember = async(email) => {
    
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -54,7 +46,7 @@ export default function SmsReceipt({navigation, route}){
                 ...doc.data().userDetails
             }));
 
-            const church = tasks.find(item => item.email === userEmail);
+            const church = tasks.find(item => item.email === email);
 
             try {
                 // Reference to the UserDetails document
@@ -87,10 +79,24 @@ export default function SmsReceipt({navigation, route}){
 
             
         }
-        getMember()
+   
 
-        
-    }, [db,navigation,auth])
+        useEffect(() => {
+            const checkLoginStatus = async () => {
+              try {
+                const value = await AsyncStorage.getItem('UserEmail');
+                if (value !== '') {
+                  getMember(value)
+                } else {
+                  console.log("no item")
+                }
+              } catch (error) {
+                console.error('Error checking onboarding status', error);
+              }
+            };
+            checkLoginStatus()
+          }, [db]);
+    
 
     const sendSMS = async () => {
         try {

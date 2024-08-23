@@ -29,7 +29,7 @@ export default function Details ({navigation, route}){
 
                 Alert.alert("Member successfully Removed!", `You Have Removed  ${member[0].FirstName} ${member[0].SecondName}`)
                 SetDelete(false)
-                navigation.replace("MemberList")
+                navigation.replace('MemberList',{username: username, ChurchName: ChurchName, events:events})
          
             } catch (error) {
                 console.error("Error deleting document: ", error);

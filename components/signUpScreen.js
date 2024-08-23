@@ -51,8 +51,6 @@ export default function SignUp() {
     try {
       await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
       handleAddData();
-      setSignUpEmail('');
-      setSignUpPassword('');
       Alert.alert("Sign Up Success", "Account Created Succesfully!");
       setShowIndicator(false)
       navigation.navigate("Church Admin");
@@ -84,17 +82,19 @@ export default function SignUp() {
 
 
 
+        
         //useEffect to save list to Storage
-        useEffect(() => {
-          const handleSave = async () => {
-              try {
-                  await AsyncStorage.setItem('UserEmail',signUpEmail);
-              } catch (e) {
-                console.error('Failed to save the data to the storage', e);
-              }
-            };
-            handleSave();
-          }, [signUpEmail]);
+  useEffect(() => {
+    const handleSave = async () => {
+        try {
+            await AsyncStorage.setItem('UserEmail',signUpEmail);
+        } catch (e) {
+          console.error('Failed to save the data to the storage', e);
+        }
+      };
+      handleSave();
+    }, [signUpEmail]);
+
       
    
 
@@ -112,12 +112,12 @@ export default function SignUp() {
             
             <View>
                 <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color="dimgray" />
-                <TextInput style={{ width:"100%",color:"white", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="default" inputMode="text" placeholder="Email" placeholderTextColor={"lightgray"} textContentType="emailAddress"  cursorColor={"dimgray"}/>
+                <TextInput style={{ width:"100%",color:"white", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="email-address" inputMode="email" placeholder="Email" placeholderTextColor={"lightgray"} textContentType="emailAddress"  cursorColor={"dimgray"}/>
             </View>
 
             <View>
                 <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color="dimgray" />
-                <TextInput style={{ width:"100%",color:"white",  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password" secureTextEntry={ViewPass} textContentType="newPassword" placeholderTextColor={"lightgray"} cursorColor={"dimgray"}/>
+                <TextInput style={{ width:"100%",color:"white",  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password"  secureTextEntry={ViewPass} textContentType="newPassword" placeholderTextColor={"lightgray"} cursorColor={"dimgray"}/>
                 <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color="dimgray"/></TouchableOpacity>
             </View>
 

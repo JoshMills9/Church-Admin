@@ -10,7 +10,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, } from 'firebase/auth';
 
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function AddMembers(props){
@@ -24,7 +24,7 @@ export default function AddMembers(props){
     const [user, setUser] = useState('')
     const auth = getAuth()
 
-
+    const [username, setUsername] = useState("");
 
 
     //useEffect and function to select image
@@ -171,17 +171,29 @@ export default function AddMembers(props){
     }
 
 
+     
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              setUsername(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, []);
+
+
 
 
     //Function to handle submit
-    const handleSubmit = async () => {
+    const handleSubmit = async (Email) => {
         try {
-            // Step 1: Retrieve user email from Firebase authentication
-            const user = auth.currentUser;
-            if (!user) {
-                throw new Error("No user signed in");
-            }
-            const userEmail = user.email;
     
             // Step 2: Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
@@ -194,7 +206,7 @@ export default function AddMembers(props){
                     ...doc.data().userDetails
                 }));
     
-                const church = tasks.find(item => item.email === userEmail);
+                const church = tasks.find(item => item.email === Email);
     
                 if (!church) {
                     throw new Error("Church details not found for the logged-in user");
@@ -506,7 +518,7 @@ export default function AddMembers(props){
 
             
             <View style={{marginTop:40 ,marginBottom:20, alignItems:"center"}}>
-                <TouchableOpacity onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit())}} style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
+                <TouchableOpacity onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit(username))}} style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
                     {showSubmitting ? 
                     <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
                     :
