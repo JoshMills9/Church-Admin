@@ -334,7 +334,7 @@ export default function Home(){
                                             Updates For {monthOfYear}
                                         </Text>
                                         <Text style={styles.updateTxt}>
-                                            Total No. Of Members:      <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
+                                            Total No. Of Members:       <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
                                         </Text>
                                         <Text style={styles.updateTxt}>
                                             Upcoming Events:               <Text style={{fontWeight:"500",}}>{NoOfEvent? NoOfEvent : "-"}</Text>
@@ -354,7 +354,7 @@ export default function Home(){
                                                 Total No. Of Members:         <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
                                         </Text>
                                         <Text style={styles.updateTxt}>
-                                                Attendants/week:                   <Text style={{fontWeight:"500",}}>-</Text>
+                                                Attendants/week:                <Text style={{fontWeight:"500",}}>-</Text>
                                         </Text>
                                         <Text style={styles.updateTxt}>
                                                 New Members/month:          <Text style={{fontWeight:"500",}}>{newMember ? newMember : "-"}</Text>
@@ -371,9 +371,9 @@ export default function Home(){
 
                     <View>
                         
-                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
+                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                            
-                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName, events: events})}>
+                            <Pressable style={{width:120}} onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName, events: events})}>
                                     
                                     <View style={{alignItems:"center"}}>
                                         <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
@@ -384,7 +384,7 @@ export default function Home(){
                                     
                             </Pressable>
 
-                            <Pressable>
+                            <Pressable style={{ width:120}}>
                                 {({pressed})=>(
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"}   />
@@ -395,7 +395,7 @@ export default function Home(){
                                     )}
                             </Pressable>
            
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username:username, ChurchName: ChurchName, events: events})} >
+                            <Pressable style={{width:120}} onPress={()=> navigation.navigate("Settings", {username:username, ChurchName: ChurchName, events: events})} >
                                     
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-outline" size={27} color= "gray"  />

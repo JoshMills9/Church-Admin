@@ -123,8 +123,8 @@ export default function AllPledges() {
                 elevation: 5,
                 margin: 10,
                 justifyContent: "space-evenly",
-                padding: 20,
-                height: 155,
+                padding: 15,
+                height: 210,
                 borderRadius: 10,
               }}
             >
@@ -140,9 +140,10 @@ export default function AllPledges() {
                     marginBottom: 15,
                     fontSize: 16,
                     color: "rgba(240, 240, 240, 1)",
+                    textDecorationLine:"underline"
                   }}
                 >
-                  Date Issued :
+                  Date Issued:
                 </Text>
                 <Text
                   style={{
@@ -172,10 +173,16 @@ export default function AllPledges() {
                   Title Of Pledge :
                 </Text>
                 <Text
+                  adjustsFontSizeToFit={true}
+                  numberOfLines={1}
                   style={{
                     marginBottom: 10,
                     fontSize: 16,
                     color: " rgba(100, 200, 255, 1)",
+                    width:"50%",
+                    alignItems:"center",
+                    justifyContent:"center"
+                  
                   }}
                 >
                   {item.Title}
@@ -198,15 +205,55 @@ export default function AllPledges() {
                   Name :
                 </Text>
                 <Text
-                  style={{
-                    marginBottom: 10,
-                    fontSize: 16,
-                    color: " rgba(100, 200, 255, 1)",
-                  }}
+                   adjustsFontSizeToFit={true}
+                   numberOfLines={1}
+                   style={{
+                     marginBottom: 10,
+                     fontSize: 16,
+                     color: " rgba(100, 200, 255, 1)",
+                     width:"50%",
+                     alignItems:"center",
+                     justifyContent:"center"
+                   
+                   }}
                 >
                   {item.FullName}
                 </Text>
               </View>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    marginBottom: 10,
+                    fontSize: 16,
+                    color: "rgba(240, 240, 240, 1)",
+                  }}
+                >
+                  Contact :
+                </Text>
+                <Text
+                   adjustsFontSizeToFit={true}
+                   numberOfLines={1}
+                   style={{
+                     marginBottom: 10,
+                     fontSize: 16,
+                     color: " rgba(100, 200, 255, 1)",
+                     width:"50%",
+                     alignItems:"center",
+                     justifyContent:"center"
+                   
+                   }}
+                >
+                  {item.Contact}
+                </Text>
+              </View>
+
               <View
                 style={{
                   flexDirection: "row",
@@ -224,11 +271,17 @@ export default function AllPledges() {
                   Amount :
                 </Text>
                 <Text
-                  style={{
-                    marginBottom: 10,
-                    fontSize: 16,
-                    color: " rgba(100, 200, 255, 1)",
-                  }}
+                   adjustsFontSizeToFit={true}
+                   numberOfLines={1}
+                   style={{
+                     marginBottom: 10,
+                     fontSize: 16,
+                     color: " rgba(100, 200, 255, 1)",
+                     width:"50%",
+                     alignItems:"center",
+                     justifyContent:"center"
+                   
+                   }}
                 >
                   GHC {item.Amount}.00
                 </Text>
@@ -250,11 +303,17 @@ export default function AllPledges() {
                   Mode Of Payment :
                 </Text>
                 <Text
-                  style={{
-                    marginBottom: 10,
-                    fontSize: 16,
-                    color: " rgba(100, 200, 255, 1)",
-                  }}
+                    adjustsFontSizeToFit={true}
+                    numberOfLines={1}
+                    style={{
+                      marginBottom: 10,
+                      fontSize: 16,
+                      color: " rgba(100, 200, 255, 1)",
+                      width:"50%",
+                      alignItems:"center",
+                      justifyContent:"center"
+                    
+                    }}
                 >
                   {item.ModeOfPayment}
                 </Text>
@@ -276,11 +335,17 @@ export default function AllPledges() {
                   Duration :
                 </Text>
                 <Text
-                  style={{
-                    marginBottom: 10,
-                    fontSize: 16,
-                    color: " rgba(100, 200, 255, 1)",
-                  }}
+                    adjustsFontSizeToFit={true}
+                    numberOfLines={1}
+                    style={{
+                      marginBottom: 10,
+                      fontSize: 16,
+                      color: " rgba(100, 200, 255, 1)",
+                      width:"50%",
+                      alignItems:"center",
+                      justifyContent:"center"
+                    
+                    }}
                 >
                   {item.Duration}
                 </Text>

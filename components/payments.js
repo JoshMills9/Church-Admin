@@ -29,7 +29,7 @@ export const Payments = ({route}) => {
             <View style={{alignSelf:"center",alignItems:"center", marginTop:10}}>
                 <Ionicons name="wallet-outline" size={70} color="rgba(240, 240, 240, 1)" />
                 <Text style={{fontSize: WindowHeight < 800 ? 38 : 50, color:"rgba(240, 240, 240, 1)" , fontWeight:"600"}}>Your Wallet</Text>
-                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.8)"}}>{0} Account Connected</Text>
+                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.8)"}}>{1} Account Connected</Text>
             </View>
             
         </View>
@@ -57,7 +57,7 @@ export const Payments = ({route}) => {
 
             <TouchableOpacity style={{backgroundColor:"rgba(50, 50, 50, 1)",height:WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <View style={{flexDirection:"row", alignItems:"center", width:190, justifyContent:"space-between"}}>
-                    <FontAwesome name="bank"  size={25} style={{backgroundColor:"white", padding:10, borderRadius:15, width:50 , height:50}} color="dimgray" />
+                    <FontAwesome name="bank"  size={25} style={{backgroundColor:"white", padding:10, borderRadius:15, width:50 , height:50, marginRight:15}} color="dimgray" />
                     <Text style={{fontSize:20, color:"rgba(240, 240, 240, 1)"}}>Bank Transfer</Text>
                 </View>
                 <MaterialIcons name="arrow-drop-down" size={30} color="rgba(100, 200, 255, 1)" />

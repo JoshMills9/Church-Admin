@@ -15,6 +15,8 @@ import { FontAwesome } from '@expo/vector-icons';
 export const Notifications = ({route}) => {
     const navigation = useNavigation()
     const {username, ChurchName, events} = route.params
+
+    console.log(events)
   
 
     const WindowsWidth = useWindowDimensions().width
@@ -28,10 +30,10 @@ export const Notifications = ({route}) => {
             </View>
 
             <View style={{alignSelf:"center",alignItems:"center", marginVertical:20}}>
-                <View  style={{position:"absolute", top:0,right:WindowHeight < 800 ? 90 :140, width:10, height:10, borderRadius:100, backgroundColor:"rgba(100, 200, 255, 1)"}} ></View>
+                <View  style={{position:"absolute", top:0,right:WindowHeight < 800 ? 90 :130, width:10, height:10, borderRadius:100, backgroundColor:"rgba(100, 200, 255, 1)"}} ></View>
                 <Ionicons name="notifications-outline" size={70} color="rgba(240, 240, 240, 1)" />
                 <Text style={{fontSize: WindowHeight < 800 ? 38 : 50, color:"rgba(240, 240, 240, 1)" , fontWeight:"600"}}>Notifications</Text>
-                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.8)"}}>{0} Account Connected</Text>
+                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.8)"}}>{1} Account Connected</Text>
             </View>
             
         </View>
@@ -88,10 +90,13 @@ export const Notifications = ({route}) => {
             
                         <TouchableOpacity style={{backgroundColor:"rgba(50, 50, 50, 1)",height: WindowHeight < 800 ? 85 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15,flexDirection:"row",marginVertical:5, justifyContent:"space-between", alignItems:"center"}}>
                             <Image source={{uri: item.Image}}  resizeMode='cover' style={{backgroundColor:"white", padding:10, marginRight:10, borderRadius:10, width:60, height:60}}  />
-                            <View>
-                                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.7)"}}>{item.StartDate}</Text>
+                            <View style={{justifyContent:"space-evenly"}}>
+                                <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.7)",paddingVertical:5}}>{item.StartDate}</Text>
                                 <View style={{flexDirection:"row", alignItems:"center", width:"88%",paddingVertical:5, justifyContent:"space-between"}}>
-                                    <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)", width:"90%",paddingVertical:3}} numberOfLines={2}>{item.EventName}</Text>
+                                    <View>
+                                    <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)", width:"100%"}} adjustsFontSizeToFit={item.About ? true : false} numberOfLines={item.About ? 1 : 2}>{item.EventName}</Text>
+                                    {item.About && <Text style={{fontSize:12, color:"rgba(240, 240, 240, 1)", width:"100%"}} adjustsFontSizeToFit={true} numberOfLines={1}>{item.About}</Text>}
+                                    </View>
                                     <MaterialIcons name="arrow-drop-down" size={30} color="rgba(240, 240, 240, 1)" />
                                 </View>
                             </View>

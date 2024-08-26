@@ -13,6 +13,7 @@ export default function Pledge(){
     const [mode, setMode] = useState(false)
     const [payment, setPayment] = useState("")
     const [fullName, setFullName] = useState("")
+    const [contact, setContact] = useState("")
     const [pledgeTitle, setPledgeTitle] = useState("")
     const [Amount, setAmount] = useState("")
     const [duration, setDuration] = useState("")
@@ -115,6 +116,7 @@ export default function Pledge(){
         const Pledge = {
             Title: pledgeTitle || "N/A",
             FullName: fullName || "N/A",
+            Contact: contact || "N/A",
             PledgeDate: formattedDate || "N/A",
             Amount: Amount || "N/A",
             ModeOfPayment : payment || "N/A",
@@ -155,6 +157,10 @@ export default function Pledge(){
 
             <View>
                 <TextInput value={fullName} onChangeText={(txt) => setFullName(txt)}  inputMode="text" placeholder="Full Name" placeholderTextColor={"rgba(240, 240, 240, 1)"} style={{width:"100%", borderColor:"gray",color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+            </View>
+
+            <View>
+                <TextInput value={contact} onChangeText={(txt) => setContact(txt)}  inputMode="numeric" placeholder="Contact" placeholderTextColor={"rgba(240, 240, 240, 1)"} style={{width:"100%", borderColor:"gray",color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,marginTop:20,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
             <View style={{marginVertical:30,justifyContent:"space-between",flexDirection:"row"}}>

@@ -122,7 +122,7 @@ export default function ModalScreen({route}){
                 <View>
     
                     <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
-                            <Pressable >
+                            <Pressable style={{width:120}}  >
                             {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
                                         <MaterialIcons name="dashboard" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"} />
@@ -134,7 +134,7 @@ export default function ModalScreen({route}){
                             </Pressable>
 
 
-                            <Pressable onPress={()=> navigation.replace("Church Admin")}>
+                            <Pressable style={{width:120}}  onPress={()=> navigation.replace("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={"gray"}   />
@@ -146,7 +146,7 @@ export default function ModalScreen({route}){
                             </Pressable>
                          
 
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName, events: events})}  >
+                            <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName, events: events})}  >
                                     
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-outline" size={27} color= "gray"  />

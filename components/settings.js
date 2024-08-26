@@ -470,7 +470,7 @@ const deleteFieldByEmail = async () => {
                         </TouchableOpacity>
 
                     
-                        <TouchableOpacity  onPress={() => {admin === true ? deleteFieldByEmail() : alert("Accessible to admin only!")}} style={{flexDirection:"row" , marginTop:8, height:60, alignItems:"center" , justifyContent:"flex-start",marginLeft:65}}>
+                        <TouchableOpacity  onPress={()=> {}} style={{flexDirection:"row" , marginTop:8, height:60, alignItems:"center" , justifyContent:"flex-start",marginLeft:65}}>
                                 
                                 <View style={{marginRight:10}}>
                                     <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
@@ -494,7 +494,7 @@ const deleteFieldByEmail = async () => {
                 <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                        
                     
-                            <Pressable onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , events: events})} >
+                            <Pressable style={{width:120}}  onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , events: events})} >
                            
                                     <View style={{alignItems:"center"}}>
                                         <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
@@ -505,7 +505,7 @@ const deleteFieldByEmail = async () => {
                                    
                             </Pressable>
 
-                            <Pressable onPress={()=> navigation.navigate("Church Admin")}>
+                            <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={"gray"}   />
@@ -517,7 +517,7 @@ const deleteFieldByEmail = async () => {
                             </Pressable>
                          
 
-                            <Pressable onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  >
+                            <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  >
                                 {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
                                         <Ionicons name="settings-sharp" size={27} color={pressed || isActive ? " rgba(100, 200, 255, 1)" :"gray"} />
