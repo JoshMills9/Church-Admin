@@ -4,10 +4,10 @@
     "slug": "Church-Admin",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon1.jpeg",
+    "icon": "./assets/icon1.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/Splash.jpeg",
+      "image": "./assets/Splash.jpg",
       "resizeMode": "cover",
       "backgroundColor": "#1e1e1e" 
     },
@@ -19,7 +19,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon1.jpeg",
+        "foregroundImage": "./assets/icon1.jpg",
         "backgroundColor": "#1e1e1e"
       },
       "package": "com.joshmills.ChurchAdmin"
