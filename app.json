@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "Church Admin",
-    "slug": "Church Admin",
+    "name": "Church-Admin",
+    "slug": "Church-Admin",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon.jpeg",
-    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon1.jpeg",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/Splash.jpeg",
       "resizeMode": "cover",
-      "backgroundColor": "rgba(30, 30, 30, 1)"
+      "backgroundColor": "#1e1e1e" 
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,8 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.jpeg",
-        "backgroundColor": "rgba(30, 30, 30, 1)"
+        "foregroundImage": "./assets/icon1.jpeg",
+        "backgroundColor": "#1e1e1e"
       },
       "package": "com.joshmills.ChurchAdmin"
     },
