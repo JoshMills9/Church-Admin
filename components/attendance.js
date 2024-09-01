@@ -129,13 +129,18 @@ export default function Attendance ({navigation, route}){
             <View style={{padding:10}}>
 
             <View>
-                <Searchbar  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6, color:"rgba(240, 240, 240, 1)"}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={"rgba(240, 240, 240, 1)"} iconColor="rgba(240, 240, 240, 1)" placeholder="Search member by name"/>
+                <Searchbar  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6, color:"rgba(240, 240, 240, 1)"}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={"rgba(240, 240, 240, 1)"} iconColor="rgba(240, 240, 240, 1)" placeholder="Search by name"/>
             </View>
 
             
             <FlatList 
 
-             data={showMembers?.filter(member => (member.FirstName && member.SecondName).includes(search) )}
+            data = {showMembers?.filter(member => 
+                member.FirstName && member.SecondName && 
+                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                member.SecondName.toLowerCase().includes(search.toLowerCase()))
+            )}
+
              key={(index,item)=> item.id}
 
              ListEmptyComponent={()=> 

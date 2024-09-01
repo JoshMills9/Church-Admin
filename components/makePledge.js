@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert} from "react-native";
+import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert, ScrollView} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -132,11 +132,12 @@ export default function Pledge(){
         setPledgeTitle("");
         setAmount("");
         setPayment("");
+        setContact("")
         setDuration("")
         setDisplay(false)
         setSubmitting(false);
 
-        Alert.alert("Success", "Pledge made Successful!");
+        Alert.alert("Success", "Pledge made Successfully!");
           
         } else {
             throw new Error("No church details found in database");
@@ -153,6 +154,8 @@ export default function Pledge(){
 
 
     return(
+
+        <ScrollView>
         <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
             <View>
@@ -199,5 +202,6 @@ export default function Pledge(){
                     />
             )} 
         </View>
+        </ScrollView>
     )
 }

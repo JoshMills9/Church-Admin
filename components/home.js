@@ -354,7 +354,7 @@ export default function Home(){
                                                 Total No. Of Members:         <Text style={{fontWeight:"500"}}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
                                         </Text>
                                         <Text style={styles.updateTxt}>
-                                                Attendants/week:                <Text style={{fontWeight:"500",}}>-</Text>
+                                                Attendants/week:                 <Text style={{fontWeight:"500",}}>-</Text>
                                         </Text>
                                         <Text style={styles.updateTxt}>
                                                 New Members/month:          <Text style={{fontWeight:"500",}}>{newMember ? newMember : "-"}</Text>

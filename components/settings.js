@@ -307,8 +307,8 @@ const deleteFieldByEmail = async () => {
                             }
                         </View>
 
-                        <View >
-                            <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)",}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                        <View>
+                            <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
                                 {ChurchName?.ChurchName?.toUpperCase() || ChurchName?.toUpperCase()}
                             </Text>
 

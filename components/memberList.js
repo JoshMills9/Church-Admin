@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { View, Text, Pressable, Modal, StatusBar, Image, TouchableOpacity, ScrollView, FlatList, TouchableHighlight } from "react-native";
 import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
-
+import { Searchbar } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -18,6 +18,8 @@ export default function MemberList ({route}){
     const db = getFirestore()
     const auth = getAuth()
     const [Id, setId] = useState(null)
+
+    const [search, setSearch] = useState("")
 
     const [username, setUsername] = useState("");
 
@@ -90,6 +92,16 @@ export default function MemberList ({route}){
         checkLoginStatus()
       }, [db]);
 
+      const searchQueryHandler = (text) => {
+        if (text) {
+           setSearch(text)
+
+        } else {
+          setSearch("")
+        }
+    };
+
+
 
   
     const getMember =(first, second) =>{
@@ -115,9 +127,17 @@ export default function MemberList ({route}){
                     </View>
             </View>
 
+            <View style={{paddingHorizontal:15, marginBottom:10}}>
+                <Searchbar  elevation={2}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"white",marginBottom:5}}   value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
+            </View>
+
             <FlatList 
 
-             data={showMembers}
+            data = {showMembers?.filter(member => 
+                member.FirstName && member.SecondName && 
+                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                member.SecondName.toLowerCase().includes(search.toLowerCase()))
+            )}
 
              ListEmptyComponent={()=>(
              <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>

@@ -14,7 +14,7 @@ import {
 import { getAuth } from "firebase/auth";
 import { TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
-
+import {  Searchbar } from "react-native-paper";
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -25,7 +25,7 @@ export default function AllPledges() {
   const [NoOfPleges, setNoOfPledges] = useState(null);
   const auth = getAuth();
   const db = getFirestore();
-
+  const [search, setSearch] = useState("")
 
 
 
@@ -55,8 +55,9 @@ export default function AllPledges() {
               id: doc.id,
               ...doc.data().Pledges,
             }));
-            setPledges(Data);
-            setNoOfPledges(Data.length);
+              setPledges(Data);
+              setNoOfPledges(Data.length);
+           
           }
         } else {
           Alert.alert("Server Error!", error);
@@ -88,11 +89,24 @@ export default function AllPledges() {
 
 
 
+  const searchQueryHandler = (text) => {
+    if (text) {
+       setSearch(text)
+    } else {
+      setSearch("")
+    }
+};
+
+
 
 
   
   return (
     <View style={{ flex: 1 }}>
+
+      <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={2} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search} 
+       onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
+
       <View style={{ padding: 10 }}>
         <Text style={{ fontSize: 16, color: "rgba(240, 240, 240, 1)" }}>
           Total No. of Pledges : {NoOfPleges ? NoOfPleges : "-"}
@@ -100,7 +114,9 @@ export default function AllPledges() {
       </View>
 
       <FlatList
-        data={Pledges?.sort((a, b) => b.createdAt - a.createdAt)}
+        data={Pledges?.sort((a, b) => b.createdAt - a.createdAt).filter(member => 
+          member.FullName && (member.FullName.toLowerCase().includes(search.toLowerCase())))}
+
         keyExtractor={(index, item) => item.id?.toString()}
         ListEmptyComponent={() => (
           <View style={{ alignItems: "center" }}>

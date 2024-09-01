@@ -137,13 +137,18 @@ export default function UpdateMemberInfo ({route}){
             <View style={{padding:10}}>
 
             <View>
-                <Searchbar  elevation={1}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"white",marginBottom:5}}   value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                <Searchbar  elevation={2}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"white",marginBottom:5}}   value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
             </View>
 
             
             <FlatList 
 
-             data={showMembers?.filter(member => (member.FirstName && member.SecondName).includes(search))}
+            data = {showMembers?.filter(member => 
+                member.FirstName && member.SecondName && 
+                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                member.SecondName.toLowerCase().includes(search.toLowerCase()))
+            )}
+
              key={(index,item)=> item.id}
 
              ListEmptyComponent={()=> 

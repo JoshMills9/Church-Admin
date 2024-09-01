@@ -63,35 +63,35 @@ export default function MyStack (){
 
       <Stack.Screen name="LogIn" component={LogIn} options={{headerShown:false, animation:"fade_from_bottom"}} />
 
-      <Stack.Screen name="SignUp" component={SignUp}  options={{headerShown:false, animation:"slide_from_left"}} />
+      <Stack.Screen name="SignUp" component={SignUp}  options={{headerShown:false}} />
 
       <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:'slide_from_right'}}/>
+      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"fade_from_bottom"}}/>
 
-      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"slide_from_left"}}/>
+      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"fade_from_bottom"}}/>
 
-      <Stack.Screen name='Registration' component={AddMembers} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Registration' component={AddMembers} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Update Member Data' component={UpdateMemberInfo} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Update Member Data' component={UpdateMemberInfo} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='MemberList' component={MemberList} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='MemberList' component={MemberList} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Attendance' component={Attendance} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Attendance' component={Attendance} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
-      <Stack.Screen name='Details' component={Details} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Details' component={Details} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Receipt' component={SmsReceipt} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Receipt' component={SmsReceipt} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
-      <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/>
+      <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+      <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
     
-      <Stack.Screen name='Make Pledge' component={makePledgeScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+      <Stack.Screen name='Make Pledge' component={makePledgeScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
       
-      <Stack.Screen name='Payment' component={Payments} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+      <Stack.Screen name='Payment' component={Payments} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
       
-      <Stack.Screen name='Notification' component={Notifications} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'slide_from_bottom'}}/> 
+      <Stack.Screen name='Notification' component={Notifications} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
 
     </Stack.Navigator>
   </NavigationContainer>

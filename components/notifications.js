@@ -43,7 +43,7 @@ export const Notifications = ({route}) => {
 
                 <View style={{flex:1}}>
                     <Text  style={{fontSize:16, color:"rgba(240, 240, 240, 0.8)", width:"90%", margin:10}}>General</Text>
-                    <Badge size={15} style={{position:"absolute",zIndex:5, top:43, right:0}} />
+                    <Badge size={15} style={{position:"absolute",zIndex:5, top:46, right:0}} />
 
                             <TouchableOpacity style={{backgroundColor:"rgba(50, 50, 50, 1)",height: WindowHeight < 800 ? 85 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15,marginVertical:5, justifyContent:"space-between", alignItems:"flex-start"}}>
                                 <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.7)"}}>Church Admin</Text>
@@ -92,7 +92,7 @@ export const Notifications = ({route}) => {
                             <Image source={{uri: item.Image}}  resizeMode='cover' style={{backgroundColor:"white", padding:10, marginRight:10, borderRadius:10, width:60, height:60}}  />
                             <View style={{justifyContent:"space-evenly"}}>
                                 <Text style={{fontSize:14, color:"rgba(240, 240, 240, 0.7)",paddingVertical:5}}>{item.StartDate}</Text>
-                                <View style={{flexDirection:"row", alignItems:"center", width:"88%",paddingVertical:5, justifyContent:"space-between"}}>
+                                <View style={{flexDirection:"row", alignItems:"center", width:"85%",paddingVertical:5, justifyContent:"space-between"}}>
                                     <View>
                                     <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)", width:"100%"}} adjustsFontSizeToFit={item.About ? true : false} numberOfLines={item.About ? 1 : 2}>{item.EventName}</Text>
                                     {item.About && <Text style={{fontSize:12, color:"rgba(240, 240, 240, 1)", width:"100%"}} adjustsFontSizeToFit={true} numberOfLines={1}>{item.About}</Text>}

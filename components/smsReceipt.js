@@ -15,10 +15,9 @@ import { ButtonGroup } from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function SmsReceipt({navigation, route}){
+export default function SendSMS({navigation, route}){
 
-    const {username, ChurchName, events} = route.params || {}
-
+    const {username, ChurchName, events} = route.params
 
     const [search, setSearch] = useState("")
     const [sms, setSms] = useState("")
@@ -30,6 +29,7 @@ export default function SmsReceipt({navigation, route}){
     const auth = getAuth()
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [Show, setshow] = useState(false)
+
 
 
 
@@ -79,24 +79,26 @@ export default function SmsReceipt({navigation, route}){
 
             
         }
-   
 
-        useEffect(() => {
-            const checkLoginStatus = async () => {
-              try {
-                const value = await AsyncStorage.getItem('UserEmail');
-                if (value !== '') {
-                  getMember(value)
-                } else {
-                  console.log("no item")
-                }
-              } catch (error) {
-                console.error('Error checking onboarding status', error);
-              }
-            };
-            checkLoginStatus()
-          }, [db]);
-    
+
+   
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+          try {
+            const value = await AsyncStorage.getItem('UserEmail');
+            if (value !== '') {
+              getMember(value)
+            } else {
+              console.log("no item")
+            }
+          } catch (error) {
+            console.error('Error checking onboarding status', error);
+          }
+        };
+        checkLoginStatus()
+      }, [db]);
+
+
 
     const sendSMS = async () => {
         try {
@@ -119,7 +121,7 @@ export default function SmsReceipt({navigation, route}){
     const searchQueryHandler = (text) => {
         if (text) {
            setSearch(text)
-           setShow(true)
+       
          
         } else {
           setSearch("")
@@ -140,17 +142,17 @@ export default function SmsReceipt({navigation, route}){
 
 
     return(
-       <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
                 <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
                 <View>
                         <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }}>
                                 <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
-                                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen', {username: username, ChurchName: ChurchName, events: events})} />
+                                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName, events: events})} />
                                 </View>
 
                                 <View style={{ height: 70, width: "80%", alignItems: "center", flexDirection:"row",justifyContent: "space-around", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
-                                    <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>SMS Receipt</Text>
+                                    <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Prepare SMS</Text>
                                     <Ionicons name="chatbubbles-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
                                 </View>
                         </View>
@@ -158,7 +160,7 @@ export default function SmsReceipt({navigation, route}){
                         <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center",paddingHorizontal:10,marginBottom:15}}>
 
                              {Show ?
-                                <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                                <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={2} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
                             
                                 :
                                 <>
@@ -184,27 +186,30 @@ export default function SmsReceipt({navigation, route}){
                             </>
                             }
                         </View>
-                      
 
+                        {!Show && <View style={{flexDirection:"row",alignItems:"center",paddingHorizontal:20}}>
+                            <Text style={{fontSize:15,color:"rgba(240, 240, 240, 1)"}}>Select All</Text>
+                            <RadioButton color="navy"  status={Members === "All" ? "checked" : "unchecked"}  onPress={()=> { Members === "" ? (setMembers("All"), setSearch('All Members'), setshow(true)) : (setMembers(""), setSearch('')) }} />
+                        </View>}
+                      
                 </View>
 
-            {show && <View style={{flexDirection:"row",alignItems:"center",paddingHorizontal:20}}>
-                <Text style={{fontSize:15,color:"rgba(240, 240, 240, 1)"}}>Select All</Text>
-                <RadioButton color="navy"  status={Members === "All" ? "checked" : "unchecked"}  onPress={()=> { Members === "" ? (setMembers("All"), setSearch('All Members'), setShow(false)) : (setMembers(""), setSearch('')) }} />
-            </View>
-            }       
-            
+          
             <FlatList 
 
-             data={showMembers?.filter(member => (member.FirstName && member.SecondName) && (member.FirstName && member.SecondName).includes(search) )}
+            data = {showMembers?.filter(member => 
+                member.FirstName && member.SecondName && 
+                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                member.SecondName.toLowerCase().includes(search.toLowerCase()))
+            )}
 
              keyExtractor={(item)=> item.FirstName&&item.SecondName}
 
              ListEmptyComponent={()=>(
-                <>{!Show && <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                   <Text style={{fontSize:15,fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
+                <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
+                   <Text style={{fontSize:15,fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>{search ? "" : "Fetching Data ..."}</Text>
                 </View>
-                    }</>
+                
                 )}
    
 
@@ -213,7 +218,6 @@ export default function SmsReceipt({navigation, route}){
                 return(
                     <View style={{flex:1,marginVertical:5, marginHorizontal:10}}>
                                             
-                    {!Show &&
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
 
                         <>
@@ -234,7 +238,7 @@ export default function SmsReceipt({navigation, route}){
                             </TouchableHighlight>
                         </>
                     </View>
-                        }
+           
                     </View>
              )}}
             />

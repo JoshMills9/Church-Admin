@@ -121,8 +121,6 @@ export default function SendSMS({navigation, route}){
     const searchQueryHandler = (text) => {
         if (text) {
            setSearch(text)
-           setShow(true)
-         
         } else {
           setSearch("")
           setshow(false)
@@ -160,7 +158,7 @@ export default function SendSMS({navigation, route}){
                         <View style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center",paddingHorizontal:10,marginBottom:15}}>
 
                              {Show ?
-                                <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                                <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={2} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
                             
                                 :
                                 <>
@@ -186,27 +184,30 @@ export default function SendSMS({navigation, route}){
                             </>
                             }
                         </View>
-                      
 
+                        {!Show && <View style={{flexDirection:"row",alignItems:"center",paddingHorizontal:20}}>
+                            <Text style={{fontSize:15,color:"rgba(240, 240, 240, 1)"}}>Select All</Text>
+                            <RadioButton color="navy"  status={Members === "All" ? "checked" : "unchecked"}  onPress={()=> { Members === "" ? (setMembers("All"), setSearch('All Members'), setshow(true)) : (setMembers(""), setSearch('')) }} />
+                        </View>}
+                      
                 </View>
 
-            {show && <View style={{flexDirection:"row",alignItems:"center",paddingHorizontal:20}}>
-                <Text style={{fontSize:15,color:"rgba(240, 240, 240, 1)"}}>Select All</Text>
-                <RadioButton color="navy"  status={Members === "All" ? "checked" : "unchecked"}  onPress={()=> { Members === "" ? (setMembers("All"), setSearch('All Members'), setShow(false)) : (setMembers(""), setSearch('')) }} />
-            </View>
-            }       
-            
+          
             <FlatList 
 
-             data={showMembers?.filter(member => (member.FirstName && member.SecondName) && (member.FirstName && member.SecondName).includes(search) )}
+            data = {showMembers?.filter(member => 
+                member.FirstName && member.SecondName && 
+                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                member.SecondName.toLowerCase().includes(search.toLowerCase()))
+            )}
 
              keyExtractor={(item)=> item.FirstName&&item.SecondName}
 
              ListEmptyComponent={()=>(
-                <>{!Show && <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                   <Text style={{fontSize:15,fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
+                <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
+                   <Text style={{fontSize:15,fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>{search ? "" : "Fetching Data ..."}</Text>
                 </View>
-                    }</>
+                
                 )}
    
 
@@ -215,7 +216,6 @@ export default function SendSMS({navigation, route}){
                 return(
                     <View style={{flex:1,marginVertical:5, marginHorizontal:10}}>
                                             
-                    {!Show &&
                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
 
                         <>
@@ -236,7 +236,7 @@ export default function SendSMS({navigation, route}){
                             </TouchableHighlight>
                         </>
                     </View>
-                        }
+           
                     </View>
              )}}
             />
