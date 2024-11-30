@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, StatusBar, Image, Modal, ScrollView,Pressable} from "react-native";
+import { View, TouchableOpacity, Text, StatusBar, Image, Modal, ScrollView,Pressable, ToastAndroid} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
@@ -13,6 +13,7 @@ export default function ModalScreen({route}){
     const navigation = useNavigation();
     const [isActive, setActive] = useState(true)
   
+   
 
  
     return (
@@ -21,15 +22,13 @@ export default function ModalScreen({route}){
                     <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
-                    <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
-                            <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
-                                <MaterialIcons name="dashboard"  color={"rgba(240, 240, 240, 1)"} size={30}/>
-                            </View>
+                    <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+    
+                        <MaterialIcons name="dashboard"  color={"rgba(240, 240, 240, 1)"} size={30}/>
 
-                            <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
-                                <Text style={{fontSize:23,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Dashboard</Text>
-                            </View>
+                        <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>Dashboard</Text>
                     </View>
+
 
                     <ScrollView>
 
@@ -60,7 +59,7 @@ export default function ModalScreen({route}){
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)/*navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, events: events})*/}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
                                         <Ionicons name="book-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Record Church Attendance</Text>
                                 </TouchableOpacity>
@@ -99,14 +98,14 @@ export default function ModalScreen({route}){
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="calculator-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Statistics</Text>
                                 </TouchableOpacity>
                             </>
 
                             <>
-                                <TouchableOpacity onPress={()=> {}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="add" color={"rgba(100, 200, 255, 1)"} size={50}/>
                                 </TouchableOpacity>
                             </>
@@ -121,8 +120,8 @@ export default function ModalScreen({route}){
 
                 <View>
     
-                    <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
-                            <Pressable style={{width:120}}  >
+                    <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
+                            <Pressable style={{width:120}}>
                             {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
                                         <MaterialIcons name="dashboard" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"} />

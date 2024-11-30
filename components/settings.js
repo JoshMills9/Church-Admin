@@ -7,7 +7,7 @@ import ModalScreen from "./modalScreen";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableHighlight } from "react-native";
 import { getAuth , signOut, deleteUser} from "firebase/auth";
-import { FAB } from "react-native-paper";
+import { FAB , Badge} from "react-native-paper";
 import email from 'react-native-email';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -21,7 +21,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Settings ({route}){
-    const {username, ChurchName, events} = route.params
+    const {username, ChurchName, events, NoOfEvent} = route.params
 
     const navigation = useNavigation()
     const [isActive, setActive] = useState(true)
@@ -275,15 +275,14 @@ const deleteFieldByEmail = async () => {
             <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
-            <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:10}}>
-                            <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
-                                <MaterialIcons name="admin-panel-settings" color={"rgba(240, 240, 240, 1)"} size={38}/>
-                            </View>
 
-                            <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"center", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
-                                <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Settings</Text>
-                            </View>
+            <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+    
+                <MaterialIcons name="admin-panel-settings" color={"rgba(240, 240, 240, 1)"} size={38}/>
+
+                <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>Settings</Text>
             </View>
+
             
         
             <View style={{paddingHorizontal:15,paddingVertical:5, justifyContent:"space-between", flex:1, }}>
@@ -360,6 +359,7 @@ const deleteFieldByEmail = async () => {
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="notifications-outline" size={30}  color={"gray"}/>
+                                    {<Badge style={{position:"absolute",top:0,right:-2}} size={15}>{NoOfEvent || 0}</Badge>} 
                                 </View>
 
                                 <View style={{paddingRight:25,}}>
@@ -491,7 +491,7 @@ const deleteFieldByEmail = async () => {
 
             
             <View >
-                <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
+                <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
                        
                     
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , events: events})} >

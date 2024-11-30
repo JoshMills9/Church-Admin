@@ -1,5 +1,5 @@
 import React, {useState, useLayoutEffect, useEffect} from "react";
-import { View, Text, Pressable, TextInput, TouchableOpacity,Image, StatusBar,Platform, ScrollView, Alert } from "react-native";
+import { View, Text, Pressable, TextInput, TouchableOpacity,Image, StatusBar,Platform, ScrollView, Alert, ToastAndroid } from "react-native";
 import styles from "./styles";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
@@ -263,7 +263,7 @@ export default function AddMembers(props){
     
             setSubmitting(false);
     
-            Alert.alert("Member Registration", "Registration Successful!");
+            ToastAndroid.show("Member registration successful!", ToastAndroid.LONG);
               
             } else {
                 throw new Error("No church details found in database");
@@ -273,7 +273,7 @@ export default function AddMembers(props){
     
         } catch (error) {
             console.error("Error adding document: ", error);
-            Alert.alert("Registration Error", error.message);
+            ToastAndroid.show(`Registration Error: ${error.message}`, ToastAndroid.LONG);
             setSubmitting(false);
         }
     };
@@ -316,7 +316,7 @@ export default function AddMembers(props){
                     }
                 });
         
-                Alert.alert("Success","Member data updated successfully!")
+                ToastAndroid.show("Member data updated successfully!", ToastAndroid.LONG)
                 props?.Show(false); 
             } catch (error) {
                 console.error("Error updating member document:", error);
@@ -333,17 +333,15 @@ export default function AddMembers(props){
     return(
         <View style={{flex:1, justifyContent:"space-between",backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-            {props?.show ? <View></View> : 
+            {!props?.show &&
                 <><StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
-                    <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
-                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName,events: params.events})} />
-                        </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "space-around", flexDirection:"row", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                            <Text style={{ fontSize: 20, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Registration</Text>
-                            <Ionicons name="person-add-sharp" size={26} color={"rgba(240, 240, 240, 1)"} />
-                        </View>
+                    <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+
+                         <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName,events: params.events})} />
+                         <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Registration</Text>
+                         <Ionicons name="person-add-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+
                     </View>
                 </>
                 }
@@ -505,7 +503,8 @@ export default function AddMembers(props){
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 
                 
-                <TouchableOpacity onPress={pickImage} style={{borderWidth:1,borderColor:"gray", width:"40%",height:40,alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderRadius:10,padding:5}}><Text  style={{fontSize:16,color:"rgba(240, 240, 240, 1)"}}>{props?.info? "Update photo" : "Upload a photo"}</Text><Ionicons name="images" size={23} color="rgba(240, 240, 240, 1)"/></TouchableOpacity>
+                <TouchableOpacity onPress={pickImage} style={{borderWidth:1,borderColor:"gray", width:"40%",height:40,alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderRadius:10,padding:5}}>
+                    <Text  style={{fontSize:16,color:"rgba(240, 240, 240, 1)"}}>{props?.info? "Update photo" : "Upload a photo"}</Text><Ionicons name="images" size={23} color="rgba(240, 240, 240, 1)"/></TouchableOpacity>
 
                 {(selectedImage || props?.info) && (
                     <View style={{borderWidth:1, borderRadius:50,height:80,width:80, alignItems:"center",justifyContent:"center", borderColor:"lightgray", backgroundColor:"white"}}>

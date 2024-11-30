@@ -50,16 +50,16 @@ export default function MakePledge({navigation, route}){
 
             <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
-            <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:10}}>
-                    <View style={{height:70,width:"18%",justifyContent:"center",borderBottomRightRadius:50,padding:10,borderTopRightRadius:50, backgroundColor:"rgba(50, 50, 50, 1)",elevation:6}}>
-                    <Ionicons name="arrow-back" size={35} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName, events: events})} />
-                    </View>
+                <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                    <View style={{height:70, width:"80%", alignItems:"center", justifyContent:"space-around",flexDirection:"row", elevation:6, borderBottomRightRadius:60, borderTopLeftRadius:50,borderBottomLeftRadius:50, backgroundColor:"rgba(50, 50, 50, 1)" }}>
-                        <Text style={{fontSize:20,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Make Pledge</Text>
-                        <Ionicons name="cash" size={26} color={"rgba(240, 240, 240, 1)"} />
-                    </View>
-            </View>
+                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Make Pledge</Text>
+                                <Ionicons name="cash" size={25} color={"rgba(240, 240, 240, 1)"} />
+
+                            </View>
+                </View>
+
 
             <View style={{justifyContent:"flex-start",flex:1}}>
 

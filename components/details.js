@@ -43,15 +43,16 @@ export default function Details ({navigation, route}){
 
               <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
 
-                <View style={{ alignItems: "center", flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
-                        <View style={{ height: 70, width: "18%", justifyContent: "center", borderBottomRightRadius: 50, padding: 10, borderTopRightRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)", elevation: 5 }}>
-                            <Ionicons name="arrow-back" size={35} color="rgba(240, 240, 240, 1)" onPress={() => navigation.replace('MemberList',{username: username, ChurchName: ChurchName, events:events})} />
+                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+
+                                <Ionicons name="arrow-back" size={25} style={{width:50,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('MemberList',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Member Details</Text>
+                                <Ionicons name="book-outline" size={25} color={"rgba(240, 240, 240, 1)"} />
+
+                            </View>
                         </View>
 
-                        <View style={{ height: 70, width: "80%", alignItems: "center", justifyContent: "center", elevation: 6, borderBottomRightRadius: 60, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                            <Text style={{ fontSize: 26, color:"rgba(240, 240, 240, 1)", fontWeight: "800" }}>Member Details</Text>
-                        </View>
-                </View>
                 
                 <View style={{marginHorizontal:15, height:600 ,paddingVertical:10,justifyContent:"center",}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
@@ -115,6 +116,13 @@ export default function Details ({navigation, route}){
                         <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Marital Status:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Marital_Status}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
+                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>No. of children:</Text>
+                        <View style={{width:"50%"}}>
+                            <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].No_Of_Children}</Text>
                         </View>
                     </View>
 
