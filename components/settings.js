@@ -31,8 +31,30 @@ export default function Settings ({route}){
     const [loading,setLoading] = useState(false)
     const [subject, setSubject] = useState("")
     const [body, setBody ]= useState("")
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(false);
     const db = getFirestore()
+
+
+
+    const [info, setInfo] = useState()
+
+    //get chhurch info from storage
+    useEffect(()=>{
+        const getAccountDetails = async () => {
+            try {
+              const value = await AsyncStorage.getItem('churchInfo');
+              if (value !== '') {
+                setInfo(JSON.parse(value))
+              } else {
+                console.log("no item")
+              }
+            } catch (error) {
+              console.error('Error checking onboarding status', error);
+            }
+          };
+          getAccountDetails();
+          setSelectedImage(false)
+    }, [selectedImage])
 
 
     const toggleModal = () => {
@@ -113,7 +135,9 @@ export default function Settings ({route}){
             quality: 1,
             
           });
-            setSelectedImage(result.assets[0].uri);
+            info.Image = result.assets[0].uri;
+            await AsyncStorage.setItem('churchInfo', JSON.stringify(info));
+            setSelectedImage(true)
           
         } catch (error) {
           console.error('Error picking image: ', error);
@@ -121,27 +145,19 @@ export default function Settings ({route}){
       };
 
    
-/*
-      useEffect(()=>{
-        if(selectedImage !== null){
+   useEffect(()=>{
+        if(selectedImage){
             const uploadImage = async()=>{
                     try{
                         const userDetailsDocRef = doc(db, 'UserDetails', ChurchName?.id);
                 
-                        // Example data for a member document within the subcollection
-                        const userDetails = {
-                            ChurchName: ChurchName?.ChurchName,
-                            email: ChurchName?.email,
-                            password: ChurchName?.password,
-                            Image: selectedImage,
-                            id: ChurchName?.id
-                        };
-                
                         // Set a document within the Members subcollection
-                        await setDoc(userDetailsDocRef, userDetails);
+                        await updateDoc(userDetailsDocRef, {
+                            "userDetails.Image": info.Image
+                        });
             
                         // Clear form fields after successful registration
-                        Alert.alert("Success", "Image Updated Successful!");
+                        ToastAndroid.show("Image Updated Successfully!", ToastAndroid.LONG);
                         } 
                         catch (error) {
                         console.error("Error updating image: ", error);
@@ -155,7 +171,7 @@ export default function Settings ({route}){
             
     },[selectedImage])
         
-*/
+
   
 
         
@@ -238,6 +254,8 @@ const deleteFieldByEmail = async () => {
     }
 }
 
+   
+
 
 
 
@@ -296,9 +314,9 @@ const deleteFieldByEmail = async () => {
 
                     <View style={{flexDirection:"row",elevation:3, backgroundColor:"rgba(50, 50, 50, 1)",marginTop:10,borderRadius:15, height:80, alignItems:"center",padding:10 , justifyContent:"flex-start", marginBottom:10}}>
                         <View style={{marginRight:10}}>
-                            {ChurchName?.Image || selectedImage ? 
+                            {info?.Image? 
                                 <TouchableOpacity onPress={pickImage} style={{width:60,height:60, alignItems:"center", justifyContent:"center"}}>
-                                    <Image source={{uri : ChurchName?.Image || selectedImage}}  style={{width:60, height:60,borderRadius:50}}  />
+                                    <Image source={{uri : info?.Image}}  style={{width:60, height:60,borderRadius:50}}  />
                                 </TouchableOpacity> :
                                 <View style={{alignItems:"center", justifyContent:"center"}}>
                                     <Ionicons name="person-circle-sharp" size={60}  color={"gray"} onPress={pickImage} />
@@ -308,7 +326,7 @@ const deleteFieldByEmail = async () => {
 
                         <View>
                             <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                {ChurchName?.ChurchName?.toUpperCase() || ChurchName?.toUpperCase()}
+                                {/*ChurchName?.ChurchName?.toUpperCase() || ChurchName?.toUpperCase()*/info?.ChurchName?.toUpperCase()}
                             </Text>
 
                             <Text style={{fontSize:15,fontWeight:"400",color:"gray",marginTop:2}} adjustsFontSizeToFit={true} numberOfLines={1}>

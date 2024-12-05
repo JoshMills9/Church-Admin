@@ -32,13 +32,8 @@ export default function Home(){
 
     const [clicked, setclicked] = useState(false)
    
-    const [userEmail , setuserEmail] = useState("")
-    const [noOfUsers , setNoOfUsers] = useState(null)
-    const [notAdmin, setNotAdmin] = useState(null)
-    const [user, setUser] = useState(null)
     const [username, setUsername] = useState("");
     const [ChurchName, setChurchName] = useState(null);
-    const [NumberOfEvent, setNumberOfEvent] = useState('');
     const [totalNumberOfMembers, setTotalNumberOfMembers] = useState("");
     const [birthDayComing, setBirthdaysComing] = useState("");
     const [isActive, setisActive] = useState(true);
@@ -60,6 +55,9 @@ export default function Home(){
     const monthOfYear = monthsOfYear[date.getMonth()];
 
 
+    useEffect(()=>{
+        ToastAndroid.show("Loading updates, please wait!", ToastAndroid.SHORT)
+    },[])
 
 
     //useEffect to save list to Storage
@@ -76,8 +74,28 @@ export default function Home(){
     }, []);
 
 
+    const [updated, setUpdated] = useState([])
+  
+    const getUpdates = async () => {
+        try {
+          const value = await AsyncStorage.getItem('update');
+          if (value !== '') {
+            setUpdated(JSON.parse(value))
+          } else {
+            console.log("no item")
+          }
+        } catch (error) {
+          console.error('Error checking onboarding status', error);
+        }
+      };
+
+   
+
+
 
     const getMember = async (userEmail) => {
+        
+        let update = { };
 
         try {
             // Fetch church details based on user email
@@ -92,6 +110,17 @@ export default function Home(){
   
                 const church = tasks?.find(item => item.email === userEmail);
                 setChurchName(church);
+
+
+                const handleSaveChurchDetails = async () => {
+                    try {
+                    await AsyncStorage.setItem('churchInfo', JSON.stringify(church));
+                
+                    } catch (e) {
+                    console.error('Failed to save the data to the storage', e);
+                    }
+                };
+                handleSaveChurchDetails();
 
                  // Fetch user
                     {/*const userDetailsDoc = doc(db, 'UserDetails', church?.id);
@@ -120,6 +149,7 @@ export default function Home(){
                     }));
                     setEvents(eventsData);
                     setNoOfEvent(eventsData.length);
+                    update.NoOfEvent = eventsData.length;
                     setclicked(true)
                 }
 
@@ -135,6 +165,7 @@ export default function Home(){
                         ...doc.data().Member
                     }));
                     setTotalNumberOfMembers(membersData.length);
+                    update.totalNumberOfMembers = membersData.length;
 
 
                     const date = new Date();
@@ -148,12 +179,14 @@ export default function Home(){
                         return memberMonth === monthAbr;
                     });
                     setBirthdaysComing(upcomingBirthdays.length);
+                    update.birthDayComing = upcomingBirthdays.length;
 
                     const newMembers = membersData.filter(member => {
                         const memberMonth = member.Registration_Date.split(' ')[1];
                         return memberMonth === monthAbr;
                     });
                     setNewMember(newMembers.length);
+                    update.NewMember = newMembers.length;
                 }
                
             }else{
@@ -161,24 +194,39 @@ export default function Home(){
                 setrefreshing(false)
                 return;
             };
+
+
+            const handleSave = async () => {
+                try {
+                await AsyncStorage.setItem('update', JSON.stringify(update));
+            
+                } catch (e) {
+                console.error('Failed to save the data to the storage', e);
+                }
+            };
+            handleSave();
+
         }catch(error){
             ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
             console.log(error)
            
         }
 
+        getUpdates();
+
     };
 
 
     
-    useEffect(() => {
+    useLayoutEffect(() => {
+        getUpdates();
+
         const checkLoginStatus = async () => {
           try {
             const value = await AsyncStorage.getItem('UserEmail');
             if (value !== '') {
-                console.log(value)
-              getMember(value)
-              setUsername(value)
+              getMember(value);
+              setUsername(value);
             } else {
               console.log("no item")
             }
@@ -235,7 +283,6 @@ export default function Home(){
           transform: [{ translateX: slideAnimation.value }],
         };
       });
-  
 
 
 
@@ -327,7 +374,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Total No. Of Members:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
+                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers  || "-"}</Text>
                                             </View>
                                         </View>
 
@@ -336,7 +383,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Upcoming Events:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{NoOfEvent? NoOfEvent : "-"}</Text>
+                                                <Text style={styles.updateTxt}>{NoOfEvent ? NoOfEvent : updated?.NoOfEvent || "-"}</Text>
                                             </View>
                                         </View>
 
@@ -345,7 +392,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Upcoming Birthdays:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : "-"}</Text>
+                                                <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  "-"}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -361,7 +408,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Total No. Of Members:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : "-"}</Text>
+                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || "-"}</Text>
                                             </View>
                                         </View>
 
@@ -379,7 +426,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>New members/month:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{newMember ? newMember : "-"}</Text>
+                                                <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || "-"}</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -425,7 +472,8 @@ export default function Home(){
                         </View>
                                     
 
-                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}}  icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:60, position:"absolute" ,zIndex:9, bottom:70,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
+                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}} 
+                     icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:65, position:"absolute" ,zIndex:9, bottom:80,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
 
                     <View>
                         

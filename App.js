@@ -67,9 +67,9 @@ export default function MyStack (){
 
       <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"fade_from_bottom"}}/>
+      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"slide_from_right"}}/>
 
-      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"fade_from_bottom"}}/>
+      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"slide_from_left"}}/>
 
       <Stack.Screen name='Registration' component={AddMembers} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
