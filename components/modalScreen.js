@@ -59,7 +59,7 @@ export default function ModalScreen({route}){
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)/*navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, events: events})*/}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
                                         <Ionicons name="book-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Record Church Attendance</Text>
                                 </TouchableOpacity>

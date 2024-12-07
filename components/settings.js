@@ -21,9 +21,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Settings ({route}){
+    const navigation = useNavigation()
+
     const {username, ChurchName, events, NoOfEvent} = route.params
 
-    const navigation = useNavigation()
     const [isActive, setActive] = useState(true)
     const [isModal, setModal] = useState(false)
     const auth = getAuth()
@@ -38,8 +39,9 @@ export default function Settings ({route}){
 
     const [info, setInfo] = useState()
 
+
     //get chhurch info from storage
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         const getAccountDetails = async () => {
             try {
               const value = await AsyncStorage.getItem('churchInfo');
@@ -49,7 +51,7 @@ export default function Settings ({route}){
                 console.log("no item")
               }
             } catch (error) {
-              console.error('Error checking onboarding status', error);
+              console.error('Error checking church info', error);
             }
           };
           getAccountDetails();
@@ -313,26 +315,34 @@ const deleteFieldByEmail = async () => {
                     </View>
 
                     <View style={{flexDirection:"row",elevation:3, backgroundColor:"rgba(50, 50, 50, 1)",marginTop:10,borderRadius:15, height:80, alignItems:"center",padding:10 , justifyContent:"flex-start", marginBottom:10}}>
-                        <View style={{marginRight:10}}>
+                        <TouchableOpacity onPress={pickImage} style={{marginRight:12, borderWidth: info?.Image ? 2 : 0, borderRadius:50, borderColor:"dimgray"}}>
                             {info?.Image? 
-                                <TouchableOpacity onPress={pickImage} style={{width:60,height:60, alignItems:"center", justifyContent:"center"}}>
+                                <View  style={{width:60,height:60, alignItems:"center", justifyContent:"center"}}>
                                     <Image source={{uri : info?.Image}}  style={{width:60, height:60,borderRadius:50}}  />
-                                </TouchableOpacity> :
-                                <View style={{alignItems:"center", justifyContent:"center"}}>
-                                    <Ionicons name="person-circle-sharp" size={60}  color={"gray"} onPress={pickImage} />
+                                </View> :
+                                <View onPress={pickImage} style={{ width:65,height:65,}}>
+                                    <Ionicons name="person-circle-sharp" size={70} color={"gray"} />
                                 </View>
                             }
-                        </View>
+                            <View style={{position:'absolute',elevation:5, bottom:0, right:-4,borderWidth:0.5, borderColor:"dimgray", backgroundColor:"white",width:23,justifyContent:"center",alignItems:"center", height:23, borderRadius:50}}>
+                                <Ionicons name="camera-outline" size={14}/>
+                            </View>
+                           
+                        </TouchableOpacity>
 
                         <View>
-                            <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                {/*ChurchName?.ChurchName?.toUpperCase() || ChurchName?.toUpperCase()*/info?.ChurchName?.toUpperCase()}
+                            <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)", width:280}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                {info?.ChurchName?.toUpperCase()}
                             </Text>
 
                             <Text style={{fontSize:15,fontWeight:"400",color:"gray",marginTop:2}} adjustsFontSizeToFit={true} numberOfLines={1}>
                                {username}
                             </Text>
                         </View>
+
+                        <TouchableOpacity onPress={() => navigation.navigate("ChangeAccountName", {username:username, ChurchName: ChurchName, NoOfEvent: NoOfEvent, events: events})} style={{position:"absolute", right:0, width:50,height:30,justifyContent:"center", alignItems:"center", bottom:10}}>
+                            <Ionicons name="pencil" size={16} color={"white"}/>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
@@ -502,13 +512,13 @@ const deleteFieldByEmail = async () => {
 
                 </ScrollView>
 
-                <FAB variant="surface" loading={loading} onPress={()=>{ setModalVisible(true); Support()}} label="Support"  icon={"chat-outline"} color="rgba(240, 240, 240, 1)"  style={{width:110,alignItems:"center",justifyContent:"center", height:55, position:"absolute" , bottom:12, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
+                <FAB variant="surface" loading={loading} onPress={()=>{ setModalVisible(true); Support()}} label="Support"  icon={"chat-outline"} color="rgba(30, 30, 30, 1)"  style={{width:110,alignItems:"center",justifyContent:"center", height:55, position:"absolute" , bottom:12, backgroundColor:"white", right:15}}/>
             </View>
 
 
 
             
-            <View >
+            <View style={{position:"static"}}>
                 <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
                        
                     

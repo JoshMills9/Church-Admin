@@ -31,7 +31,7 @@ export default function Home(){
     const navigation = useNavigation()
 
     const [clicked, setclicked] = useState(false)
-   
+    const [attendance, setAttendance] = useState(null)
     const [username, setUsername] = useState("");
     const [ChurchName, setChurchName] = useState(null);
     const [totalNumberOfMembers, setTotalNumberOfMembers] = useState("");
@@ -89,7 +89,7 @@ export default function Home(){
         }
       };
 
-   
+    
 
 
 
@@ -110,7 +110,7 @@ export default function Home(){
   
                 const church = tasks?.find(item => item.email === userEmail);
                 setChurchName(church);
-
+                
 
                 const handleSaveChurchDetails = async () => {
                     try {
@@ -150,6 +150,7 @@ export default function Home(){
                     setEvents(eventsData);
                     setNoOfEvent(eventsData.length);
                     update.NoOfEvent = eventsData.length;
+                    update.Image = eventsData[0].Image;
                     setclicked(true)
                 }
 
@@ -188,6 +189,117 @@ export default function Home(){
                     setNewMember(newMembers.length);
                     update.NewMember = newMembers.length;
                 }
+
+
+
+
+
+
+                    // Helper function to remove ordinal suffix (st, nd, rd, th)
+                const removeOrdinalSuffix = (dateString) => {
+                    if (dateString) {
+                        // Ensure the dateString is a string
+                        const dateStr = typeof dateString === 'string' ? dateString : dateString.toString();
+
+                        // Remove ordinal suffix (st, nd, rd, th) from the day part of the date
+                        return dateStr.replace(/(\d+)(st|nd|rd|th)/, '$1'); // Matches and removes ordinal suffixes like '7th'
+                    }
+                    return "";
+                };
+
+                // Convert month name to month number (e.g. "Dec" -> 12)
+                const monthNameToNumber = (monthName) => {
+                    const months = {
+                        Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6,
+                        Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12
+                    };
+                    return months[monthName] || 0; // Return 0 if monthName is invalid
+                };
+
+                // Function to get the week number of the year
+                const getWeekOfYear = (date) => {
+                    const start = new Date(date.getFullYear(), 0, 1); // January 1st of the year
+                    const diff = date - start;
+                    const oneDay = 1000 * 60 * 60 * 24; // One day in milliseconds
+                    const dayOfYear = Math.floor(diff / oneDay);
+                    return Math.ceil((dayOfYear + 1) / 7); // Calculate the week number
+                };
+
+                // Fetch Attendance
+                try {
+                        const AttendanceCollectionRef = collection(userDetailsDocRef, 'Attendance');
+                        const attendanceSnapshot = await getDocs(AttendanceCollectionRef);
+
+                        // Check if snapshot is empty
+                        if (attendanceSnapshot.empty) {
+                            console.log("No attendance data found in the snapshot.");
+                            return;
+                        }
+
+                        const attendanceData = attendanceSnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data().Date // Assuming the date is stored under "Date"
+                        }));
+
+                        
+
+                        const date = new Date();
+                        const currentWeek = getWeekOfYear(date); // Get the current week number of the year
+                        
+
+                        const newAttendance = attendanceData.filter(attendance => {
+                            if (!attendance.formattedDate) {
+                                console.warn(`Missing formattedDate for attendance with ID: ${attendance.id}`);
+                                return false; // Skip if no formattedDate is present
+                            }
+
+                            // Clean the date string (e.g. "7th Dec, 2024" -> "7 Dec, 2024")
+                            const cleanedDateString = removeOrdinalSuffix(attendance.formattedDate);
+                  
+
+                            // Split the cleaned date string into day, month, year
+                            const [day, month, year] = cleanedDateString.split(' ');
+
+                               // Remove any trailing commas or spaces from the month part
+                            const cleanMonth = month.replace(',', '').trim();
+
+
+                            // Convert the month name to a number (e.g. "Dec" -> 12)
+                            const monthNumber = monthNameToNumber(cleanMonth);
+
+                            if (!monthNumber) {
+                                console.warn(`Invalid month name: ${month}`);
+                                return false; // Skip if month is invalid
+                            }
+
+                            // Reformat the date into "YYYY-MM-DD" format for reliable parsing
+                            const formattedDateString = `${year}-${monthNumber.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        
+
+                            // Parse the cleaned and formatted date string into a Date object
+                            const attendanceDate = new Date(formattedDateString);
+
+                            // Check if the date is valid
+                            if (isNaN(attendanceDate.getTime())) {
+                                console.warn(`Invalid date found: ${attendance.formattedDate}`);
+                                return false; // Skip invalid dates
+                            }
+
+                            // Get the week number for the attendance date
+                            const attendanceWeek = getWeekOfYear(attendanceDate);
+
+                            // Filter the attendance based on the week number
+                            return attendanceWeek === currentWeek;
+                        });
+
+
+                        // Set the attendance count for the current week
+                        setAttendance(newAttendance.length);
+                        update.Attendance = newAttendance.length;
+                    } catch (error) {
+                        console.error("Error fetching or processing attendance data:", error);
+                    }
+                  
                
             }else{
                 ToastAndroid.show("Check network connection", ToastAndroid.LONG);
@@ -216,6 +328,7 @@ export default function Home(){
 
     };
 
+  
 
     
     useLayoutEffect(() => {
@@ -314,7 +427,7 @@ export default function Home(){
                                         <View style={{width:'100%',elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:20}}>
                                         <FlatList 
                                             ListEmptyComponent={()=>(
-                                                <ImageBackground source={require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
+                                                <ImageBackground source={{uri : updated?.Image} || require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                                 <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
                                                                 <MaterialIcons name="edit" size={24} color={"white"} />
@@ -417,7 +530,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Attendants/week:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{"-"}</Text>
+                                                <Text style={styles.updateTxt}>{attendance ? attendance : updated?.Attendance ||  "-"}</Text>
                                             </View>
                                         </View>
 
@@ -472,8 +585,8 @@ export default function Home(){
                         </View>
                                     
 
-                    <FAB variant="surface" loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}} 
-                     icon={"whatsapp"} color="rgba(100, 200, 255, 1)"  style={{width:60,alignItems:"center",justifyContent:"center", height:65, position:"absolute" ,zIndex:9, bottom:80,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)", right:15}}/>
+                    <FAB variant="surface"  loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}} 
+                     icon={"whatsapp"} color="rgba(30, 30, 30, 1)"  style={{width:55,alignItems:"center",justifyContent:"center", height:55, position:"absolute" ,zIndex:9, bottom:80,elevation:5, backgroundColor:"white", right:15}}/>
 
                     <View>
                         

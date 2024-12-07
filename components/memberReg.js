@@ -228,19 +228,20 @@ export default function AddMembers(props){
             const member = {
                 FirstName: firstName,
                 SecondName: secondName,
-                Date_Of_Birth: formattedDateOfBirth,
-                Registration_Date: formattedRegDate,
-                Number1: phone1,
-                Number2: phone2,
-                Email: email,
-                Marital_Status: marital,
-                No_Of_Children: selectedValue,
-                Department: department,
-                Baptized: baptized,
-                Visting: visiting,
-                occupation: Occupation,
-                Location: location,
-                Image: selectedImage
+                Date_Of_Birth: formattedDateOfBirth || "N/A",
+                Registration_Date: formattedRegDate || "N/A",
+                Number1: phone1 || "N/A",
+                Number2: phone2 || "N/A",
+                Email: email || "N/A",
+                Marital_Status: marital || "N/A",
+                No_Of_Children: selectedValue || "N/A",
+                Department: department || "N/A",
+                Baptized: baptized || "N/A",
+                Visting: visiting || "N/A",
+                occupation: Occupation || "N/A",
+                Location: location || "N/A",
+                Image: selectedImage,
+                Check: false
             };
     
             // Set a document within the Members subcollection
@@ -353,8 +354,8 @@ export default function AddMembers(props){
                 </Text>
             </View>
             <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center", marginTop:10}}>
-                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}  value={firstName} onChangeText={(text) => setFirstName(text)} placeholderTextColor={"rgba(240, 240, 240, 1)"} placeholder={props.info ? props.info[0].FirstName : "First Name" }/>
-                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}   value={secondName} onChangeText={(text) => setSecondName(text)} placeholder={props.info ? props.info[0].SecondName : "Last Name" } placeholderTextColor={"rgba(240, 240, 240, 1)"}/>
+                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}  value={firstName || (props?.info?.length > 0 ? props?.info[0]?.FirstName : "")} onChangeText={(text) => setFirstName(text)} placeholderTextColor={"rgba(240, 240, 240, 1)"} placeholder={"First Name" }/>
+                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}   value={secondName || (props?.info?.length > 0 ? props?.info[0]?.SecondName : "")} onChangeText={(text) => setSecondName(text)} placeholder={"Last Name" } placeholderTextColor={"rgba(240, 240, 240, 1)"}/>
             </View>
 
             <View style={{flexDirection:"row",marginTop:30, justifyContent:"space-between"}}>
@@ -378,16 +379,16 @@ export default function AddMembers(props){
             </View>
 
             <View style={{marginTop:30, flexDirection:"row", justifyContent:"space-between"}}>
-                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"}  inputMode="tel"  value={phone1} onChangeText={(text) => setPhone1(text)} placeholder={props.info ? props.info[0].Number1 : "Phone Number 1" } />
-                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="tel"  value={phone2} onChangeText={(text) => setPhone2(text)} placeholder={props.info ? props.info[0].Number2 : "Phone Number 2" } />
+                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"}  inputMode="tel"  value={phone1 || (props?.info?.length > 0 ? props?.info[0]?.Number1 : "")} onChangeText={(text) => setPhone1(text)} placeholder={"Phone Number 1"} />
+                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="tel"  value={phone2 || (props?.info?.length > 0 ? props?.info[0]?.Number2 : "")} onChangeText={(text) => setPhone2(text)} placeholder={"Phone Number 2" } />
             </View>
 
             <View style={{marginTop:30, flexDirection:"row"}}>
-                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="email"  value={email} onChangeText={(text) => setemail(text)} placeholder={props.info ? props.info[0].Email : "Email address" } />
+                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="email"  value={email || (props?.info?.length > 0 ? props?.info[0]?.Email : "")} onChangeText={(text) => setemail(text)} placeholder={"Email address" } />
             </View>
 
             <View style={{marginTop:30, flexDirection:"row"}}>
-                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text"  value={location} onChangeText={(text) => setLocation(text)} placeholder={props.info ? props.info[0].Location : "Residential address" } />
+                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text"  value={location || (props?.info?.length > 0 ? props?.info[0]?.Location : "")} onChangeText={(text) => setLocation(text)} placeholder={"Residential address" } />
             </View>
 
             <View style={{marginTop:30}}>
@@ -498,7 +499,7 @@ export default function AddMembers(props){
             </View>
 
             <View style={{marginTop:30}}>
-                <TextInput  style={{width:"100%",color:"rgba(240, 240, 240, 1)", borderWidth:1, marginTop:5,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" value={Occupation} onChangeText={(text) => setOccupation(text)} placeholder={props?.info ? props.info[0].occupation :"Occupation"} />
+                <TextInput  style={{width:"100%",color:"rgba(240, 240, 240, 1)", borderWidth:1, marginTop:5,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" value={Occupation || (props?.info?.length > 0 ? props?.info[0]?.occupation : "")} onChangeText={(text) => setOccupation(text)} placeholder={"Occupation"} />
             </View>
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 

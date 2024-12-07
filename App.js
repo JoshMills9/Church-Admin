@@ -18,9 +18,12 @@ import Attendance from './components/attendance';
 import SmsReceipt from './components/smsReceipt';
 import Events from './components/events';
 import makePledgeScreen from './components/makePledgeScreen';
-import AllPledges from './components/allPledges';
+import ChangeAccountName from './components/changeAccountname';
 import { Notifications } from './components/notifications';
 import { Payments } from './components/payments';
+import AttendanceList from './components/attendanceList';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -67,9 +70,11 @@ export default function MyStack (){
 
       <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"slide_from_right"}}/>
+      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"fade_from_bottom"}}/>
 
-      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"slide_from_left"}}/>
+      <Stack.Screen name='ChangeAccountName' component={ChangeAccountName} options={{headerShown:false,  animation:"fade_from_bottom"}}/>
+
+      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"fade_from_bottom"}}/>
 
       <Stack.Screen name='Registration' component={AddMembers} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
@@ -79,6 +84,8 @@ export default function MyStack (){
 
       <Stack.Screen name='Attendance' component={Attendance} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
+      <Stack.Screen name='AttendanceList' component={AttendanceList} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
+
       <Stack.Screen name='Details' component={Details} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='Receipt' component={SmsReceipt} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
