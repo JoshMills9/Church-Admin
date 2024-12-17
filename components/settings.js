@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState ,useRef} from "react";
-import { TextInput, View, Text,Pressable, FlatList, Image,ToastAndroid, TouchableOpacity,Alert, StatusBar, Modal, Switch, ScrollView } from "react-native";
+import { TextInput, View, Text,Pressable, FlatList, Image,ToastAndroid, TouchableOpacity,Alert, Switch, ScrollView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import { MaterialIcons } from '@expo/vector-icons';
 import ModalScreen from "./modalScreen";
 import { useNavigation } from "@react-navigation/native";
@@ -16,7 +16,8 @@ import { getFirestore, setDoc, collection, query, where, doc,getDocs,deleteDoc, 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload preset
 
 
 
@@ -101,7 +102,6 @@ export default function Settings ({route}){
 
     //function to signout user
     const handleSignOut = () => {
-        clearAllData()
         signOut(auth)
             .then(() => {
                 // Sign-out successful.
@@ -120,29 +120,75 @@ export default function Settings ({route}){
         requestPermission();
     }, []);
 
-    const requestPermission = async () => {
+     
+      const requestPermission = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
           Alert.alert('Permission denied', 'Permission to access the camera roll is required!');
         }
+           // Request camera permissions
+        const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+        if (cameraStatus.status !== 'granted') {
+        Alert.alert('Permission denied', 'Permission to access the camera is required!');
+        }
       };
 
-      //function to pik image
-      const pickImage = async () => {
+      //function to pick image
+      const pickImage = async (selected) => {
+        let result;
         try {
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            
-          });
-            info.Image = result.assets[0].uri;
-            await AsyncStorage.setItem('churchInfo', JSON.stringify(info));
-            setSelectedImage(true)
+            if(selected === "gallery"){
+                result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+    
+          })
+        }else if (selected === "camera"){
+                result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+                })
+            }
           
+          if (!result.canceled) {
+            const uri = result.assets[0].uri; // URI of the selected image
+    
+            // Create a form data object to upload to Cloudinary
+            const formData = new FormData();
+            formData.append('file', {
+              uri: uri,
+              type: 'image/jpeg',  // Make sure to set the correct mime type (e.g., image/jpeg, image/png)
+              name: uri.split('/').pop(),
+            });
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            ToastAndroid.show('Loading...', ToastAndroid.SHORT)
+            // Upload the image to Cloudinary
+            const response = await fetch(CLOUDINARY_URL, {
+              method: 'POST',
+              body: formData,
+            });
+            const data = await response.json();
+
+            if (data.secure_url) {
+
+              info.Image = data.secure_url
+
+              await AsyncStorage.setItem('churchInfo', JSON.stringify(info));
+
+              setSelectedImage(data.secure_url);
+
+            } else {
+              console.log('Error', 'Failed to upload image to Cloudinary')
+              Alert.alert('Error', 'Failed to upload image to Cloudinary');
+            }
+          }
         } catch (error) {
-          console.error('Error picking image: ', error);
+          console.log('Error picking or uploading image: ', error);
+          Alert.alert('Error', 'An error occurred while uploading the image.');
         }
       };
 
@@ -174,7 +220,7 @@ export default function Settings ({route}){
     },[selectedImage])
         
 
-  
+
 
         
         // Function to delete user details from auth
@@ -185,8 +231,7 @@ export default function Settings ({route}){
                 if (user) {
                     // Delete the user
                     await deleteUser(user);
-                    Alert.alert("---- Church Administrator ----", 'Account deleted successfully.');
-                    navigation.navigate("LogIn")
+                    ToastAndroid.show('Account deleted successfully!.', ToastAndroid.LONG);
                 } else {
                     // User is not signed in
                     console.log('No user signed in.');
@@ -199,64 +244,49 @@ export default function Settings ({route}){
         };
 
 
+        const deleteDocumentByEmail = async (emailToSearch) => {
+            const usersCollectionRef = collection(db, 'UserDetails');  // Reference to the collection
 
-     /* delete user details from db
-     const deleteFieldByEmail = async () => {
-        const usersCollectionRef = collection(db, 'UserDetails');
-    
-        const q = query(usersCollectionRef, where('userDetails.email', '==', mainEmail));
-    
-        try {
-            const querySnapshot = await getDocs(q);
-    
-            for (const document of querySnapshot.docs) {
-                const docRef = doc(db, `UserDetails/${document.id}`); // Add db here
-    
-                await updateDoc(docRef, {
-                    ["userDetails"]: deleteField()
+            // Query to find documents where the 'userDetails.email' field matches the given email
+            const q = query(usersCollectionRef, where('userDetails.email', '==', emailToSearch));
+
+            try {
+                const querySnapshot = await getDocs(q);  // Execute the query to get matching documents
+
+                if (querySnapshot.empty) {
+                    console.log('No matching documents found.');
+                    return false;  // No documents were found
+                }
+
+                const deletions = [];  // Array to store deletion promises
+
+                querySnapshot.forEach((document) => {
+                    const docRef = doc(db, `UserDetails/${document.id}`);  // Ensure you're referencing the correct path to the document
+                    deletions.push(deleteDoc(docRef)  // Delete document
+                        .then(() => {
+                            console.log(`Document with ID ${document.id} deleted.`);
+                        })
+                        .catch((error) => {
+                            console.error(`Error deleting document with ID ${document.id}:`, error);
+                        })
+                    );
                 });
 
-                console.log(`Field  deleted from document with ID: ${document.id}`);
+                // Wait for all deletions to complete
+                await Promise.all(deletions);
+
+                clearAllData();
+                deleteUserAccount()  // Make sure this function is defined and works as expected
+                navigation.navigate("LogIn");  // Navigate to login screen after deletion
+                return true;  // Indicate success if deletion was successful
+            } catch (error) {
+                console.error('Error querying and deleting documents:', error);
+                return false;  // Return false if there was an error during the process
             }
-            deleteUserAccount()
-            return true;
-        } catch (error) {
-            console.error('Error deleting field:', error);
-            return false;
-        }
-    };
+        };
+                
 
 
-*/
-
-const deleteFieldByEmail = async () => {
-    const usersCollectionRef = collection(db, 'UserDetails');
-    
-    try {
-        // Query for documents where userDetails.email matches mainEmail
-        const q = query(usersCollectionRef, where('userDetails.email', '==', mainEmail));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            // Assuming you want to delete the first document found
-            const doc = querySnapshot.docs[0]; // Get the first document
-
-            // Delete the document by its ID
-            await deleteDoc(doc.ref);
-
-            deleteUserAccount()
-            return true;
-        } else {
-            console.log(`No document found where userDetails.email matches ${mainEmail}`);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error deleting document:', error);
-        return false;
-    }
-}
-
-   
 
 
 
@@ -292,11 +322,11 @@ const deleteFieldByEmail = async () => {
         <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
 
-            <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
 
-            <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+            <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
     
                 <MaterialIcons name="admin-panel-settings" color={"rgba(240, 240, 240, 1)"} size={38}/>
 
@@ -315,14 +345,22 @@ const deleteFieldByEmail = async () => {
                     </View>
 
                     <View style={{flexDirection:"row",elevation:3, backgroundColor:"rgba(50, 50, 50, 1)",marginTop:10,borderRadius:15, height:80, alignItems:"center",padding:10 , justifyContent:"flex-start", marginBottom:10}}>
-                        <TouchableOpacity onPress={pickImage} style={{marginRight:12, borderWidth: info?.Image ? 2 : 0, borderRadius:50, borderColor:"dimgray"}}>
-                            {info?.Image? 
-                                <View  style={{width:60,height:60, alignItems:"center", justifyContent:"center"}}>
-                                    <Image source={{uri : info?.Image}}  style={{width:60, height:60,borderRadius:50}}  />
-                                </View> :
-                                <View onPress={pickImage} style={{ width:65,height:65,}}>
-                                    <Ionicons name="person-circle-sharp" size={70} color={"gray"} />
-                                </View>
+                        <TouchableOpacity onPress={() => {Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
+                                { text: "CAMERA", onPress: () => {pickImage("camera")}},
+                                { text: "GALLERY", onPress: () => {pickImage("gallery")}},
+                                ]);}} style={{marginRight:12, borderWidth: info?.Image ? 2 : 0, borderRadius:50, borderColor:"dimgray"}}>
+                                {info?.Image? 
+                                    <View  style={{width:60,height:60, alignItems:"center", justifyContent:"center"}}>
+                                        <Image source={{uri : info?.Image}}  style={{width:60, height:60,borderRadius:50}}  />
+                                    </View> :
+                                    <View onPress={() => {
+                                        Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
+                                          { text: "CAMERA", onPress: () => {pickImage("camera")}},
+                                          { text: "GALLERY", onPress: () => {pickImage("gallery")}},
+                                        ]);
+                                      }} style={{ width:65,height:65,}}>
+                                        <Ionicons name="person-circle-sharp" size={70} color={"gray"} />
+                                    </View>
                             }
                             <View style={{position:'absolute',elevation:5, bottom:0, right:-4,borderWidth:0.5, borderColor:"dimgray", backgroundColor:"white",width:23,justifyContent:"center",alignItems:"center", height:23, borderRadius:50}}>
                                 <Ionicons name="camera-outline" size={14}/>
@@ -485,7 +523,7 @@ const deleteFieldByEmail = async () => {
 
                         
 
-                        <TouchableOpacity onPress={handleSignOut} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
+                        <TouchableOpacity onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
                             
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
@@ -498,7 +536,7 @@ const deleteFieldByEmail = async () => {
                         </TouchableOpacity>
 
                     
-                        <TouchableOpacity  onPress={()=> {}} style={{flexDirection:"row" , marginTop:8, height:60, alignItems:"center" , justifyContent:"flex-start",marginLeft:65}}>
+                        <TouchableOpacity onPress={() => {deleteDocumentByEmail(ChurchName?.email)}} style={{flexDirection:"row" , marginTop:8, height:60, alignItems:"center" , justifyContent:"flex-start",marginLeft:65}}>
                                 
                                 <View style={{marginRight:10}}>
                                     <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
@@ -519,7 +557,7 @@ const deleteFieldByEmail = async () => {
 
             
             <View style={{position:"static"}}>
-                <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
+                <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                        
                     
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , events: events})} >

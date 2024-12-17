@@ -1,6 +1,6 @@
 import React, {useState, useLayoutEffect, useEffect} from "react";
-import { View, Text, Pressable, TextInput, TouchableOpacity,Image, StatusBar,Platform, ScrollView, Alert, ToastAndroid } from "react-native";
-import styles from "./styles";
+import { View, Text, TextInput, TouchableOpacity,Image,Platform, ScrollView, Alert, ToastAndroid, TouchableHighlight } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
 import { ActivityIndicator, RadioButton, Switch } from "react-native-paper";
@@ -26,6 +26,10 @@ export default function AddMembers(props){
 
     const [username, setUsername] = useState("");
 
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload preset
+
+
 
     //useEffect and function to select image
     useEffect(() => {
@@ -37,24 +41,69 @@ export default function AddMembers(props){
         if (status !== 'granted') {
           Alert.alert('Permission denied', 'Permission to access the camera roll is required!');
         }
-      };
-
-      //function to pik image
-      const pickImage = async () => {
-        try {
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            
-          });
-            setSelectedImage(result.assets[0].uri);
-          
-        } catch (error) {
-          console.error('Error picking image: ', error);
+           // Request camera permissions
+        const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+        if (cameraStatus.status !== 'granted') {
+        Alert.alert('Permission denied', 'Permission to access the camera is required!');
         }
       };
+
+      //function to pick image
+      const pickImage = async (selected) => {
+        let result;
+        try {
+            if(selected === "gallery"){
+                result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+    
+          })
+        }else if (selected === "camera"){
+                result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+                })
+            }
+          
+          if (!result.canceled) {
+            const uri = result.assets[0].uri; // URI of the selected image
+    
+            // Create a form data object to upload to Cloudinary
+            const formData = new FormData();
+            formData.append('file', {
+              uri: uri,
+              type: 'image/jpeg',  // Make sure to set the correct mime type (e.g., image/jpeg, image/png)
+              name: uri.split('/').pop(),
+            });
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            ToastAndroid.show('Loading...', ToastAndroid.SHORT)
+            // Upload the image to Cloudinary
+            const response = await fetch(CLOUDINARY_URL, {
+              method: 'POST',
+              body: formData,
+            });
+            const data = await response.json();
+
+            if (data.secure_url) {
+              // The uploaded image URL from Cloudinary
+              console.log('Uploaded Image URL:', data.secure_url);
+              setSelectedImage(data.secure_url);
+            } else {
+              console.log('Error', 'Failed to upload image to Cloudinary')
+              Alert.alert('Error', 'Failed to upload image to Cloudinary');
+            }
+          }
+        } catch (error) {
+          console.log('Error picking or uploading image: ', error);
+          Alert.alert('Error', 'An error occurred while uploading the image.');
+        }
+      };
+
+   
     
 
 
@@ -106,22 +155,23 @@ export default function AddMembers(props){
     };
 
 
-  
-     
+
+        
+        
         const monthsOfYear1 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const dayOfMonth1 = Birthdate.getDate();
         const monthOfYear1 = monthsOfYear1[Birthdate.getMonth()];
         const year1 = Birthdate.getFullYear();
     
         let Suffix = 'th';
-        if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
-            suffix = 'st';
-        } else if (dayOfMonth === 2 || dayOfMonth === 22) {
-            suffix = 'nd';
-        } else if (dayOfMonth === 3 || dayOfMonth === 23) {
-            suffix = 'rd';
+        if (dayOfMonth1 === 1 || dayOfMonth1 === 21 || dayOfMonth1 === 31) {
+            Suffix = 'st';
+        } else if (dayOfMonth1 === 2 || dayOfMonth1 === 22) {
+            Suffix = 'nd';
+        } else if (dayOfMonth1 === 3 || dayOfMonth1 === 23) {
+            Suffix = 'rd';
         }
-        const formattedDateOfBirth = `${dayOfMonth1}${Suffix} ${monthOfYear1} , ${year1}`;
+
       
         const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const dayOfMonth = regDate.getDate();
@@ -136,8 +186,17 @@ export default function AddMembers(props){
         } else if (dayOfMonth === 3 || dayOfMonth === 23) {
             suffix = 'rd';
         }
-        const formattedRegDate = `${dayOfMonth}${suffix} ${monthOfYear} , ${year}`;
+
         
+
+        const [formattedRegDate, setFormattedRegDate ] = useState()
+        const [formattedDateOfBirth, setFormattedDate] = useState()
+        
+        useEffect(()=>{
+                setFormattedDate(`${dayOfMonth1}${Suffix} ${monthOfYear1} , ${year1}`)
+                setFormattedRegDate(`${dayOfMonth}${suffix} ${monthOfYear} , ${year}`);
+        },[Birthdate, regDate])
+     
    
    
     
@@ -240,7 +299,7 @@ export default function AddMembers(props){
                 Visting: visiting || "N/A",
                 occupation: Occupation || "N/A",
                 Location: location || "N/A",
-                Image: selectedImage,
+                Image: selectedImage || null,
                 Check: false
             };
     
@@ -335,9 +394,9 @@ export default function AddMembers(props){
         <View style={{flex:1, justifyContent:"space-between",backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
             {!props?.show &&
-                <><StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
+                <><StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
-                    <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                    <View style={{height:70, marginTop:20,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
                          <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName,events: params.events})} />
                          <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Registration</Text>
@@ -504,27 +563,40 @@ export default function AddMembers(props){
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 
                 
-                <TouchableOpacity onPress={pickImage} style={{borderWidth:1,borderColor:"gray", width:"40%",height:40,alignItems:"center",flexDirection:"row", justifyContent:"space-between", borderRadius:10,padding:5}}>
-                    <Text  style={{fontSize:16,color:"rgba(240, 240, 240, 1)"}}>{props?.info? "Update photo" : "Upload a photo"}</Text><Ionicons name="images" size={23} color="rgba(240, 240, 240, 1)"/></TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
+                  { text: "CANCEL", onPress: () => {} , style:"cancel"},
+                  { text: "CAMERA", onPress: () => {pickImage("camera")}},
+                  { text: "GALLERY", onPress: () => {pickImage("gallery")}},
+                ]);
+              }} >
 
-                {(selectedImage || props?.info) && (
-                    <View style={{borderWidth:1, borderRadius:50,height:80,width:80, alignItems:"center",justifyContent:"center", borderColor:"lightgray", backgroundColor:"white"}}>
-                        <Image source={{ uri: selectedImage || props?.info[0].Image}} style={{ width: 70, height: 70 ,borderRadius:50}} />
+                {(selectedImage || props?.info) ? (
+                    <View style={{borderWidth:2.5, borderRadius:60,height:120,width:120, alignItems:"center",justifyContent:"center", borderColor:"dimgray"}}>
+                        <Image source={{ uri: selectedImage || props?.info[0].Image}} style={{ width: 115, height: 115 ,borderRadius:60}} />
                     </View>
                     )
+                    :
+                    <View style={{borderWidth:2.5,borderColor:"gray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
+                        <Ionicons name="person-circle-sharp" size={138} style={{width:135, position:"absolute",right:-8.5 }} color="dimgray"/>
+                    </View>
                 }
+                 <View style={{position:'absolute', bottom:2,elevation:5, right:6, backgroundColor:"lightgray",width:30, justifyContent:"center",alignItems:"center", height:30, borderRadius:50}}>
+                    <Ionicons name="camera-outline" size={16}/>
+                </View>
+                </TouchableOpacity>
             </View>
 
 
             
-            <View style={{marginTop:40 ,marginBottom:20, alignItems:"center"}}>
-                <TouchableOpacity onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit(username))}} style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
+            <View style={{marginTop:30 ,marginBottom:10, alignItems:"center"}}>
+                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit(username))}} style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
                     {showSubmitting ? 
                     <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
                     :
                     <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:18, fontWeight:"500"}}>{props?.show? "Update Data":"Register Member"}</Text>
                     }
-                </TouchableOpacity>
+                </TouchableHighlight>
             </View>
 
             </ScrollView>

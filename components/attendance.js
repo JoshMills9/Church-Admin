@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View,FlatList, Text,PanResponder, Image,ToastAndroid,Dimensions, TouchableHighlight,StatusBar, ScrollView, Alert, ActivityIndicator } from "react-native";
-import AddMembers from "./memberReg";
+import { View,FlatList, Text,PanResponder, Image,ToastAndroid,Dimensions, TouchableHighlight, ActivityIndicator } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Searchbar } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
 import { getFirestore,collection,getDocs, doc, setDoc , addDoc} from "firebase/firestore";
@@ -23,9 +23,10 @@ export default function Attendance ({navigation, route}){
     const [member, setMember] = useState(null)
     const [Show, setshow] = useState(true);
     const [check1, setCheck1] = useState(false);
-    const [showMembers, setshowMembers] = useState(null)
+    const [showMembers, setshowMembers] = useState([])
     const [churchName, setchurchName] = useState(null)
     const [save, setSave] = useState(false);
+    const [seen, setSeen] = useState(true)
 
 
     const db = getFirestore()
@@ -108,7 +109,9 @@ export default function Attendance ({navigation, route}){
                             setshowMembers(tasks)
                 
                     }else {
-                        alert('No updates');
+                        ToastAndroid.show('Please register a member!', ToastAndroid.SHORT);
+                        setSeen(false);
+                        return;
                     }
                 }
                     catch (error) {
@@ -307,7 +310,7 @@ export default function Attendance ({navigation, route}){
     }
 
         //gesture handler logic
-            const [positionY, setPositionY] = useState(720); // Only track Y position
+            const [positionY, setPositionY] = useState(620); // Only track Y position
             const screenWidth = Dimensions.get('window').width; // Get screen width
 
         // PanResponder to handle the drag gesture
@@ -329,13 +332,14 @@ export default function Attendance ({navigation, route}){
 
 
    
-    
+  
 
     return(
         <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>  
 
-                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
+            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+
+                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
                             <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
                                 <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
@@ -386,67 +390,70 @@ export default function Attendance ({navigation, route}){
            
             </View>
             
-            
-            <FlatList 
+            <View style={{flex:1 , justifyContent: showMembers?.length !== 0 ? "flex-start" : "center" , alignItems: "center"}}>
+                {showMembers?.length !== 0 ?
+                <FlatList 
 
-            data = {showMembers?.filter(member => 
-                member.FirstName && member.SecondName && 
-                (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
-                member.SecondName.toLowerCase().includes(search.toLowerCase()))
-            )}
-             showsVerticalScrollIndicator={false}
-             key={(index,item)=> item.id && item.Check}
+                data = {showMembers?.filter(member => 
+                    member.FirstName && member.SecondName && 
+                    (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
+                    member.SecondName.toLowerCase().includes(search.toLowerCase()))
+                )}
+                showsVerticalScrollIndicator={false}
+                key={(index,item)=> item.id && item.Check}
 
-             ListEmptyComponent={()=> 
-                (Show ? 
-                <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                    <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
-                </View>
-                : 
-                <View></View>
-             )
-            }
-
-
-             renderItem={({item , index}) => {
-                return(
-                    <View style={{flex:1,paddingHorizontal:20,marginTop:10}}>
-                        
-
-                       <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
-                            <View style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
-                                {item.Image ?
-                                            <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
-                                            :
-                                            <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
-                                                <Fontisto name="person"  size={20} color={"gray"}/>
-                                            </View>
-                             
-                                }
-                                
-                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
-                            
-                            </View>
-
-                           
-                            <CheckBox
-                                center={true}
-                                checked={item.Check}
-                                onPress={() => {handleAttendance(item.id); setMarked(prevList => [...prevList , index])}}
-                                size={24}
-                                checkedColor="rgba(240, 240, 240, 1)"
-                                containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
-                                uncheckedColor="gray"
-                                />
-                                                    
-
-                           
-                        </View>
+                ListEmptyComponent={()=>(
+                    <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
+                        <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
                     </View>
-             )}}
-            />
-          
+                    )}
 
+
+                renderItem={({item , index}) => {
+                    return(
+                        <View style={{flex:1,paddingHorizontal:20,marginTop:10}}>
+                            
+
+                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
+                        
+                                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                                style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
+                                                <>
+                                                    {item.Image ?
+                                                                <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
+                                                                :
+                                                                <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                                    <Fontisto name="person"  size={20} color={"gray"}/>
+                                                                </View>
+                                                
+                                                    }
+                                                    
+                                                    <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
+                                                </>
+                                            </TouchableHighlight>
+
+                                        
+                                            <CheckBox
+                                                center={true}
+                                                checked={item.Check}
+                                                onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                                size={24}
+                                                checkedColor="rgba(240, 240, 240, 1)"
+                                                containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
+                                                uncheckedColor="gray"
+                                                />
+                                                                    
+
+                                        </View>
+                        </View>
+                )}}
+                />
+                :
+                <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
+                        <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Members"}</Text>
+                </View> 
+                }
+            </View>
             </View>
             
             {show && (<DateTimePicker testID="dateTimePicker" value={date} mode={"date"} 

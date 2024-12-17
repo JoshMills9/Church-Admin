@@ -21,7 +21,7 @@ export const Payments = ({route}) => {
  
   return (
     <View style={[styles.container,{justifyContent:"space-between",paddingHorizontal:20, paddingVertical:10}]}>
-        <View style={{flex:1, justifyContent:"space-between",marginTop:20}}>
+        <View style={{flex:1, justifyContent:"space-between",marginTop:30}}>
             <View>
                 <AntDesign name="leftcircleo" size={35}  onPress={()=> navigation.navigate("Settings", {username : username , ChurchName : ChurchName ,events: events })} color="rgba(240, 240, 240, 1)" />
             </View>

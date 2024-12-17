@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useState, useEffect} from "react";
-import { View, Text, Pressable, Modal, StatusBar,ToastAndroid, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
+import { View, Text, Pressable, Modal,ToastAndroid, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
 import styles from "./styles";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -8,7 +8,7 @@ import { getFirestore, collection, getDocs,query,where, doc} from "firebase/fire
 import { getAuth,} from 'firebase/auth';
 import { ActivityIndicator, Badge ,FAB} from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { StatusBar } from 'expo-status-bar';
 
 import Animated, {
     useSharedValue,
@@ -43,6 +43,8 @@ export default function Home(){
     const auth = getAuth();
     const db = getFirestore();
 
+
+
     const [loading,setLoading] = useState(false)
     const phoneNumber = '+233241380745';
     const message = "Hello there!";
@@ -75,6 +77,7 @@ export default function Home(){
 
 
     const [updated, setUpdated] = useState([])
+
   
     const getUpdates = async () => {
         try {
@@ -92,11 +95,10 @@ export default function Home(){
     
 
 
+        
 
     const getMember = async (userEmail) => {
-        
         let update = { };
-
         try {
             // Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
@@ -147,10 +149,29 @@ export default function Home(){
                         id: doc.id,
                         ...doc.data().Events
                     }));
-                    setEvents(eventsData);
-                    setNoOfEvent(eventsData.length);
-                    update.NoOfEvent = eventsData.length;
-                    update.Image = eventsData[0].Image;
+
+                    function parseFormattedDate(dateString) {
+                        // Remove the suffix from the day (e.g., 'st', 'nd', 'rd', 'th')
+                        const dayWithoutSuffix = dateString?.replace(/(\d)(st|nd|rd|th)/, '$1');
+                      
+                        // Parse the formatted date using Date constructor (after removing the suffix)
+                        return new Date(dayWithoutSuffix);
+                      }
+                      
+                      function filterFutureEvents(items) {
+                        const currentDate = new Date();
+                        
+                        return items.filter(item => {
+                          const eventDate = parseFormattedDate(item.StartDate);
+                          return eventDate >= currentDate;  // Filter events in the future
+                        });
+                      }
+
+                    const event = filterFutureEvents(eventsData)
+                    setEvents(event);
+                    setNoOfEvent(event.length);
+                    update.NoOfEvent = event?.length;
+                    update.event = event;
                     setclicked(true)
                 }
 
@@ -231,14 +252,11 @@ export default function Home(){
                         const attendanceSnapshot = await getDocs(AttendanceCollectionRef);
 
                         // Check if snapshot is empty
-                        if (attendanceSnapshot.empty) {
-                            console.log("No attendance data found in the snapshot.");
-                            return;
-                        }
+                        if (!attendanceSnapshot.empty) {
 
                         const attendanceData = attendanceSnapshot.docs.map(doc => ({
                             id: doc.id,
-                            ...doc.data().Date // Assuming the date is stored under "Date"
+                            ...doc.data().Date,
                         }));
 
                         
@@ -288,14 +306,19 @@ export default function Home(){
                             // Get the week number for the attendance date
                             const attendanceWeek = getWeekOfYear(attendanceDate);
 
-                            // Filter the attendance based on the week number
-                            return attendanceWeek === currentWeek;
-                        });
+                            return attendanceWeek ===currentWeek
+                    });
+                    if(newAttendance){
+                        const attendanceData = attendanceSnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data().AttendanceList,
+                        }));
 
+                        //setAttendance(attendanceList.length)
+                        console.log("new", attendanceData.length)
+                        }
 
-                        // Set the attendance count for the current week
-                        setAttendance(newAttendance.length);
-                        update.Attendance = newAttendance.length;
+                    }
                     } catch (error) {
                         console.error("Error fetching or processing attendance data:", error);
                     }
@@ -307,7 +330,7 @@ export default function Home(){
                 return;
             };
 
-
+            
             const handleSave = async () => {
                 try {
                 await AsyncStorage.setItem('update', JSON.stringify(update));
@@ -324,16 +347,17 @@ export default function Home(){
            
         }
 
-        getUpdates();
-
     };
 
+
+    
+      
+      
   
 
     
     useLayoutEffect(() => {
         getUpdates();
-
         const checkLoginStatus = async () => {
           try {
             const value = await AsyncStorage.getItem('UserEmail');
@@ -405,10 +429,10 @@ export default function Home(){
         <View  style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)", justifyContent:"space-between"}}>
 
 
-                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+                <StatusBar backgroundColor={"rgba(50, 50, 50, 1)"} style="auto"/>
 
 
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
+                        <View style={{alignItems:"center",marginTop:20, flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
                                 <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row', paddingHorizontal:15,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
                                     { !refreshing ?
                                         <Ionicons name="laptop-outline" size={35} color={"rgba(240, 240, 240, 1)"} />
@@ -426,15 +450,15 @@ export default function Home(){
 
                                         <View style={{width:'100%',elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:20}}>
                                         <FlatList 
-                                            ListEmptyComponent={()=>(
-                                                <ImageBackground source={{uri : updated?.Image} || require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
-                                                            <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:95,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} adjustsFontSizeToFit={true}>Create</Text>
-                                                                <MaterialIcons name="edit" size={24} color={"white"} />
+                                            ListEmptyComponent={()=> ( 
+                                                <ImageBackground source={ updated && updated.event && updated.event.length > 0 ? {uri : updated?.event[0]?.Image} : require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
+                                                            <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:100,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event ? "Upcoming" :  "Create"}</Text>
+                                                                { !updated?.event && <MaterialIcons name="edit" size={20} color={"white"} />}
                                                             </TouchableOpacity>
 
                                                             <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>No Upcoming Event</Text>
+                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{updated && updated.event && updated.event.length > 0 ? updated?.event[0]?.EventName : "No Upcoming Event"}</Text>
                                                             </View>
                                         
                                                 </ImageBackground>
@@ -447,7 +471,7 @@ export default function Home(){
                                                     <View style={{width:"100%",backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>
                                                         <Animated.View  style={[slideInStyle]}>
                                                                     
-                                                            <Image source={{uri: item.Image }}  style={{width:"100%",height:140,borderRadius:15}} resizeMode="cover" />
+                                                            <Image source={{uri: item?.Image }}  style={{width:"100%",height:140,borderRadius:15}} resizeMode="cover" />
 
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate , username: username, ChurchName: ChurchName, events: events})}} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                                 <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
@@ -455,7 +479,11 @@ export default function Home(){
                                                             </TouchableOpacity>
 
                                                             <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:20,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
+                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white"}} adjustsFontSizeToFit={true}>{item.EventName}</Text>
+                                                            </View>
+
+                                                            <View style={{position:"absolute", width:120,justifyContent:"center",alignItems:"center", bottom:5,left:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
+                                                                <Text style={{fontSize:17,fontWeight:"800",color:"white"}} numberOfLines={1} adjustsFontSizeToFit={true}>{item.StartDate}</Text>
                                                             </View>
                                                         </Animated.View>
                                                     </View>
@@ -590,7 +618,7 @@ export default function Home(){
 
                     <View>
                         
-                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
+                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                            
                             <Pressable style={{width:120}} onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName, events: events})}>
                                     

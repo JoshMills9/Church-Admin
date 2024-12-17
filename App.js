@@ -22,8 +22,8 @@ import ChangeAccountName from './components/changeAccountname';
 import { Notifications } from './components/notifications';
 import { Payments } from './components/payments';
 import AttendanceList from './components/attendanceList';
-
-
+import SmsList from './components/smsList';
+import Receipts from './components/receipts';
 
 const Stack = createNativeStackNavigator();
 
@@ -68,13 +68,13 @@ export default function MyStack (){
 
       <Stack.Screen name="SignUp" component={SignUp}  options={{headerShown:false}} />
 
-      <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'fade_from_bottom'}}/>
+      <Stack.Screen name='Church Admin' component={Home} options={{ headerShown:false,  animation:'none'}}/>
 
-      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"fade_from_bottom"}}/>
+      <Stack.Screen name='Settings' component={Settings} options={{headerShown:false,headerTitleStyle:{fontSize:28, fontWeight:"bold"},  animation:"none"}}/>
 
       <Stack.Screen name='ChangeAccountName' component={ChangeAccountName} options={{headerShown:false,  animation:"fade_from_bottom"}}/>
 
-      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"fade_from_bottom"}}/>
+      <Stack.Screen name="ModalScreen" component={ModalScreen}  options={{headerShown:false, animation:"none"}}/>
 
       <Stack.Screen name='Registration' component={AddMembers} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
@@ -90,10 +90,14 @@ export default function MyStack (){
 
       <Stack.Screen name='Receipt' component={SmsReceipt} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
+      <Stack.Screen name='Sms Receipt' component={Receipts} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
+
       <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
-    
+      
+      <Stack.Screen name='Messages' component={SmsList} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
+
       <Stack.Screen name='Make Pledge' component={makePledgeScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
       
       <Stack.Screen name='Payment' component={Payments} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, StatusBar,Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, } from "react-native";
-
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { doc,getFirestore, collection, deleteDoc } from 'firebase/firestore';
@@ -41,9 +41,9 @@ export default function Details ({navigation, route}){
     return(
         <View style={{flex:1,justifyContent:"space-between",backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-              <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
+                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
+                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
                             <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
                                 <Ionicons name="arrow-back" size={25} style={{width:50,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('MemberList',{username: username, ChurchName: ChurchName,events:events})} />
@@ -54,7 +54,7 @@ export default function Details ({navigation, route}){
                         </View>
 
                 
-                <View style={{marginHorizontal:15, height:600 ,paddingVertical:10,justifyContent:"center",}}>
+                <View style={{marginHorizontal:15, flex:1,justifyContent:"center",}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={{justifyContent:"center", alignSelf:"center", borderRadius:15, borderWidth:1, borderColor:"lightgray",width:120,height:120}}>
                         {member[0]?.Image ? 
@@ -158,7 +158,7 @@ export default function Details ({navigation, route}){
 
                 
 
-                <View style={{justifyContent:"center",marginBottom:15 ,alignSelf:"center",height:50, borderRadius:15,  width:170,backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
+                <View style={{justifyContent:"center",marginVertical:15 ,alignSelf:"center",height:50, borderRadius:15,  width:170,backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
                     { Delete ? 
                         <ActivityIndicator color={"orangered"} />
                         :

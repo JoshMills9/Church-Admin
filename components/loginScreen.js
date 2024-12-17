@@ -1,6 +1,7 @@
 import React,{useState,useLayoutEffect, useRef, useEffect} from "react";
-import { View , ImageBackground,Image, Text,useWindowDimensions, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Alert, SafeAreaView} from "react-native";
+import { View , ImageBackground,Image, Text,useWindowDimensions, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Alert, SafeAreaView} from "react-native";
 import styles from "./styles";
+import { StatusBar } from "expo-status-bar";
 import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -43,7 +44,7 @@ export default function LogIn ({navigation}){
     const Login = async () => {
         try {
             await signInWithEmailAndPassword(auth, signUpEmail, loginPassword)
-            navigation.navigate("Church Admin");
+            navigation.push("Church Admin");
             setActivity(false)
         } catch (error) {
         setError(error.message)
@@ -180,7 +181,7 @@ export default function LogIn ({navigation}){
     return(
         <SafeAreaView style={styles.container} >
             <View  style={styles.overlay}>
-                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(30, 30, 30, 1)"} />
+                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
                 <ImageBackground resizeMode="cover" source={require("../assets/new1.jpg")} style={[styles.logoView,{height:WindowHeight < 800 ? 420 : 550, width:WindowWidth > 400 ? 420 : 500, position:"absolute",top:0}]} >
                             <Animated.View style={animatedStyle}>

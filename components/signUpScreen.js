@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from "react";
-import { View, Image, Text, StatusBar, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, Image, Text, ToastAndroid, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
 import styles from "./styles";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
@@ -51,9 +51,9 @@ export default function SignUp() {
     try {
       await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
       handleAddData();
-      Alert.alert("Sign Up Success", "Account Created Succesfully!");
+      ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
       setShowIndicator(false)
-      navigation.navigate("Church Admin");
+      navigation.push("Church Admin");
     } catch (error) {
       Alert.alert(error.message);
       setShowIndicator(false)
@@ -61,23 +61,88 @@ export default function SignUp() {
     }
   }
 
-   //function to pik image
-   const pickImage = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+
+
+  const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
+  const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload preset
+
+
+
+  //useEffect and function to select image
+  useEffect(() => {
+      requestPermission();
+  }, []);
+
+  const requestPermission = async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission denied', 'Permission to access the camera roll is required!');
+      }
+         // Request camera permissions
+      const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+      if (cameraStatus.status !== 'granted') {
+      Alert.alert('Permission denied', 'Permission to access the camera is required!');
+      }
+    };
+
+    //function to pick image
+    const pickImage = async (selected) => {
+      let result;
+      try {
+          if(selected === "gallery"){
+              result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              allowsEditing: true,
+              aspect: [4, 3],
+              quality: 1,
+  
+        })
+      }else if (selected === "camera"){
+              result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              allowsEditing: true,
+              aspect: [4, 3],
+              quality: 1,
+              })
+          }
         
-      });
-        setSelectedImage(result.assets[0].uri);
-        setUpload(true)
-      
-    } catch (error) {
-      console.error('Error picking image: ', error);
-    }
-  };
+        if (!result.canceled) {
+          const uri = result.assets[0].uri; // URI of the selected image
+  
+          // Create a form data object to upload to Cloudinary
+          const formData = new FormData();
+          formData.append('file', {
+            uri: uri,
+            type: 'image/jpeg',  // Make sure to set the correct mime type (e.g., image/jpeg, image/png)
+            name: uri.split('/').pop(),
+          });
+          formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+          ToastAndroid.show('Loading...', ToastAndroid.SHORT)
+          // Upload the image to Cloudinary
+          const response = await fetch(CLOUDINARY_URL, {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await response.json();
+
+          if (data.secure_url) {
+            // The uploaded image URL from Cloudinary
+            console.log('Uploaded Image URL:', data.secure_url);
+            setUpload(true)
+            setSelectedImage(data.secure_url);
+          } else {
+            console.log('Error', 'Failed to upload image to Cloudinary')
+            Alert.alert('Error', 'Failed to upload image to Cloudinary');
+          }
+        }
+      } catch (error) {
+        console.log('Error picking or uploading image: ', error);
+        Alert.alert('Error', 'An error occurred while uploading the image.');
+      }
+    };
+
+ 
+  
 
 
 
@@ -122,7 +187,12 @@ export default function SignUp() {
             </View>
 
 
-            <TouchableOpacity style={{flexDirection:"row",elevation:2, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:upload ?"white" : "rgba(50, 50, 50, 1)", height:40}} onPress={pickImage} >
+            <TouchableOpacity style={{flexDirection:"row",elevation:2, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:upload ?"white" : "rgba(50, 50, 50, 1)", height:40}} onPress={() => {
+                Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
+                  { text: "CAMERA", onPress: () => {pickImage("camera")}},
+                  { text: "GALLERY", onPress: () => {pickImage("gallery")}},
+                ]);
+              }} >
                 <>
                     <Text style={{fontWeight:"500",color:upload ? " rgba(100, 200, 255, 1)" : " rgba(100, 200, 255, 1)"}}>{upload ? "Uploaded" :"Upload Logo"}</Text>
                     <Ionicons name="image" size={20} color={upload? " rgba(100, 200, 255, 1)" :  " rgba(100, 200, 255, 1)"}/>

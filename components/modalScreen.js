@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, StatusBar, Image, Modal, ScrollView,Pressable, ToastAndroid} from "react-native";
+import { View, TouchableOpacity, Text, ScrollView,Pressable, ToastAndroid} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
+import {StatusBar} from 'expo-status-bar'
 import { MaterialIcons } from '@expo/vector-icons';
 
 
@@ -19,10 +19,10 @@ export default function ModalScreen({route}){
     return (
         <View style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
     
-                    <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
-                    <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                    <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
     
                         <MaterialIcons name="dashboard"  color={"rgba(240, 240, 240, 1)"} size={30}/>
 
@@ -107,6 +107,7 @@ export default function ModalScreen({route}){
                             <>
                                 <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="add" color={"rgba(100, 200, 255, 1)"} size={50}/>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Create Cell</Text>
                                 </TouchableOpacity>
                             </>
                         
@@ -120,7 +121,7 @@ export default function ModalScreen({route}){
 
                 <View>
     
-                    <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-around",paddingVertical:10,borderTopWidth:1,borderColor:"gray"}}>
+                    <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
                             <Pressable style={{width:120}}>
                             {({pressed})=>(
                                     <View style={{alignItems:"center"}}>

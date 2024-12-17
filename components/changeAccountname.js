@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import { View , StatusBar, Text, TouchableHighlight, TextInput, ToastAndroid, Alert, ActivityIndicator, Keyboard} from "react-native";
+import { View , Text, TouchableHighlight, TextInput, ToastAndroid, Alert, ActivityIndicator, Keyboard} from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { StatusBar } from "expo-status-bar";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {getFirestore, doc,updateDoc, } from "firebase/firestore";
@@ -62,10 +62,10 @@ export default function ChangeAccountName({route}){
 
     return(
         <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)", justifyContent:"space-between"}}>
-             <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
 
-            <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+            <View style={{height:60, marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
 
                 <MaterialIcons name="edit-document"  color={"rgba(240, 240, 240, 1)"} size={30}/>
 

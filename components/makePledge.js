@@ -167,19 +167,19 @@ export default function Pledge(){
             </View>
 
             <View style={{marginVertical:30,justifyContent:"space-between",flexDirection:"row"}}>
-                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:10,alignItems:"center",fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
                 <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="numeric" placeholder={ "Amount"} style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:"rgba(240, 240, 240, 1)",padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center"}}>
                 <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)"}}>Mode of Payment</Text>
-                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor:"rgba(50, 50, 50, 1)",borderRadius:10, width:120,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? " rgba(100, 200, 255, 1)" : "rgba(240, 240, 240, 1)"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
+                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor:"rgba(50, 50, 50, 1)",borderRadius:10, width:150,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? " rgba(100, 200, 255, 1)" : "rgba(240, 240, 240, 1)"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center",marginVertical:30}}>
                 <Text style={{fontSize:18,marginRight:20,color:"rgba(240, 240, 240, 1)"}}>Select Date</Text>
                 <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"} onPress={()=> {setShowPicker(true); setDisplay(true)}}/>
-                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1, height:40,padding:10,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}>{formattedDate}</Text>}
+                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1,borderRadius:5, height:40,padding:10,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}>{formattedDate}</Text>}
             </View>
 
             <View>

@@ -1,12 +1,14 @@
 import React,{useState,useEffect} from "react";
-import { TextInput, View, Text, Image, TouchableOpacity,Alert,ActivityIndicator, StatusBar,Platform, ScrollView} from "react-native";
-
+import { TextInput, View, Text, Image,ToastAndroid, TouchableOpacity,Alert,ActivityIndicator, Platform, ScrollView} from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs,deleteDoc, } from "firebase/firestore";
 import { getAuth, } from 'firebase/auth';
 
+const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'my_images';  
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -34,26 +36,68 @@ export default function Events({navigation, route}){
         if (status !== 'granted') {
           Alert.alert('Permission denied', 'Permission to access the camera roll is required!');
         }
-      };
-
-      //function to pik image
-      const pickImage = async () => {
-        try {
-          const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            
-          });
-            setSelectedImage(result.assets[0].uri);
-          
-        } catch (error) {
-          console.error('Error picking image: ', error);
+           // Request camera permissions
+        const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
+        if (cameraStatus.status !== 'granted') {
+        Alert.alert('Permission denied', 'Permission to access the camera is required!');
         }
       };
-    
 
+      //function to pick image
+      const pickImage = async (selected) => {
+        let result;
+        try {
+            if(selected === "gallery"){
+                result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+    
+          })
+        }else if (selected === "camera"){
+                result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+                })
+            }
+          
+          if (!result.canceled) {
+            const uri = result.assets[0].uri; // URI of the selected image
+    
+            // Create a form data object to upload to Cloudinary
+            const formData = new FormData();
+            formData.append('file', {
+              uri: uri,
+              type: 'image/jpeg',  // Make sure to set the correct mime type (e.g., image/jpeg, image/png)
+              name: uri.split('/').pop(),
+            });
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            ToastAndroid.show('Loading...', ToastAndroid.SHORT)
+            // Upload the image to Cloudinary
+            const response = await fetch(CLOUDINARY_URL, {
+              method: 'POST',
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data.secure_url) {// The uploaded image URL from Cloudinary
+              console.log('Uploaded Image URL:', data.secure_url);
+              setSelectedImage(data.secure_url);
+              ToastAndroid.show('Loading...', ToastAndroid.LONG)
+            } else {
+              console.log('Error', 'Failed to upload image to Cloudinary')
+              Alert.alert('Error', 'Failed to upload image to Cloudinary');
+            }
+          }
+        } catch (error) {
+          console.log('Error picking or uploading image: ', error);
+          Alert.alert('Error', 'An error occurred while uploading the image.');
+        }
+      };
 
 
 
@@ -168,7 +212,7 @@ export default function Events({navigation, route}){
             setSelectedImage(null)
             setSubmitting(false);
     
-            Alert.alert("Success", "Event Created Successful!");
+            ToastAndroid.show("Event Created Successfully!", ToastAndroid.SHORT);
             navigation.replace("Church Admin")
               
             } else {
@@ -219,7 +263,7 @@ export default function Events({navigation, route}){
                         }
                     });
             
-                    Alert.alert("Success","Event updated successfully!")
+                    ToastAndroid.show("Event updated successfully!", ToastAndroid.SHORT)
 
                     setSubmitting(false)
                     navigation.replace("Church Admin")
@@ -276,9 +320,9 @@ export default function Events({navigation, route}){
 
     return(
         <View style={{flex:1, justifyContent:"space-between" ,backgroundColor:"rgba(30, 30, 30, 1)"}}>
-                <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"} />
+                   <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
-                    <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                    <View style={{height:70,width:"100%",marginTop:20, alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
                          <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
                          <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
@@ -292,9 +336,17 @@ export default function Events({navigation, route}){
                     
                     <Image source={(selectedImage  || image) ? { uri: selectedImage || image } : require("../assets/new1.jpg")} style={{  height: 250 , width:420, alignSelf:"center", borderRadius:15 }} resizeMode="cover"/>
                    
-                    <TouchableOpacity onPress={pickImage} style={{position:"absolute", right:10, backgroundColor: 'rgba(0, 0, 0, 0.5)',width:selectedImage || image ? 90 :140, height:45, bottom:10, flexDirection:"row",borderRadius:10,paddingHorizontal:5, justifyContent:"space-between",alignItems:"center"}} >
+                    <TouchableOpacity onPress={() => { Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
+                        { text: "CAMERA", onPress: () => {pickImage("camera")}},
+                        { text: "GALLERY", onPress: () => {pickImage("gallery")}},])
+                    
+                    }}
+                         style={{position:"absolute", right:10, backgroundColor: 'rgba(0, 0, 0, 0.5)',width:selectedImage || image ? 95 :145, height:45, bottom:10, flexDirection:"row",borderRadius:10,paddingHorizontal:5, justifyContent:"space-around",alignItems:"center"}} >
+                        
                         <Text style={{color:"white", fontSize: selectedImage || image ? 18:15 ,fontWeight:"800"}}>{selectedImage || image ? "Edit":"Upload photo"}</Text>
-                        <Ionicons name="camera-outline" size={33} color={"white"}/>
+                        
+                        <Ionicons name="camera-outline" size={30} color={"white"}/>
+
                     </TouchableOpacity>
                     
 

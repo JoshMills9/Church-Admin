@@ -1,5 +1,6 @@
 import React,{useState} from "react";
-import { View, StatusBar,Text ,useWindowDimensions} from "react-native";
+import { View, Text ,useWindowDimensions} from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import { ButtonGroup } from '@rneui/themed';
 import Animated, {
@@ -48,9 +49,9 @@ export default function MakePledge({navigation, route}){
     return(
         <View style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
 
-            <StatusBar barStyle={"light-content"} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
-                <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginBottom:20}}>
+                <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
                             <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
                                 <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
