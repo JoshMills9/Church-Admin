@@ -42,7 +42,7 @@ export default function Home(){
     const [NoOfEvent, setNoOfEvent] = useState(null)
     const auth = getAuth();
     const db = getFirestore();
-
+    const [NoOfPleges, setNoOfPledges] = useState(null);
 
 
     const [loading,setLoading] = useState(false)
@@ -98,7 +98,9 @@ export default function Home(){
         
 
     const getMember = async (userEmail) => {
+        console.log("member")
         let update = { };
+
         try {
             // Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
@@ -124,19 +126,6 @@ export default function Home(){
                 };
                 handleSaveChurchDetails();
 
-                 // Fetch user
-                    {/*const userDetailsDoc = doc(db, 'UserDetails', church?.id);
-                    const userCollectionRef = collection(userDetailsDoc, 'Users');
-                    const userSnapshot = await getDocs(userCollectionRef);
-
-                    if (!userSnapshot.empty) {
-                        const userData = userSnapshot.docs.map(doc => ({
-                            id: doc.id,
-                            ...doc.data().User
-                        }));
-                        setUser(userData.find(item => item.email === userEmail))
-                        setNoOfUsers(userData)
-                    }*/}
                
 
                 // Fetch events
@@ -211,9 +200,24 @@ export default function Home(){
                     update.NewMember = newMembers.length;
                 }
 
+                 // Fetch pledges
+                 try{
+                    const pledgesCollectionRef = collection(userDetailsDocRef, "Pledges");
+                    const pledgesSnapshot = await getDocs(pledgesCollectionRef);
 
-
-
+                    if (!pledgesSnapshot.empty) {
+                        const Data = pledgesSnapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data().Pledges,
+                        }));
+                        const pledge = Data.filter(i => i.Redeemed === false)
+                        setNoOfPledges(pledge.length);
+                        update.pledges = pledge.length;
+                    
+                        }
+                    }catch(error){
+                        console.log("Error fetching PLedges", error)
+                    }
 
 
                     // Helper function to remove ordinal suffix (st, nd, rd, th)
@@ -245,6 +249,8 @@ export default function Home(){
                     const dayOfYear = Math.floor(diff / oneDay);
                     return Math.ceil((dayOfYear + 1) / 7); // Calculate the week number
                 };
+
+
 
                 // Fetch Attendance
                 try {
@@ -305,19 +311,37 @@ export default function Home(){
 
                             // Get the week number for the attendance date
                             const attendanceWeek = getWeekOfYear(attendanceDate);
+                           
 
-                            return attendanceWeek ===currentWeek
+                            return attendanceWeek === currentWeek;
                     });
                     if(newAttendance){
+                      
                         const attendanceData = attendanceSnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data().AttendanceList,
                         }));
+                      
+                        const attendance = attendanceData.filter(i => newAttendance.map(a => a.id).includes(i.id));
+                        
+                        let totalNumericCount = 0;  // Initialize the counter for numeric keys
 
-                        //setAttendance(attendanceList.length)
-                        console.log("new", attendanceData.length)
+                                // Loop through each object in attendance array
+                                attendance.forEach(item => {
+                                // Loop through each top-level key in the object (skip nested objects)
+                                Object.keys(item).forEach(key => {
+                                    // Only count the numeric keys at the top level of the object
+                                    if (!isNaN(key) && typeof item[key] === 'object') {
+                                    totalNumericCount++;  // Increment for each numeric key at the top level
+                                    }
+                                });
+                            });
+                  
+                            
+                            setAttendance(totalNumericCount)
+                            update.attendance = totalNumericCount;
                         }
-
+                     
                     }
                     } catch (error) {
                         console.error("Error fetching or processing attendance data:", error);
@@ -330,8 +354,9 @@ export default function Home(){
                 return;
             };
 
+    
             
-            const handleSave = async () => {
+            const handleSave = async (update) => {
                 try {
                 await AsyncStorage.setItem('update', JSON.stringify(update));
             
@@ -339,7 +364,7 @@ export default function Home(){
                 console.error('Failed to save the data to the storage', e);
                 }
             };
-            handleSave();
+            handleSave(update);
 
         }catch(error){
             ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
@@ -379,7 +404,7 @@ export default function Home(){
 
     const onRefresh = () => {
         setrefreshing(true);
-      
+        ToastAndroid.show("Loading updates, please wait!", ToastAndroid.SHORT)
         // Your refresh logic here
         getMember(username); // Example: Fetch new data from an API
       
@@ -453,7 +478,7 @@ export default function Home(){
                                             ListEmptyComponent={()=> ( 
                                                 <ImageBackground source={ updated && updated.event && updated.event.length > 0 ? {uri : updated?.event[0]?.Image} : require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:100,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event ? "Upcoming" :  "Create"}</Text>
+                                                                <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event ? "Upcoming" :  "Create"}</Text>
                                                                 { !updated?.event && <MaterialIcons name="edit" size={20} color={"white"} />}
                                                             </TouchableOpacity>
 
@@ -474,8 +499,8 @@ export default function Home(){
                                                             <Image source={{uri: item?.Image }}  style={{width:"100%",height:140,borderRadius:15}} resizeMode="cover" />
 
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate , username: username, ChurchName: ChurchName, events: events})}} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:18,fontWeight:"800",color:"white", marginRight:10}}>Edit</Text>
-                                                                <MaterialIcons name="edit" size={24} color={"white"} />
+                                                                <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}}>edit</Text>
+                                                                <MaterialIcons name="edit" size={20} color={"white"} />
                                                             </TouchableOpacity>
 
                                                             <View style={{position:"absolute", width:150,justifyContent:"center",alignItems:"center",bottom:5,right:5,borderRadius:10, height:35,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
@@ -558,7 +583,7 @@ export default function Home(){
                                                 <Text style={styles.updateTxt}>Attendants/week:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{attendance ? attendance : updated?.Attendance ||  "-"}</Text>
+                                                <Text style={styles.updateTxt}>{attendance ? attendance : updated?.attendance ||  "-"}</Text>
                                             </View>
                                         </View>
 
@@ -599,10 +624,10 @@ export default function Home(){
 
                                         <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
                                             <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Pledges/month:</Text>
+                                                <Text style={styles.updateTxt}>Pledges:</Text>
                                             </View>
                                             <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{"-"}</Text>
+                                                <Text style={styles.updateTxt}>{NoOfPleges ? NoOfPleges : updated?.pledges || "-"}</Text>
                                             </View>
                                         </View>
                                     </View>

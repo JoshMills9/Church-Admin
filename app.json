@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "Church-Admin",
+    "name": "Church Administrator",
     "slug": "Church-Admin",
+    "platforms": ["ios", "android"],
     "version": "2.0.0",
     "orientation": "default",
     "icon": "./assets/adaptive-icon.png",

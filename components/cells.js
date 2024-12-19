@@ -7,59 +7,18 @@ import { getFirestore, collection, getDocs, doc} from "firebase/firestore";
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function AttendanceList ({navigation, route}){
+export default function CellList ({navigation, route}){
     const {username, ChurchName, events} = route.params || {}
 
     const db = getFirestore();
-    const [attendance, setAttendance] = useState([]);
+    const [cells, setCell] = useState([]);
     const [viewList , setViewList] = useState(null);
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
-    const [Show, setshow] = useState(true);
-    const [formattedDate, setFormattedDate] = useState(null)
+
     const [selected, setSelected] = useState(false)
     const [seen, setSeen] = useState(true)
   
 
-       // Handle date change
-       const onChange = (event, selectedDate) => {
-           if(event.type === 'dismissed') {
-               setShow(false)
-               setSelected(false);
-               setFormattedDate(null)
-               return;
-           }else{
-               const currentDate = selectedDate || date;
-               setShow(false);
-               setDate(currentDate);
-           };
-       }
-
-
-       // Show the date picker
-       const showDatePicker = () => {
-           setShow(true);
-           setSelected(true);
-       };
-      
-        const monthsOfYear = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const dayOfMonth = date.getDate();
-        const monthOfYear = monthsOfYear[date.getMonth()];
-        const year = date.getFullYear();
-    
-        let suffix = 'th';
-        if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
-            suffix = 'st';
-        } else if (dayOfMonth === 2 || dayOfMonth === 22) {
-            suffix = 'nd';
-        } else if (dayOfMonth === 3 || dayOfMonth === 23) {
-            suffix = 'rd';
-        }
-       
-        useEffect(()=>{
-            setFormattedDate(`${dayOfMonth}${suffix} ${monthOfYear}, ${year}`)
-        },[show, date])
-
+     
 
     useEffect(()=>{
         const attendanceList = async(userEmail) =>{
@@ -81,30 +40,28 @@ export default function AttendanceList ({navigation, route}){
 
                 const userDetailsDocRef = doc(db, 'UserDetails', church?.id);
 
-                const AttendanceCollectionRef = collection(userDetailsDocRef, 'Attendance');
+                const AttendanceCollectionRef = collection(userDetailsDocRef, 'Cells');
                 const attendanceSnapshot = await getDocs(AttendanceCollectionRef);
 
                 // Check if snapshot is empty
                 if (attendanceSnapshot.empty) {
-                    console.log("No attendance data found in the snapshot.");
+                    console.log("No cell data found in the snapshot.");
                     setSeen(false)
                     return;
                 }
 
-                const attendanceData = attendanceSnapshot.docs.map(doc => ({
+                const cellData = attendanceSnapshot.docs.map(doc => ({
                     id: doc.id,
-                    ...doc.data().Date,
-                    ...doc.data().Department,
-                    ...doc.data().AttendanceList
+                    ...doc.data().found,
+                    ...doc.data().Cell,
                      // Assuming the date is stored under "Date"
                 }));
-
-
-                // Set the attendance count for the current week
-                setAttendance(attendanceData);
+                setSeen(false)
+                setCell(cellData);
             }
         } catch (error) {
-                console.error("Error fetching or processing attendance data:", error);
+                setSeen(false)
+                console.error("Error fetching or processing cell data:", error);
             }
           
         }
@@ -112,60 +69,7 @@ export default function AttendanceList ({navigation, route}){
     }, [ ])
 
 
-    const selectList = () =>{
-
-        const date = new Date();
-        const currentWeek = getWeekOfYear(date); // Get the current week number of the year
-        
-
-        const newAttendance = attendanceData.filter(attendance => {
-            if (!attendance.formattedDate) {
-                console.warn(`Missing formattedDate for attendance with ID: ${attendance.id}`);
-                return false; // Skip if no formattedDate is present
-            }
-
-            // Clean the date string (e.g. "7th Dec, 2024" -> "7 Dec, 2024")
-            const cleanedDateString = removeOrdinalSuffix(attendance.formattedDate);
-  
-
-            // Split the cleaned date string into day, month, year
-            const [day, month, year] = cleanedDateString.split(' ');
-
-               // Remove any trailing commas or spaces from the month part
-            const cleanMonth = month.replace(',', '').trim();
-
-
-            // Convert the month name to a number (e.g. "Dec" -> 12)
-            const monthNumber = monthNameToNumber(cleanMonth);
-
-            if (!monthNumber) {
-                console.warn(`Invalid month name: ${month}`);
-                return false; // Skip if month is invalid
-            }
-
-            // Reformat the date into "YYYY-MM-DD" format for reliable parsing
-            const formattedDateString = `${year}-${monthNumber.toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
-        
-
-            // Parse the cleaned and formatted date string into a Date object
-            const attendanceDate = new Date(formattedDateString);
-
-            // Check if the date is valid
-            if (isNaN(attendanceDate.getTime())) {
-                console.warn(`Invalid date found: ${attendance.formattedDate}`);
-                return false; // Skip invalid dates
-            }
-
-            // Get the week number for the attendance date
-            const attendanceWeek = getWeekOfYear(attendanceDate);
-
-            // Filter the attendance based on the week number
-            return attendanceWeek === currentWeek;
-        });
-
-    }
-
-
+   
     //handle list expansion
         const handlePress = (selectedIndex) => {
             if (viewList === selectedIndex) {
@@ -184,33 +88,21 @@ export default function AttendanceList ({navigation, route}){
                 <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
                             <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('markAttendance',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Church Attendance</Text>
-                                <Ionicons name="book-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('Update Cell',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>All Cells</Text>
+                                <Ionicons name="people-outline" size={25} color={"rgba(240, 240, 240, 1)"} />
 
                             </View>
                 </View>
 
 
                 <View style={{flex:1}}>
-                    <View style={{flexDirection:"row",justifyContent:"center", alignItems:"center",marginBottom:10}}>
-                        <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)"  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
-                            <>
-                            <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:13}}>{selected ? formattedDate : "Select attendance date"}</Text>
 
-                            <MaterialIcons name={"keyboard-arrow-down"} size={25} color="gray" />
-                            </>    
-                        </TouchableHighlight>
-                    </View>
-
-                    <View style={{flex:1 , justifyContent: attendance?.length !== 0 ? "flex-start" : "center" , alignItems: attendance?.length !== 0  ? "stretch" :"center"}}>
-                            {attendance?.length !== 0 ?
+                    <View style={{flex:1 , justifyContent: cells?.length !== 0 ? "flex-start" : "center" , alignItems: cells?.length !== 0  ? "stretch" :"center"}}>
+                            {cells?.length !== 0 ?
 
                             <FlatList 
-                                data={attendance?.filter(i => {
-                                    // Ensure formattedDate exists and matches the search term (case-insensitive)
-                                    return formattedDate ? i.formattedDate.toLowerCase().includes(formattedDate?.toLowerCase()) : i.formattedDate && i.department;
-                                })}
+                                data={cells}
                                 key={(item)=> item.id}
 
                                 ListEmptyComponent={()=> 
@@ -230,11 +122,11 @@ export default function AttendanceList ({navigation, route}){
                                                 <>
                                                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                                                     <Text style={{color:"white", fontSize:16}}>
-                                                        Date: {item.formattedDate}
+                                                        {item.cellName.toUpperCase()}
                                                     </Text>
                                                     <View style={{flexDirection:"row", }}>
                                                         <Text style={{color:"white", fontSize:16}}>
-                                                           {item.department?.toUpperCase()}
+                                                           {item.cellLocation.toUpperCase()}
                                                         </Text>
 
                                                         <MaterialIcons name={viewList ? "keyboard-arrow-down" :"keyboard-arrow-right"} size={25} color="gray" />
@@ -245,7 +137,7 @@ export default function AttendanceList ({navigation, route}){
                                                 (viewList === index) && (
                                                     <View style={{margin:10}}>
                                                         {Object.keys(item).map((key, idx) => {
-                                                            if (key !== "formattedDate" && key !== "id" && key !== "department") { // Skip non-member keys
+                                                            if (key !== "cellLocation" && key !== "id" && key !== "cellName") { // Skip non-member keys
                                                                 const memberData = item[key]; // Access member at item[key]
                                                                 const firstName = memberData?.FirstName;
                                                                 const lastName = memberData?.SecondName;
@@ -266,17 +158,13 @@ export default function AttendanceList ({navigation, route}){
                             />
                             :
                             <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                                <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Attendance"}</Text>
+                                <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Cells"}</Text>
                             </View> 
 
                             }
                      </View>       
                 </View>
 
-
-            {show && (<DateTimePicker testID="dateTimePicker" value={date} mode={"date"} 
-             display={"calendar"} onChange={onChange} />
-            )}
         </View>
     )
 }

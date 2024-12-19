@@ -156,34 +156,39 @@ export default function SendSMS({navigation, route}){
       const [messages, setMessages] = useState([ ]);
 
       
-    
-        const handleSave = async (m) => {
-            try {
-             await AsyncStorage.setItem('SMS Receipt', JSON.stringify(m ? m : messages));
-                
-            } catch (e) {
-            console.error('Failed to save the data to the storage', e);
-            }
-        };
-        
-    
+      const handleSave = async (message) => {
+        try {
+            
+            await AsyncStorage.setItem('SMS Receipt', JSON.stringify(message));
+            
+        } catch (e) {
+        console.error('Failed to save the data to the storage', e);
+        }
 
-       //get sms sent from storage
-    useEffect(()=>{
+}
+
+
+
+
+        //get sms sent from storage
+        useEffect(()=>{
         const getSms = async () => {
             try {
-              const value = await AsyncStorage.getItem('SMS Receipt');
-              if (value !== null) {
+            const value = await AsyncStorage.getItem('SMS Receipt');
+            if (value !== null) {
                 setMessages(JSON.parse(value))
-              } else {
+            } else {
                 return
-              }
-            } catch (error) {
-              console.error('Error checking sms', error);
             }
-          };
-          getSms();
-    }, [])
+            } catch (error) {
+            console.error('Error checking sms', error);
+            }
+        };
+        getSms();
+        }, [])
+
+
+
       
       
      
@@ -458,7 +463,7 @@ export default function SendSMS({navigation, route}){
                     <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
                         <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", minHeight:45, elevation:1,backgroundColor:"rgba(50, 50, 50, 1)",color:"rgba(240, 240, 240,1)", borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
-                        <TouchableOpacity style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{handleSave(); sendSMS()}} >
+                        <TouchableOpacity style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{handleSave(messages); sendSMS()}} >
                             <Ionicons name="arrow-forward-circle-sharp" size={50}  color={"rgba(240, 240, 240, 0.5)"}/>
                         </TouchableOpacity>
                     </View>
@@ -467,7 +472,7 @@ export default function SendSMS({navigation, route}){
 
             <View {...panResponder.panHandlers}  style={[{position:"absolute",width:120, height:55,
                 backgroundColor:"white",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
-                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() =>{handleSave(); navigation.navigate("Sms Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
+                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() =>{handleSave(messages); navigation.push("Sms Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                             <Text style={{marginRight:5}}>Receipts</Text>
                             <Ionicons name={"receipt-outline"} size={24}  color={"rgba(50, 50, 50, 1)"} />

@@ -29,7 +29,7 @@ export default function MakePledge({navigation, route}){
         transform: [
             {
                 translateX: withTiming(
-                    step === 0 ? 0 : step === 1 ? -screenWidth : screenWidth
+                    selectedIndex === 0 ? 0 : selectedIndex === 1 ? -screenWidth : screenWidth
                 ),
             },
         ],
@@ -39,7 +39,7 @@ export default function MakePledge({navigation, route}){
         transform: [
             {
                 translateX: withTiming(
-                    step === 1 ? 0 : step === 0 ? screenWidth : -screenWidth
+                    selectedIndex === 1 ? 0 : selectedIndex=== 0 ? screenWidth : -screenWidth
                 ),
             },
         ],
@@ -69,7 +69,7 @@ export default function MakePledge({navigation, route}){
                         <ButtonGroup
                             buttons={['MAKE PLEDGE','ALL PLEDGES']}
                             selectedIndex={selectedIndex}
-                            onPress={(value) => {setSelectedIndex(value); setStep(selectedIndex === 1 ? selectedIndex-1: selectedIndex+1)}}
+                            onPress={(value) => {setSelectedIndex(value)}}
                             containerStyle={{  elevation:5, borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", borderColor:"gray", alignSelf:"center"}}
                             selectedButtonStyle={{backgroundColor:" rgba(100, 200, 255, 0.8)"}}                      
                         />

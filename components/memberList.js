@@ -130,7 +130,7 @@ export default function MemberList ({route}){
             </View>
 
             <View style={{paddingHorizontal:15, marginBottom:10}}>
-                <Searchbar  elevation={2}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"white",marginBottom:5}}   value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
+                <Searchbar  elevation={2}  style={{backgroundColor:"rgba(50, 50, 50, 1)", color:"rgba(240, 240, 240, 1)",marginBottom:5}} cursorColor={"gray"}  value={search}  iconColor="rgba(240, 240, 240, 1)" onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
             </View>
 
             <View style={{flex:1 , justifyContent: showMembers?.length !== 0 ? "flex-start" : "center" , alignItems:"center"}}>

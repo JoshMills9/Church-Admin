@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert, ScrollView} from "react-native";
+import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert, ScrollView, ToastAndroid} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -87,6 +87,11 @@ export default function Pledge(){
   const handleSubmit = async (email) => {
     try {
 
+        if(!fullName || !pledgeTitle){
+            setSubmitting(false)
+            return ToastAndroid.show("Please fill all fields", ToastAndroid.LONG)
+        }
+
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
         const querySnapshot = await getDocs(tasksCollectionRef);
@@ -121,6 +126,7 @@ export default function Pledge(){
             Amount: Amount || "N/A",
             ModeOfPayment : payment || "N/A",
             Duration : duration || "N/A",
+            Redeemed: false,
             createdAt: new Date().getTime(),
         };
 
@@ -137,7 +143,7 @@ export default function Pledge(){
         setDisplay(false)
         setSubmitting(false);
 
-        Alert.alert("Success", "Pledge made Successfully!");
+        ToastAndroid.show("Pledge made Successfully!", ToastAndroid.LONG);
           
         } else {
             throw new Error("No church details found in database");
@@ -187,9 +193,9 @@ export default function Pledge(){
             </View>
 
 
-            <TouchableOpacity onPress={()=> {setSubmitting(true);handleSubmit(username)}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
+            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={()=> {setSubmitting(true);handleSubmit(username)}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
                 {submitting ?  <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
-            </TouchableOpacity>
+            </TouchableHighlight>
 
           {mode && Mode()} 
           {showPicker && (

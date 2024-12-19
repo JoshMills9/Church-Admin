@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text, ScrollView,Pressable, ToastAndroid} from "react-native";
+import { View, TouchableOpacity, Text,ActivityIndicator,Keyboard, ScrollView,Pressable, ToastAndroid, TextInput, TouchableHighlight} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import {StatusBar} from 'expo-status-bar'
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs } from "firebase/firestore";
+import { BottomSheet } from 'react-native-btr';
 
 
 
@@ -12,12 +13,128 @@ export default function ModalScreen({route}){
     const {username, ChurchName, events} = route.params
     const navigation = useNavigation();
     const [isActive, setActive] = useState(true)
+    const [create, setCreate] = useState(false);
+    const [bottomTab, setBottomTab] = useState(true)
+    const [showSubmitting, setSubmitting] = useState(false)
+    const [cellName, setCellName] = useState("");
+    const [cellLocation, setCellLocation] = useState("")
+    const db = getFirestore()
+
+
+
+      //Function to handle submit
+      const handleSubmit = async (Email) => {
+        setSubmitting(true);
+        ToastAndroid.show("Creating...", ToastAndroid.SHORT)
+
+        try {
+    
+            // Step 2: Fetch church details based on user email
+            const tasksCollectionRef = collection(db, 'UserDetails');
+            const querySnapshot = await getDocs(tasksCollectionRef);
+    
+            if (!querySnapshot.empty) {
+                // Filter tasks to find matching church based on user email
+                const tasks = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data().userDetails
+                }));
+    
+                const church = tasks.find(item => item.email === Email);
+    
+                if (!church) {
+                    throw new Error("Church details not found for the logged-in user");
+                }
+    
+                  // Step 3: Validate and submit member registration
+                if (!cellName || !cellLocation) {
+                    throw new Error("Cell Name and Location must be filled!");
+                }
+
+                  // Reference to the UserDetails document
+            const userDetailsDocRef = doc(db, 'UserDetails', church.id);
+    
+            // Reference to the Members subcollection within UserDetails
+            const membersCollectionRef = collection(userDetailsDocRef, 'Cells');
+    
+            // Example data for a member document within the subcollection
+            const cell = {
+                cellName,
+                cellLocation,
+            };
+    
+            // Set a document within the Members subcollection
+            await setDoc(doc(membersCollectionRef), {Cell: cell});
+
+            // Clear form fields after successful registration
+            setCellName("");
+            setCellLocation("");
+            setSubmitting(false);
+            toggleBottomSheet();
+
+            ToastAndroid.show(`${cellName} cell created successfully!`, ToastAndroid.LONG);
+
+            navigation.navigate("Update Cell",  {username: username, ChurchName: ChurchName,events: events})   
+            } else {
+                throw new Error("No church details found in database");
+            }
+    
+        
+    
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            ToastAndroid.show(`Creation Error: ${error.message}`, ToastAndroid.LONG);
+            setSubmitting(false);
+        }
+    };
+    
+
+
+   
+
+    const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
+
+    const toggleBottomSheet = () => {
+      setBottomSheetVisible(!isBottomSheetVisible);
+    };
+
+
   
+    const createCell = () => {
+        return (
+            <BottomSheet visible={isBottomSheetVisible} onBackButtonPress={toggleBottomSheet} onBackdropPress={toggleBottomSheet} >
+                <View style={{borderRadius:15,height:240,backgroundColor:"rgba(30, 30, 30, 1)",padding:10, width:"100%" ,justifyContent:"space-evenly"}}>
+                    <Text style={{color:"white",fontSize:16, alignSelf:"center",fontWeight:"700"}}>CREATE CELL</Text>
+                    <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellName} onChangeText={(txt) => setCellName(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}}  cursorColor={"lightgray"} placeholderTextColor={"white"}  placeholder="Cell name"/>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellLocation} onChangeText={(txt) => setCellLocation(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}} cursorColor={"lightgray"} placeholderTextColor={"white"}  placeholder="Location"/>
+                    </View>
+                    <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center",}}>
+                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={toggleBottomSheet}>
+                            <Text style={{color:"red",fontSize:16}}>Cancel</Text>
+                        </TouchableHighlight>
+
+                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {toggleBottomSheet() ; navigation.navigate("Update Cell",  {username: username, ChurchName: ChurchName,events: events})}}>
+                            <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>View cells</Text>
+                        </TouchableHighlight>
+
+                        <TouchableHighlight  style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {Keyboard.dismiss(); handleSubmit(username)}} >
+                            {!showSubmitting ? <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:16}}>Create</Text>
+                            :
+                            <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
+                            }
+                        </TouchableHighlight>
+
+                    </View>
+                </View>
+            </BottomSheet>
+        )
+    }
    
 
  
     return (
-        <View style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View  style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
     
             <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
 
@@ -30,7 +147,7 @@ export default function ModalScreen({route}){
                     </View>
 
 
-                    <ScrollView>
+                    <ScrollView onScrollBeginDrag={() => setCreate(false)}>
 
                     <View style={{padding:10,}}>
 
@@ -59,7 +176,7 @@ export default function ModalScreen({route}){
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Attendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("markAttendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
                                         <Ionicons name="book-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Record Church Attendance</Text>
                                 </TouchableOpacity>
@@ -105,7 +222,7 @@ export default function ModalScreen({route}){
                             </>
 
                             <>
-                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={() => toggleBottomSheet()} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
                                         <Ionicons name="add" color={"rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Create Cell</Text>
                                 </TouchableOpacity>
@@ -159,6 +276,12 @@ export default function ModalScreen({route}){
                             
                     </View>
                 </View>
+                
+
+
+              {isBottomSheetVisible && createCell()}
+                
+              
         </View>
     );
 };

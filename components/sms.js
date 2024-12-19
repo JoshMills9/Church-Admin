@@ -25,7 +25,7 @@ export default function SendSMS({navigation, route}){
     const [search, setSearch] = useState("")
     const [sms, setSms] = useState("")
     const [show, setShow] = useState(false)
-    const [Members, setMembers] = useState('')
+    const [church, setChurchName] = useState()
     const [showMembers, setshowMembers] = useState([])
     const [messageStatus, setMessageStatus] = useState(false)
     const db = getFirestore()
@@ -35,7 +35,11 @@ export default function SendSMS({navigation, route}){
     const [smsList, setSmsList] = useState([]);
     const [seen, setSeen] = useState(true)
 
-         const getMember = async(email) => {
+    
+    
+    
+    
+    const getMember = async(email) => {
    
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -49,11 +53,12 @@ export default function SendSMS({navigation, route}){
             }));
 
             const church = tasks.find(item => item.email === email);
+            setChurchName(church?.ChurchName)
 
             try {
                 // Reference to the UserDetails document
                 const userDetailsDocRef = doc(db, 'UserDetails', church.id);
-        
+
                 // Reference to the Members subcollection within UserDetails
                 const membersCollectionRef = collection(userDetailsDocRef, 'Members');
         
@@ -105,12 +110,12 @@ export default function SendSMS({navigation, route}){
 
 
 
-    const defaultHeader = `•| ${ChurchName?.ChurchName?.toUpperCase()} |•`;
+    const defaultHeader = `•| ${church?.toUpperCase()} |•`;
 
   
     const sendSMS = async () => {
 
-        if(!ChurchName?.ChurchName){
+        if(!church){
             return ToastAndroid.show("No Church Name Found!, Visit Home Screen and try again!",  ToastAndroid.LONG)
         }else if(sms === "" ){
             return ToastAndroid.show("Please type a message to send!", ToastAndroid.LONG)
@@ -155,25 +160,17 @@ export default function SendSMS({navigation, route}){
       date = `${dayOfMonth1}${suffix} ${monthOfYear1} , ${year1}`
       const [messages, setMessages] = useState([ ]);
 
-     
-    
-        const handleSave = async (m) => {
-            if(m?.length !== 0){
+        const handleSave = async (message) => {
                 try {
-                    await AsyncStorage.setItem('SMS', JSON.stringify( m || messages));
+                    
+                    await AsyncStorage.setItem('SMS', JSON.stringify(message));
                     
                 } catch (e) {
                 console.error('Failed to save the data to the storage', e);
                 }
-            }else{
-                try {
-                    await AsyncStorage.setItem('SMS', JSON.stringify(m));
-                    
-                } catch (e) {
-                console.error('Failed to save the data to the storage', e);
-            }
+       
         }
-        };
+   
         
     
 
@@ -369,7 +366,7 @@ export default function SendSMS({navigation, route}){
                                 </View>
 
 
-                            <View style={{ width:"10%",backgroundColor:"rgba(50, 50, 50, 1)",height:39,alignItems:"center",justifyContent:"center",elevation:4, borderTopRightRadius:15,borderBottomRightRadius:15}}>
+                            <View style={{ width:"10%",backgroundColor:"rgba(50, 50, 50, 1)",height:39.5,alignItems:"center",justifyContent:"center",elevation:4, borderTopRightRadius:15,borderBottomRightRadius:15}}>
                                 <TouchableOpacity onPress={()=> setshow(true)}>
                                     <Ionicons name="search" size={28} color={"rgba(240, 240, 240, 1)"}/>
                                 </TouchableOpacity>
@@ -467,7 +464,7 @@ export default function SendSMS({navigation, route}){
                     <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
                         <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", minHeight:45, elevation:1,backgroundColor:"rgba(50, 50, 50, 1)",color:"rgba(240, 240, 240,1)", borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
-                        <TouchableOpacity   style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{handleSave(); sendSMS()}} >
+                        <TouchableOpacity   style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{handleSave(messages); sendSMS()}} >
                             <Ionicons name="arrow-forward-circle-sharp" size={50}  color={"rgba(240, 240, 240, 0.5)"}/>
                         </TouchableOpacity>
                     </View>
@@ -476,7 +473,7 @@ export default function SendSMS({navigation, route}){
 
             <View {...panResponder.panHandlers}  style={[{position:"absolute",width:120, height:55,
                 backgroundColor:"white",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
-                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() =>{handleSave(); navigation.navigate("Messages", {username: username, ChurchName: ChurchName, events: events})}} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
+                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() =>{handleSave(messages); navigation.push("Messages", {username: username, ChurchName: ChurchName, events: events})}} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                             <Text style={{marginRight:5}}>SMS</Text>
                             <Ionicons name={"chatbox-ellipses-outline"} size={24}  color={"rgba(50, 50, 50, 1)"} />

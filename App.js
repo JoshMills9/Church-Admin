@@ -14,7 +14,7 @@ import UpdateMemberInfo from './components/memberInfoUpdate';
 import MemberList from './components/memberList';
 import SendSMS from './components/sms';
 import Details from './components/details';
-import Attendance from './components/attendance';
+import UpdateCell from './components/cellScreen';
 import SmsReceipt from './components/smsReceipt';
 import Events from './components/events';
 import makePledgeScreen from './components/makePledgeScreen';
@@ -24,6 +24,9 @@ import { Payments } from './components/payments';
 import AttendanceList from './components/attendanceList';
 import SmsList from './components/smsList';
 import Receipts from './components/receipts';
+import MarkAttendance from './components/markAttendanceScreen';
+import CellList from './components/cells';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -81,15 +84,19 @@ export default function MyStack (){
       <Stack.Screen name='Update Member Data' component={UpdateMemberInfo} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='MemberList' component={MemberList} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
-
-      <Stack.Screen name='Attendance' component={Attendance} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
+      <Stack.Screen name='markAttendance' component={MarkAttendance} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
+
       <Stack.Screen name='AttendanceList' component={AttendanceList} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='Details' component={Details} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='Receipt' component={SmsReceipt} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
       
+      <Stack.Screen name='Update Cell' component={UpdateCell} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
+      
+      <Stack.Screen name='Cell List' component={CellList} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
+
       <Stack.Screen name='Sms Receipt' component={Receipts} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
       <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>

@@ -1,9 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useLayoutEffect, Children } from "react";
 import { View,FlatList, Text,PanResponder, Image,ToastAndroid,Dimensions, TouchableHighlight, ActivityIndicator } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { Searchbar } from "react-native-paper";
-import { Ionicons } from '@expo/vector-icons';
-import { getFirestore,collection,getDocs, doc, setDoc , addDoc} from "firebase/firestore";
+
+import { getFirestore,collection,getDocs, doc, setDoc ,updateDoc, addDoc} from "firebase/firestore";
 import { Fontisto } from '@expo/vector-icons';
 import { getAuth, } from 'firebase/auth';
 import { CheckBox } from "@rneui/themed";
@@ -11,18 +9,12 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { FAB , Badge} from "react-native-paper";
 
 
-export default function Attendance ({navigation, route}){
 
-    const {username, ChurchName, events} = route.params || {}
-  
-    const [selectedMember, setSelectedMember]=useState(false)
-    const [search, setSearch] = useState("")
-    const [member, setMember] = useState(null)
-    const [Show, setshow] = useState(true);
-    const [check1, setCheck1] = useState(false);
+
+export default function Attendance ({department, Search, cell, found}){
+    console.log(found)
     const [showMembers, setshowMembers] = useState([])
     const [churchName, setchurchName] = useState(null)
     const [save, setSave] = useState(false);
@@ -105,8 +97,34 @@ export default function Attendance ({navigation, route}){
                             // If documents are found, extract their data and update the state with the tasks
                             const tasks = querySnapshot.docs.map(doc => ({
                                 id: doc.id,
-                                ...doc.data().Member}));
-                            setshowMembers(tasks)
+                                ...doc.data().Member}))
+                                if(department === "men"){
+                                    const Men =tasks.filter(department => department.Department === "men" );
+                                    setshowMembers(Men)
+                                    if(Men.length === 0){
+                                        setSeen(false)
+                                    }
+                                }else if(department === "women"){
+                                    const Women =tasks.filter(department => department.Department === "women" );
+                                    setshowMembers(Women)
+                                    if(Women.length === 0){
+                                        setSeen(false)
+                                    }
+                                }else if(department === "youth"){
+                                    const Youth =tasks.filter(department => department.Department === "youth" );
+                                    setshowMembers(Youth)
+                                    if(Youth.length === 0){
+                                        setSeen(false)
+                                    }
+                                }else if(department === "children"){
+                                    const Children =tasks.filter(department => department.Department === "children" );
+                                    setshowMembers(Children)
+                                    if(Children.length === 0){
+                                        setSeen(false)
+                                    }
+                                }else{
+                                    setshowMembers(tasks)
+                                }
                 
                     }else {
                         ToastAndroid.show('Please register a member!', ToastAndroid.SHORT);
@@ -181,7 +199,7 @@ export default function Attendance ({navigation, route}){
                     const membersCollectionRef = collection(userDetailsDocRef, 'Attendance');
             
                     // Set a document within the Members subcollection
-                    await setDoc(doc(membersCollectionRef), {AttendanceList,Date:{formattedDate}});
+                    await setDoc(doc(membersCollectionRef), {AttendanceList, Date:{formattedDate}, Department: {department}});
             
                     ToastAndroid.show("Attendance saved successful!", ToastAndroid.LONG);
                     setSave(false);
@@ -272,7 +290,13 @@ export default function Attendance ({navigation, route}){
     )
    
 
+    const [email, setEmail] = useState()
 
+    useLayoutEffect(() => {
+        setshowMembers([])
+        setSeen(true)
+        GetMember(email)
+    },[department])
 
     useEffect(() => {
         const checkLoginStatus = async () => {
@@ -280,6 +304,7 @@ export default function Attendance ({navigation, route}){
             const value = await AsyncStorage.getItem('UserEmail');
             if (value !== '') {
               GetMember(value)
+              setEmail(value)
             } else {
               console.log("no item")
             }
@@ -291,82 +316,93 @@ export default function Attendance ({navigation, route}){
       }, [db]);
 
 
-   
 
-    const searchQueryHandler = (text) => {
-        if (text) {
-           setSearch(text)
+       //add attendance to db
+    const updateCell = async(Email, id) => {
+        setSave(true)
+        if (AttendanceList.length !== 0 ){
 
-        } else {
-          setSearch("")
-          setSelectedMember(false)
-
+            if(!found){
+                ToastAndroid.show("Please search for cell!", ToastAndroid.LONG);
+                setSave(false)
+                clearAll()
+                return
+            }
+            try {
+        
+                // Step 2: Fetch church details based on user email
+                const tasksCollectionRef = collection(db, 'UserDetails');
+                const querySnapshot = await getDocs(tasksCollectionRef);
+        
+                if (!querySnapshot.empty) {
+                    // Filter tasks to find matching church based on user email
+                    const tasks = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data().userDetails
+                    }));
+        
+                    const church = tasks.find(item => item.email === Email);
+        
+                    if (!church) {
+                        throw new Error("Church details not found for the logged-in user");
+                    }
+        
+                    // Reference to the UserDetails document
+                const userDetailsDocRef = doc(db, 'UserDetails', church.id);
+        
+                // Reference to the Pledges subcollection within UserDetails
+                const membersCollectionRef = doc(userDetailsDocRef, 'Cells', id);
+        
+                // Set a document within the Pledges subcollection
+                await updateDoc(membersCollectionRef, {Cell: AttendanceList, found});
+                ToastAndroid.show("Cell updated successfully!", ToastAndroid.LONG);
+                setClearAll(true)
+                setSave(false)
+                setAttendanceList([])
+    
+                } else {
+                    throw new Error("No church details found in database");
+                }
+        
+            
+        
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                ToastAndroid.show(`Error updating cell: ${error.message}`, ToastAndroid.LONG);
+            }
+        } else{
+            ToastAndroid.show("Please select members! ", ToastAndroid.LONG);
+            setSave(false)
+            return;
         }
-    };
-
-        //function to get selected member
-    const getMember =(first, second) =>{
-        setMember(showMembers.filter(item => item.FirstName === first  && item.SecondName === second))
-    }
-
-        //gesture handler logic
-            const [positionY, setPositionY] = useState(620); // Only track Y position
-            const screenWidth = Dimensions.get('window').width; // Get screen width
-
-        // PanResponder to handle the drag gesture
-        const panResponder = useRef(
-            PanResponder.create({
-            onStartShouldSetPanResponder: () => true, // Enable touch response
-            onMoveShouldSetPanResponder: () => true,  // Keep responding to move gestures
-
-            onPanResponderMove: (event, gestureState) => {
-                // Only update Y position when dragging vertically
-                setPositionY(gestureState.moveY); 
-            },
-
-            onPanResponderRelease: () => {
-                // Optionally handle release if needed
-            },
-            })
-        ).current;
-
-
+    
+        }
+    
+    
+    
    
+
+
+
+
   
 
     return(
         <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>  
 
-            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
-
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
-                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
-
-                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Record Church Attendance</Text>
-                                <Ionicons name="book-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
-
-                            </View>
-                        </View>
-                  
-
-            <View style={{padding:10, flex:1}}>
-
-            <View>
-                <Searchbar  elevation={1} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={"rgba(240, 240, 240, 1)"} iconColor="rgba(240, 240, 240, 1)" placeholder="Search by name"/>
-            </View>
-
-
+        
+            <View style={{ flex:1}}>
 
             <View style={{flexDirection:"row",width:"100%" ,marginVertical:10, alignItems:"center",justifyContent:"space-evenly"}}>
                 <View style={{flexDirection:"row" ,justifyContent:selected ? "space-around" : "flex-start" ,alignItems:"center"}}>
-                    <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)"  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
+                    {!cell &&<TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)"  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
                         <>
                         <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:13}}>{selected ? formattedDate : "Select date"}</Text>
 
                         <MaterialIcons name={"keyboard-arrow-down"} size={25} color="gray" />
                         </>    
                     </TouchableHighlight>
+                    }
                 </View>
 
                 <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
@@ -377,14 +413,14 @@ export default function Attendance ({navigation, route}){
                     <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Clear all</Text>         
                 </TouchableHighlight>
 
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => markAttendance(username)} style={{flexDirection:"row", borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => {cell ? updateCell(email, found?.id) : markAttendance(email)}} style={{flexDirection:"row", borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                     {save ?  
                         <View style={{flexDirection:"row"}}>
                             <Text style={{color:" rgba(100, 200, 255, 1)"}}>Saving </Text>
                             <ActivityIndicator size={"small"} color={" rgba(100, 200, 255, 1)"} />
                         </View>
                         :    
-                        <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>{"Save"}</Text>
+                        <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>{cell ? "Add to cell" : "Save"}</Text>
                     }          
                 </TouchableHighlight>
            
@@ -394,17 +430,17 @@ export default function Attendance ({navigation, route}){
                 {showMembers?.length !== 0 ?
                 <FlatList 
 
-                data = {showMembers?.filter(member => 
+                data = {cell ? showMembers : showMembers?.filter(member => 
                     member.FirstName && member.SecondName && 
-                    (member.FirstName.toLowerCase().includes(search.toLowerCase()) || 
-                    member.SecondName.toLowerCase().includes(search.toLowerCase()))
+                    (member.FirstName.toLowerCase().includes(Search.toLowerCase()) || 
+                    member.SecondName.toLowerCase().includes(Search.toLowerCase()))
                 )}
                 showsVerticalScrollIndicator={false}
                 key={(index,item)=> item.id && item.Check}
 
                 ListEmptyComponent={()=>(
                     <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                        <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Fetching Data ...</Text>
+                        <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Not Found!</Text>
                     </View>
                     )}
 
@@ -460,15 +496,7 @@ export default function Attendance ({navigation, route}){
              display={"calendar"} onChange={onChange} />
             )}
             
-            <View {...panResponder.panHandlers}  style={[{position:"absolute",width:120, height:55,
-                backgroundColor:"white",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
-                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => navigation.navigate("AttendanceList", {username: username, ChurchName: ChurchName, events: events})} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
-                        <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                            <Text>Attendance</Text>
-                            <MaterialIcons name={"keyboard-arrow-right"} size={20} />
-                        </View>
-                    </TouchableHighlight>
-            </View>
+       
         </View>
     )
 }

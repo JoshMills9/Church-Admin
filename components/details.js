@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, } from "react-native";
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, TouchableHighlight, } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { doc,getFirestore, collection, deleteDoc } from 'firebase/firestore';
+import { ToastAndroid } from "react-native";
 
 
 export default function Details ({navigation, route}){
@@ -27,7 +28,7 @@ export default function Details ({navigation, route}){
 
                 await deleteDoc(docRef);
 
-                Alert.alert("Member successfully Removed!", `You Have Removed  ${member[0].FirstName} ${member[0].SecondName}`)
+                ToastAndroid.show(`${member[0].FirstName} ${member[0].SecondName} removed successfully!`, ToastAndroid.LONG)
                 SetDelete(false)
                 navigation.replace('MemberList',{username: username, ChurchName: ChurchName, events:events})
          
@@ -56,10 +57,16 @@ export default function Details ({navigation, route}){
                 
                 <View style={{marginHorizontal:15, flex:1,justifyContent:"center",}}>
                     <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={{justifyContent:"center", alignSelf:"center", borderRadius:15, borderWidth:1, borderColor:"lightgray",width:120,height:120}}>
-                        {member[0]?.Image ? 
-                            <Image source={{uri: member[0].Image}}  style={{width:110,alignSelf:"center", height:110, borderRadius:55}} />
-                            : <MaterialIcons name="person"  size={120} color={"gray"}/>
+                    <View style={{justifyContent:"center", alignSelf:"center",width:120,height:120,alignItems:"center"}}>
+                         {member[0]?.Image  ? (
+                            <View style={{borderWidth:2.5, borderRadius:60,height:120,width:120, alignItems:"center",justifyContent:"center", borderColor:"dimgray"}}>
+                                <Image source={{ uri: member[0].Image}} style={{ width: 115, height: 115 ,borderRadius:60}} />
+                            </View>
+                            )
+                            :
+                            <View style={{borderWidth:2.5,borderColor:"gray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
+                                <Ionicons name="person-circle-sharp" size={138} style={{width:135, position:"absolute",right:-8.5 }} color="dimgray"/>
+                            </View>
                         }
                     </View>
 
@@ -158,15 +165,16 @@ export default function Details ({navigation, route}){
 
                 
 
-                <View style={{justifyContent:"center",marginVertical:15 ,alignSelf:"center",height:50, borderRadius:15,  width:170,backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
+                
+                <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {handleDeleteDocument(member[0].id); SetDelete(true)}}
+                    style={{justifyContent:"center",marginVertical:20,alignItems:"center" ,alignSelf:"center",height:55, borderRadius:10,  width:180,backgroundColor:"rgba(50, 50, 50, 1)", elevation:3}}>
                     { Delete ? 
                         <ActivityIndicator color={"orangered"} />
                         :
-                        <TouchableOpacity onPress={()=> {handleDeleteDocument(member[0].id); SetDelete(true)}}>
-                            <Text style={{color:"orangered",fontSize:15,fontWeight:"500", alignSelf:"center"}}>Remove Member</Text>
-                        </TouchableOpacity>
+
+                        <Text  style={{color:"orangered",fontSize:15,fontWeight:"500",textAlign:"center", alignSelf:"center"}}>{`Remove\n ${member[0].FirstName.toUpperCase()} ${member[0].SecondName.toUpperCase()}`}</Text> 
                     }
-                </View>
+                </TouchableHighlight>
 
 
         </View>

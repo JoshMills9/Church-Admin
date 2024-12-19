@@ -297,7 +297,7 @@ export default function Settings ({route}){
         return (
            <View style={{ position:"absolute",alignSelf:"center",padding:10,borderRadius:15,justifyContent:"space-between", bottom:130,right:20,height:200,width:"80%",elevation:5, backgroundColor:"rgba(30, 30, 30, 1)" }}>
                 <View style={{alignItems:"center",flexDirection:"row", justifyContent:"space-between"}}>
-                    <Text style={{fontSize:17, fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Church Admin</Text>
+                    <Text style={{fontSize:17, fontWeight:"800",color:"rgba(240, 240, 240, 1)"}}>Church Administrator</Text>
                     <Ionicons name="close-sharp" size={23} color={"red"} onPress={toggleModal}/>
                 </View>
                 <View>
@@ -385,7 +385,7 @@ export default function Settings ({route}){
 
                 </View>
 
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:25, marginTop:15, justifyContent:"space-between" }}>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:18, marginTop:15, justifyContent:"space-between" }}>
                     <View >
 
                         <View>
@@ -523,20 +523,25 @@ export default function Settings ({route}){
 
                         
 
-                        <TouchableOpacity onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
-                            
-                                <View style={{marginRight:15}}>
-                                    <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
-                                </View>    
-                                
-                                <View >
-                                    <Text style={{fontSize:19,fontWeight:"600", color:" rgba(100, 200, 255, 1)"}}>Log out</Text>
-                                </View>
-                    
-                        </TouchableOpacity>
+                        <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)" onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
+                                <>
+                                    <View style={{marginRight:15}}>
+                                        <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
+                                    </View>    
+                                    
+                                    <View >
+                                        <Text style={{fontSize:19,fontWeight:"600", color:" rgba(100, 200, 255, 1)"}}>Log out</Text>
+                                    </View>
+                                </>
+                        </TouchableHighlight>
 
                     
-                        <TouchableOpacity onPress={() => {deleteDocumentByEmail(ChurchName?.email)}} style={{flexDirection:"row" , marginTop:8, height:60, alignItems:"center" , justifyContent:"flex-start",marginLeft:65}}>
+                        <TouchableOpacity onPress={() => {
+                                        Alert.alert("", "CONFIRM DELETE", [
+                                        { text: "Cancel", onPress:() => {},style: "cancel" },
+                                        { text: "Yes", onPress:() => {deleteDocumentByEmail(ChurchName?.email)} },
+                                        ]);
+                                    }} style={{flexDirection:"row" , marginTop:10, height:60, alignItems:"center" , justifyContent:"center",}}>
                                 
                                 <View style={{marginRight:10}}>
                                     <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
@@ -548,9 +553,11 @@ export default function Settings ({route}){
                     
                         </TouchableOpacity>
 
+                        <Text style={{fontSize:15,fontWeight:"600",alignSelf:"center",marginTop:28, color:"gray"}}>© ZipTech Inc.</Text>
+
                 </ScrollView>
 
-                <FAB variant="surface" loading={loading} onPress={()=>{ setModalVisible(true); Support()}} label="Support"  icon={"chat-outline"} color="rgba(30, 30, 30, 1)"  style={{width:110,alignItems:"center",justifyContent:"center", height:55, position:"absolute" , bottom:12, backgroundColor:"white", right:15}}/>
+                <FAB variant="surface" loading={loading} onPress={()=>{ setModalVisible(true); Support()}} label="Support"  icon={"email-outline"} color="rgba(30, 30, 30, 1)"  style={{width:110,alignItems:"center",justifyContent:"center", height:50, position:"absolute" , bottom:12,borderRadius:10, backgroundColor:"white", right:15}}/>
             </View>
 
 

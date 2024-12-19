@@ -15,6 +15,7 @@ import { getAuth } from "firebase/auth";
 import { TouchableOpacity } from "react-native";
 import { Button } from "react-native-paper";
 import {  Searchbar } from "react-native-paper";
+import { Ionicons } from '@expo/vector-icons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -28,11 +29,11 @@ export default function AllPledges() {
   const [search, setSearch] = useState("")
   const [seen, setSeen] = useState(true)
 
-
+  const [redeemed, setRedeemed] = useState(false)
 
     const getMember = async (email) => {
-      try {
 
+      try {
         // Fetch church details based on user email
         const tasksCollectionRef = collection(db, "UserDetails");
         const querySnapshot = await getDocs(tasksCollectionRef);
@@ -45,7 +46,7 @@ export default function AllPledges() {
 
           const church = tasks.find((item) => item.email === email);
 
-          // Fetch events
+          // Fetch pledges
           const userDetailsDocRef = doc(db, "UserDetails", church.id);
           const eventsCollectionRef = collection(userDetailsDocRef, "Pledges");
           const eventsSnapshot = await getDocs(eventsCollectionRef);
@@ -55,8 +56,21 @@ export default function AllPledges() {
               id: doc.id,
               ...doc.data().Pledges,
             }));
-              setPledges(Data);
-              setNoOfPledges(Data.length);
+                          // Normalize the data
+              const normalizedData = Data.map(item => {
+                // If the object has a key like '0', extract it and use it as the object
+                if (item["0"]) {
+                  return item["0"];
+                }
+                return item;  // Else, return the object as it is
+              });
+              if(normalizedData.filter(i => !i.Redeemed).length !== 0){
+                setPledges(normalizedData);
+                setNoOfPledges(normalizedData.filter(i => !i.Redeemed).length);
+              }else{
+                setPledges([]);
+                setSeen(false)
+              }
            
           }else{
             ToastAndroid.show("Please make a pledge!", ToastAndroid.SHORT)
@@ -73,6 +87,83 @@ export default function AllPledges() {
     };
 
 
+     //update pledge functionality
+     const [pledgeList, setPledgeList] = useState([]);
+ 
+     const handlePledge = (id) => {
+             Pledges.map((pledge) => {
+                 if (pledge.id === id) {
+                     const updatedPledge = { ...pledge, Redeemed: !pledge.Redeemed }; // Toggle the Check status
+                     // Handle attendance list update if the checkbox is checked
+                     if (updatedPledge.Redeemed) {
+                        return setPledgeList((prevList) => [updatedPledge, ...prevList]);
+                     } else {
+                         setPledgeList([]); // Clear the attendance list if unchecked
+                     }
+                     return updatedPledge;
+                 }
+             });
+     };
+   
+
+
+
+    //add attendance to db
+    const updatePledge = async(Email, id) => {
+
+    if (pledgeList.length !== 0 ){
+        try {
+    
+            // Step 2: Fetch church details based on user email
+            const tasksCollectionRef = collection(db, 'UserDetails');
+            const querySnapshot = await getDocs(tasksCollectionRef);
+    
+            if (!querySnapshot.empty) {
+                // Filter tasks to find matching church based on user email
+                const tasks = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data().userDetails
+                }));
+    
+                const church = tasks.find(item => item.email === Email);
+    
+                if (!church) {
+                    throw new Error("Church details not found for the logged-in user");
+                }
+    
+                // Reference to the UserDetails document
+            const userDetailsDocRef = doc(db, 'UserDetails', church.id);
+    
+            // Reference to the Pledges subcollection within UserDetails
+            const membersCollectionRef = doc(userDetailsDocRef, 'Pledges', id);
+    
+            // Set a document within the Pledges subcollection
+            await updateDoc(membersCollectionRef, {Pledges: pledgeList});
+            setRedeemed(true)
+            getMember(Email)
+            ToastAndroid.show("Pledge redeemed successfully!", ToastAndroid.LONG);
+
+            } else {
+                throw new Error("No church details found in database");
+            }
+    
+        
+    
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            ToastAndroid.show(`Error redeeming pledge: ${error.message}`, ToastAndroid.LONG);
+        }
+    } else{
+        ToastAndroid.show("Please redeem a pledge!", ToastAndroid.LONG);
+        return;
+    }
+
+    }
+
+
+
+
+    const [email, setEmail] = useState()
 
 
   useEffect(() => {
@@ -81,6 +172,7 @@ export default function AllPledges() {
         const value = await AsyncStorage.getItem('UserEmail');
         if (value !== '') {
           getMember(value)
+          setEmail(value)
         } else {
           console.log("no item")
         }
@@ -121,10 +213,10 @@ export default function AllPledges() {
       <View style={{flex:1 , justifyContent: Pledges?.length !== 0 ? "flex-start" : "center" , alignItems:"center"}}>
       {Pledges?.length !== 0 ?
           <FlatList
-            data={Pledges?.sort((a, b) => b.createdAt - a.createdAt).filter(member => 
+            data={Pledges?.filter(i => !i.Redeemed).sort((a, b) => b.createdAt - a.createdAt).filter(member => 
               member.FullName && (member.FullName.toLowerCase().includes(search.toLowerCase())))}
 
-            keyExtractor={(index, item) => item.id}
+            keyExtractor={(index, item) => item.FullName}
             ListEmptyComponent={() => (
               <View style={{ alignItems: "center" }}>
                 <Text style={{ color: "rgba(240, 240, 240, 1)" }}>
@@ -135,10 +227,10 @@ export default function AllPledges() {
             renderItem={({ item, index }) => (
               <View>
                 <TouchableOpacity
-                  onPress={() => {
+                  onPress={() => {handlePledge(item.id);
                     Alert.alert("", "CONFIRM PAYMENT", [
-                      { text: "Redeemed", onPress: () => {} },
-                      { text: "Remove", onPress: () => {}, style: "cancel" },
+                      { text: "Cancel", onPress: () => {} , style: "cancel" },
+                      { text: "Redeem", onPress: () => updatePledge(email, item.id)},
                     ]);
                   }}
                   style={{
@@ -306,7 +398,7 @@ export default function AllPledges() {
                       
                       }}
                     >
-                      GHC {item.Amount}.00
+                      GH₵ {item.Amount}.00
                     </Text>
                   </View>
                   <View
@@ -323,7 +415,7 @@ export default function AllPledges() {
                         color: "rgba(240, 240, 240, 1)",
                       }}
                     >
-                      Mode Of Payment :
+                      MoP :
                     </Text>
                     <Text
                         adjustsFontSizeToFit={true}
@@ -350,7 +442,6 @@ export default function AllPledges() {
                   >
                     <Text
                       style={{
-                        marginBottom: 10,
                         fontSize: 16,
                         color: "rgba(240, 240, 240, 1)",
                       }}
@@ -361,7 +452,6 @@ export default function AllPledges() {
                         adjustsFontSizeToFit={true}
                         numberOfLines={1}
                         style={{
-                          marginBottom: 10,
                           fontSize: 16,
                           color: " rgba(100, 200, 255, 1)",
                           width:"50%",
@@ -373,6 +463,8 @@ export default function AllPledges() {
                       {item.Duration}
                     </Text>
                   </View>
+
+                  {item?.Redeemed && <Ionicons name="checkmark-done" size={20} color={'lightgray'} style={{alignSelf:"flex-end"}} />}
                 </TouchableOpacity>
               </View>
             )}

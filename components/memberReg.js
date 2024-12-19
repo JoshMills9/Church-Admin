@@ -19,10 +19,8 @@ export default function AddMembers(props){
     const navigation = useNavigation()
     const db = getFirestore()
     const [churchName, setchurchName] = useState(null)
-    const [showMembers, setshowMembers] = useState(null)
-    const [Username, setUserName] = useState("")
-    const [user, setUser] = useState('')
     const auth = getAuth()
+
 
     const [username, setUsername] = useState("");
 
@@ -340,6 +338,7 @@ export default function AddMembers(props){
     
 
 
+   
 
 
     const handleUpdate = async () => {
@@ -388,6 +387,8 @@ export default function AddMembers(props){
         }
             
     };
+
+
     
 
     return(
@@ -563,28 +564,29 @@ export default function AddMembers(props){
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 
                 
-                <TouchableOpacity onPress={() => {
+                <TouchableHighlight onPress={() => {
                 Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
                   { text: "CANCEL", onPress: () => {} , style:"cancel"},
                   { text: "CAMERA", onPress: () => {pickImage("camera")}},
                   { text: "GALLERY", onPress: () => {pickImage("gallery")}},
                 ]);
-              }} >
-
-                {(selectedImage || props?.info) ? (
-                    <View style={{borderWidth:2.5, borderRadius:60,height:120,width:120, alignItems:"center",justifyContent:"center", borderColor:"dimgray"}}>
-                        <Image source={{ uri: selectedImage || props?.info[0].Image}} style={{ width: 115, height: 115 ,borderRadius:60}} />
+              }} underlayColor="rgba(70, 70, 70, 1)" style={{borderRadius:60}} >
+                <>
+                    {(selectedImage || (props.info && props?.info[0]?.Image !== null) ) ? (
+                        <View style={{borderWidth:2.5, borderRadius:60,height:120,width:120, alignItems:"center",justifyContent:"center", borderColor:"dimgray"}}>
+                            <Image source={{ uri: selectedImage  ||  (props.info && props?.info[0]?.Image)}} style={{ width: 115, height: 115 ,borderRadius:60}} />
+                        </View>
+                        )
+                        :
+                        <View style={{borderWidth:2.5,borderColor:"gray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
+                            <Ionicons name="person-circle-sharp" size={138} style={{width:135, position:"absolute",right:-8.5 }} color="dimgray"/>
+                        </View>
+                    }
+                    <View style={{position:'absolute', bottom:2,elevation:5, right:6, backgroundColor:"lightgray",width:30, justifyContent:"center",alignItems:"center", height:30, borderRadius:50}}>
+                        <Ionicons name="camera-outline" size={16}/>
                     </View>
-                    )
-                    :
-                    <View style={{borderWidth:2.5,borderColor:"gray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
-                        <Ionicons name="person-circle-sharp" size={138} style={{width:135, position:"absolute",right:-8.5 }} color="dimgray"/>
-                    </View>
-                }
-                 <View style={{position:'absolute', bottom:2,elevation:5, right:6, backgroundColor:"lightgray",width:30, justifyContent:"center",alignItems:"center", height:30, borderRadius:50}}>
-                    <Ionicons name="camera-outline" size={16}/>
-                </View>
-                </TouchableOpacity>
+                </>
+                </TouchableHighlight>
             </View>
 
 
