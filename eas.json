@@ -1,8 +1,6 @@
 {
   "build": {
     "preview": {
-      "cli.appVersionSource": "project",
-      "distribution": "store",
       "android": {
         "buildType": "apk"
       }
