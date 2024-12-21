@@ -102,20 +102,20 @@ export default function ModalScreen({route}){
   
     const createCell = () => {
         return (
-            <BottomSheet visible={isBottomSheetVisible} onBackButtonPress={toggleBottomSheet} onBackdropPress={toggleBottomSheet} >
-                <View style={{borderRadius:15,height:240,backgroundColor:"rgba(30, 30, 30, 1)",padding:10, width:"100%" ,justifyContent:"space-evenly"}}>
+            <BottomSheet visible={isBottomSheetVisible} onBackButtonPress={toggleBottomSheet}  onBackdropPress={toggleBottomSheet} >
+                <View style={{borderRadius:15,height:350,backgroundColor:"rgba(30, 30, 30, 1)",padding:10, width:"100%" ,justifyContent:"space-around"}}>
                     <Text style={{color:"white",fontSize:16, alignSelf:"center",fontWeight:"700"}}>CREATE CELL</Text>
                     <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                        <TextInput onFocus={()=> setBottomTab(false)} value={cellName} onChangeText={(txt) => setCellName(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}}  cursorColor={"lightgray"} placeholderTextColor={"white"}  placeholder="Cell name"/>
-                        <TextInput onFocus={()=> setBottomTab(false)} value={cellLocation} onChangeText={(txt) => setCellLocation(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}} cursorColor={"lightgray"} placeholderTextColor={"white"}  placeholder="Location"/>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellName} onChangeText={(txt) => setCellName(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}}  cursorColor={"lightgray"} placeholderTextColor={"lightgray"}  placeholder="Cell name"/>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellLocation} onChangeText={(txt) => setCellLocation(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}} cursorColor={"lightgray"} placeholderTextColor={"lightgray"}  placeholder="Location"/>
                     </View>
-                    <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center",}}>
-                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={toggleBottomSheet}>
-                            <Text style={{color:"red",fontSize:16}}>Cancel</Text>
+                    <View style={{flexDirection:"row",height:70, justifyContent:"space-between",alignItems:"center",}}>
+                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {toggleBottomSheet() ; navigation.navigate("Cell List",  {username: username, ChurchName: ChurchName,events: events})}}>
+                            <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>View</Text>
                         </TouchableHighlight>
 
                         <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {toggleBottomSheet() ; navigation.navigate("Update Cell",  {username: username, ChurchName: ChurchName,events: events})}}>
-                            <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>View cells</Text>
+                            <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>Update</Text>
                         </TouchableHighlight>
 
                         <TouchableHighlight  style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {Keyboard.dismiss(); handleSubmit(username)}} >
@@ -126,6 +126,9 @@ export default function ModalScreen({route}){
                         </TouchableHighlight>
 
                     </View>
+                    <TouchableHighlight style={{width:"50%",alignSelf:"center", alignItems:"center",justifyContent:"center",flexDirection:"row", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={toggleBottomSheet}>
+                            <Text style={{color:"red",fontSize:16}}>Cancel</Text>
+                    </TouchableHighlight>
                 </View>
             </BottomSheet>
         )
@@ -191,7 +194,7 @@ export default function ModalScreen({route}){
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Send SMS", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Prepare Sms", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
                                         <Ionicons name="chatbox-ellipses-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
                                         <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}} >Prepare SMS</Text>
                                 </TouchableOpacity>
@@ -276,12 +279,7 @@ export default function ModalScreen({route}){
                             
                     </View>
                 </View>
-                
-
-
               {isBottomSheetVisible && createCell()}
-                
-              
         </View>
     );
 };

@@ -64,9 +64,11 @@ export default function AllPledges() {
                 }
                 return item;  // Else, return the object as it is
               });
-              if(normalizedData.filter(i => !i.Redeemed).length !== 0){
-                setPledges(normalizedData);
-                setNoOfPledges(normalizedData.filter(i => !i.Redeemed).length);
+
+              if(normalizedData.filter(i => !i.Redeemed)){
+                const notRedeemed = normalizedData.filter(i => !i.Redeemed)
+                setPledges(notRedeemed.filter(i => i.FullName));
+                setNoOfPledges(notRedeemed.filter(i => i.FullName).length);
               }else{
                 setPledges([]);
                 setSeen(false)
@@ -111,7 +113,9 @@ export default function AllPledges() {
     //add attendance to db
     const updatePledge = async(Email, id) => {
 
-    if (pledgeList.length !== 0 ){
+    if (pledgeList?.length >= 0 ){
+      ToastAndroid.show("Please wait...", ToastAndroid.LONG)
+
         try {
     
             // Step 2: Fetch church details based on user email
@@ -210,7 +214,7 @@ export default function AllPledges() {
       </View>
 
 
-      <View style={{flex:1 , justifyContent: Pledges?.length !== 0 ? "flex-start" : "center" , alignItems:"center"}}>
+      <View style={{flex:1 , justifyContent: Pledges?.length !== 0 ? "flex-start" : "center" , }}>
       {Pledges?.length !== 0 ?
           <FlatList
             data={Pledges?.filter(i => !i.Redeemed).sort((a, b) => b.createdAt - a.createdAt).filter(member => 
@@ -236,7 +240,7 @@ export default function AllPledges() {
                   style={{
                     backgroundColor: "rgba(50, 50, 50, 1)",
                     elevation: 5,
-                    margin: 10,
+                    marginVertical: 10,
                     justifyContent: "space-evenly",
                     padding: 15,
                     height: 210,
@@ -365,7 +369,7 @@ export default function AllPledges() {
                       
                       }}
                     >
-                      {item.Contact}
+                      {item.Number1}
                     </Text>
                   </View>
 
@@ -470,7 +474,7 @@ export default function AllPledges() {
             )}
           />
           :
-          <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
+          <View style={{alignItems:"center",justifyContent:"center",alignSelf:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
             <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Pledges"}</Text>
           </View>
           }

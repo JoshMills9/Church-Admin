@@ -152,7 +152,7 @@ export default function Home(){
                         
                         return items.filter(item => {
                           const eventDate = parseFormattedDate(item.StartDate);
-                          return eventDate >= currentDate;  // Filter events in the future
+                          return (eventDate.toLocaleDateString() >= currentDate.toLocaleDateString());  // Filter events in the future
                         });
                       }
 
@@ -346,31 +346,29 @@ export default function Home(){
                     } catch (error) {
                         console.error("Error fetching or processing attendance data:", error);
                     }
-                  
-               
-            }else{
-                ToastAndroid.show("Check network connection", ToastAndroid.LONG);
-                setrefreshing(false)
-                return;
-            };
+                }else{
+                    ToastAndroid.show("Check network connection", ToastAndroid.LONG);
+                    setrefreshing(false)
+                    return;
+                };
 
     
             
-            const handleSave = async (update) => {
-                try {
-                await AsyncStorage.setItem('update', JSON.stringify(update));
-            
-                } catch (e) {
-                console.error('Failed to save the data to the storage', e);
-                }
-            };
-            handleSave(update);
+                const handleSave = async (update) => {
+                    try {
+                    await AsyncStorage.setItem('update', JSON.stringify(update));
+                
+                    } catch (e) {
+                    console.error('Failed to save the data to the storage', e);
+                    }
+                };
+                handleSave(update);
 
-        }catch(error){
-            ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
-            console.log(error)
-           
-        }
+                }catch(error){
+                    ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
+                    console.log(error)
+                
+                }
 
     };
 
@@ -478,7 +476,7 @@ export default function Home(){
                                             ListEmptyComponent={()=> ( 
                                                 <ImageBackground source={ updated && updated.event && updated.event.length > 0 ? {uri : updated?.event[0]?.Image} : require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:100,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
-                                                                <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event ? "Upcoming" :  "Create"}</Text>
+                                                                <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event && updated.event.length > 0 ? "Upcoming" :  "Create"}</Text>
                                                                 { !updated?.event && <MaterialIcons name="edit" size={20} color={"white"} />}
                                                             </TouchableOpacity>
 

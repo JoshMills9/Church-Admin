@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, ScrollView, TouchableHighlight, Alert, FlatList, ToastAndroid } from "react-native";
+import { View, Text, Image, TouchableHighlight, Alert, FlatList, ToastAndroid } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,7 +14,7 @@ export default function SmsList({navigation, route}){
     const {username, ChurchName, events} = route.params || {};
 
     const [sms, setSms] = useState();
-
+ 
    
     //get sms sent from storage
     useEffect(()=>{
@@ -86,7 +86,7 @@ export default function SmsList({navigation, route}){
              <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginTop:20}}>
                             <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.push('Send SMS',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.push('Prepare Sms',{username: username, ChurchName: ChurchName,events:events})} />
                                 <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>All SMS</Text>
                                 <Ionicons name={"chatbox-ellipses-outline"} size={25} color={"rgba(240, 240, 240, 1)"} />
 
@@ -112,15 +112,31 @@ export default function SmsList({navigation, route}){
                             { text: "RESEND", onPress: () => {sendSMS(index.toString())}},
                             { text: "DELETE", onPress: () => {deleteSms(index?.toString())}, style: "cancel" },
                             ]);
-                        }}  underlayColor="rgba(70, 70, 70, 1)" style={{ backgroundColor: "rgba(50, 50, 50, 1)",padding: 15,elevation:3,  borderRadius:5, maxWidth: '85%', alignSelf: 'flex-end',}}>
+                        }}  underlayColor="rgba(70, 70, 70, 1)" style={{ backgroundColor: "rgba(50, 50, 50, 1)",padding: 10,elevation:3,  borderRadius:5, maxWidth: '85%', alignSelf: 'flex-end',}}>
                             <>
                                 <Text style={{fontSize: 16,marginBottom:10, color:"white", fontWeight:"800", alignSelf:"center"}} numberOfLines={1} adjustsFontSizeToFit={true}>{item?.defaultHeader}</Text>
                                 <Text style={{fontSize: 13,lineHeight: 18, color:"white",  fontWeight:"300", textAlign:"justify"}}>{item?.sms}</Text>
-                                <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:15}}>
-                                    <Text style={{fontSize: 12,color: 'gray',}}>Recipients: {item?.smsList?.length}</Text>
-                                    <Text style={{fontSize: 12,color: 'gray',}}>{item?.date}</Text>
+                                <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:20}}>
+                                
+                                    <View style={{flexDirection:"row", backgroundColor:"dimgray",borderRadius:15,justifyContent:"space-around",height:25,alignItems:"center", width:90}}>
+                                      {item?.smsListImg?.slice(0, 4).map((i , index)=> {
+                                        return(
+                                          <View key={index}>
+                                            {(i !== null) ? 
+                                                  <View style={{ width:item.smsListImg.length < 4 ? 10 : 15,height:20,marginRight:-12,position:"relative", }}>
+                                                    <Image key={index + i} source={{uri : i}} style={{zIndex: item?.smsListImg?.length - index  || 0, width:20,height:20,borderWidth:1,borderColor:"white", borderRadius:10,position:"absolute",top:0,left:index * -7, }} />
+                                                  </View>
+                                                :
+                                                 <Ionicons style={{zIndex: item?.smsListImg?.length - index  || 0, width:23,height:23,borderRadius:10,position:"absolute",top:-12.5,left:index * -5.5, }} key={index + i} name="person-circle-sharp" size={24} color="lightgray"/>  
+                                            }
+                                          </View>
+                                        )})
+                                  
+                                      }
+                                      <Text style={{fontSize: 12,color:'lightgray', height:25, verticalAlign:"middle"}}>{item?.smsListImg.length}</Text>
+                                    </View>
+                                    <Text style={{fontSize: 12,color: 'gray',height:25, verticalAlign:"middle"}}>{item?.date}</Text>
                                 </View>
-
                             </> 
                         </TouchableHighlight>
                     </View>

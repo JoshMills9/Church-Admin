@@ -12,7 +12,7 @@ import Settings from './components/settings';
 import ModalScreen from './components/modalScreen';
 import UpdateMemberInfo from './components/memberInfoUpdate';
 import MemberList from './components/memberList';
-import SendSMS from './components/sms';
+import PrepareSmsScreen from './components/prepareSmsScreen';
 import Details from './components/details';
 import UpdateCell from './components/cellScreen';
 import SmsReceipt from './components/smsReceipt';
@@ -101,7 +101,7 @@ export default function MyStack (){
 
       <Stack.Screen name='Events' component={Events} options={{headerShown:false, headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/>
 
-      <Stack.Screen name='Send SMS' component={SendSMS} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
+      <Stack.Screen name='Prepare Sms' component={PrepareSmsScreen} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
       
       <Stack.Screen name='Messages' component={SmsList} options={{headerShown:false,headerTitleStyle:{fontSize:20, fontWeight:"bold"}, animation:'fade_from_bottom'}}/> 
 

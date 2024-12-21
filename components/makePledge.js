@@ -121,7 +121,7 @@ export default function Pledge(){
         const Pledge = {
             Title: pledgeTitle || "N/A",
             FullName: fullName || "N/A",
-            Contact: contact || "N/A",
+            Number1: contact || "N/A",
             PledgeDate: formattedDate || "N/A",
             Amount: Amount || "N/A",
             ModeOfPayment : payment || "N/A",

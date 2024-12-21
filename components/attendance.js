@@ -14,7 +14,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export default function Attendance ({department, Search, cell, found}){
-    console.log(found)
+
     const [showMembers, setshowMembers] = useState([])
     const [churchName, setchurchName] = useState(null)
     const [save, setSave] = useState(false);
@@ -98,6 +98,8 @@ export default function Attendance ({department, Search, cell, found}){
                             const tasks = querySnapshot.docs.map(doc => ({
                                 id: doc.id,
                                 ...doc.data().Member}))
+
+                                
                                 if(department === "men"){
                                     const Men =tasks.filter(department => department.Department === "men" );
                                     setshowMembers(Men)
