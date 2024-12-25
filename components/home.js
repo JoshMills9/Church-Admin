@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useState, useEffect} from "react";
-import { View, Text, Pressable, Modal,ToastAndroid, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
+import { View, Text, Pressable, Modal,ToastAndroid,useColorScheme, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
 import styles from "./styles";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -9,6 +9,8 @@ import { getAuth,} from 'firebase/auth';
 import { ActivityIndicator, Badge ,FAB} from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+
+import InvertedSemiCircularProgressBar from './semi-circle bar/SemiCircularProgressBar'
 
 import Animated, {
     useSharedValue,
@@ -27,7 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home(){
 
-
+    const isDarkMode = useColorScheme() === 'dark';
     const navigation = useNavigation()
 
     const [clicked, setclicked] = useState(false)
@@ -43,6 +45,7 @@ export default function Home(){
     const auth = getAuth();
     const db = getFirestore();
     const [NoOfPleges, setNoOfPledges] = useState(null);
+    const [showDetails, setShowDetails] = useState(false)
 
 
     const [loading,setLoading] = useState(false)
@@ -98,7 +101,7 @@ export default function Home(){
         
 
     const getMember = async (userEmail) => {
-        console.log("member")
+
         let update = { };
 
         try {
@@ -445,36 +448,64 @@ export default function Home(){
       });
 
 
+      const [attendancePercent, setAttendancePercent] = useState()
+      const [status, setStatus] = useState()
 
+      const calculatePercent = (a, b) => {
+         const percent = Math.min(Math.max(a / b, 0), 1) * 100;
+         if(percent < 50){
+            setStatus("low");
+            setAttendancePercent(percent);
+         }else if(percent >= 50){
+            setStatus("high");
+            setAttendancePercent(percent)
+         }
+      }
+
+      useEffect(() => {
+        if(totalNumberOfMembers && attendance){
+            calculatePercent(attendance, totalNumberOfMembers)
+        }
+      },[totalNumberOfMembers, attendance])
+
+
+
+      const showView = (id) => {
+        if (showDetails === id){
+            setShowDetails(null)
+        }else{
+            setShowDetails(id)
+        }
+      }
 
 
     return(
-        <View  style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)", justifyContent:"space-between"}}>
+        <View  style={{flex:1, backgroundColor:isDarkMode ? '#121212' : '#FFFFFF', justifyContent:"space-between"}}>
 
 
-                <StatusBar backgroundColor={"rgba(50, 50, 50, 1)"} style="auto"/>
+                <StatusBar backgroundColor={isDarkMode ? '#121212' : '#FFFFFF'} style="auto"/>
 
 
                         <View style={{alignItems:"center",marginTop:20, flexDirection:"row", justifyContent:"space-between",marginBottom:5}}>
-                                <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row', paddingHorizontal:15,elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                                <View style={{height:60, width:"100%", alignItems:"center",flexDirection:'row',borderBottomWidth:0.5,borderColor:"gray", paddingHorizontal:15,elevation:5, backgroundColor:isDarkMode ? '#121212' : '#FFFFFF'}}>
                                     { !refreshing ?
-                                        <Ionicons name="laptop-outline" size={35} color={"rgba(240, 240, 240, 1)"} />
+                                        <Ionicons name="laptop-outline" size={33} color={isDarkMode ? '#FFFFFF' : '#000000'} />
                                     : 
-                                       <ActivityIndicator animating={refreshing} size={"small"} color="rgba(240, 240, 240, 1)"/>
+                                       <ActivityIndicator animating={refreshing} size={"small"} color={isDarkMode ? '#FFFFFF' : '#000000'}/>
                                     }
 
-                                    <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>Church Administrator</Text>
+                                    <Text style={{fontSize:25,fontWeight:"700",color: isDarkMode ? '#FFFFFF' : '#000000', marginLeft:20}}>Church Administrator</Text>
                                 </View>
                                    
                         </View>
 
-                        <View   style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:20}}>
+                        <View   style={{flex:1, paddingHorizontal:15,width:"100%", marginTop:10}}>
                             <View style={{ marginBottom:10,borderRadius:15, width:"100%"}}>
 
-                                        <View style={{width:'100%',elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:20}}>
+                                        <View style={{width:'100%',elevation:9,backgroundColor:"rgba(50, 50, 50, 1)",height:150,borderWidth:2,elevation:3, borderColor:'#24739e', borderRadius:15}}>
                                         <FlatList 
                                             ListEmptyComponent={()=> ( 
-                                                <ImageBackground source={ updated && updated.event && updated.event.length > 0 ? {uri : updated?.event[0]?.Image} : require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>         
+                                                <ImageBackground source={ updated && updated.event && updated.event.length > 0 ? {uri : updated?.event[0]?.Image} : require("../assets/new1.jpg")} borderRadius={15} style={{width:'100%',backgroundColor:isDarkMode ? '#000000' : '#FFFFFF',height:146, borderRadius:15}}>         
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events",{id: "" ,image:null, name: "", guest: "", About: "", start:"",username: username, ChurchName: ChurchName, events: events  })}} style={{position:"absolute",width:100,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                                 <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}} numberOfLines={1} adjustsFontSizeToFit={true}>{updated?.event && updated.event.length > 0 ? "Upcoming" :  "Create"}</Text>
                                                                 { !updated?.event && <MaterialIcons name="edit" size={20} color={"white"} />}
@@ -491,10 +522,10 @@ export default function Home(){
                                             showsVerticalScrollIndicator={false}
                                             renderItem={({item, index})=>{
                                                 return(
-                                                    <View style={{width:"100%",backgroundColor:"rgba(50, 50, 50, 1)",height:140, borderRadius:15}}>
+                                                    <View style={{width:"100%",backgroundColor:isDarkMode ? '#000000' : '#FFFFFF',height:146,borderRadius:15}}>
                                                         <Animated.View  style={[slideInStyle]}>
                                                                     
-                                                            <Image source={{uri: item?.Image }}  style={{width:"100%",height:140,borderRadius:15}} resizeMode="cover" />
+                                                            <Image source={{uri: item?.Image }}  style={{width:"100%",height:146,borderRadius:15}} resizeMode="cover" />
 
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate , username: username, ChurchName: ChurchName, events: events})}} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                                 <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}}>edit</Text>
@@ -521,133 +552,140 @@ export default function Home(){
                                 <RefreshControl
                                 refreshing={Refreshing}
                                 onRefresh={onRefresh}
-                                colors={["rgba(240, 240, 240, 1)"]}
-                                progressBackgroundColor="rgba(50, 50, 50, 1)"
+                                colors={[isDarkMode ? "white" : 'black']}
+                                progressBackgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}
                                 />
                                 } 
                                 >
 
-                                <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                                    <View style={{}}>
-                                        <Text style={[styles.Update, { alignSelf: "center" }]}>
-                                            Updates For {monthOfYear}
-                                        </Text>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Total No. Of Members:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers  || "-"}</Text>
+                                <Pressable onPress={() => showView(1)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 1 ? 480 : 260, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
+                                    
+                                    <View style={{borderBottomWidth:0.5,width:"100%",flex:1,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
+                                        <View style={{flexDirection:"row"}}>
+                                            <Ionicons name="people-circle-sharp" size={40} style={{elevation:3}} color={"white"}/>
+                                            <View style={{marginLeft:10}}>
+                                                <Text style={[styles.Update]}>{monthOfYear}</Text>
+                                                <Text style={{fontSize:10, color:"rgba(240, 240, 240, 0.7)"}}>Monthly membership updates</Text>
                                             </View>
                                         </View>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Upcoming Events:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{NoOfEvent ? NoOfEvent : updated?.NoOfEvent || "-"}</Text>
-                                            </View>
-                                        </View>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Upcoming Birthdays:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  "-"}</Text>
-                                            </View>
-                                        </View>
+                                        <MaterialIcons name={ showDetails ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
                                     </View>
-                                </View>
 
-                                <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                                    <View style={{}}>
-                                        <Text style={[styles.Update, { alignSelf: "center" }]}>
-                                            Update On Members
-                                        </Text>
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Total No. Of Members:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || "-"}</Text>
-                                            </View>
-                                        </View>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Attendants/week:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{attendance ? attendance : updated?.attendance ||  "-"}</Text>
-                                            </View>
-                                        </View>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>New members/month:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || "-"}</Text>
-                                            </View>
-                                        </View>
+                                    <View style={{flex:3, width:"100%", marginBottom:35}}>
+                                         <InvertedSemiCircularProgressBar high={"Present"} low={"Absent"} stats={"Members"}  present={attendance ? attendance : updated?.attendance ||  0} percentage={totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || 0} radius={140} strokeWidth={15} />
                                     </View>
-                                </View>
 
-
-                                <View style={{ width: "100%", height: 180, margin: 10, elevation: 2, borderRadius: 25, alignSelf: "center", padding: 10, backgroundColor: "rgba(50, 50, 50, 1)" }}>
-                                    <View style={{}}>
-                                        <Text style={[styles.Update, { alignSelf: "center" }]}>
-                                            Statistics
-                                        </Text>
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Offering/month:</Text>
+                                    {(showDetails === 1)  && 
+                                        <View style={{width:"100%",justifyContent:"space-between",alignItems:"center", flex:5}}>
+                                            <View style={{flex:1,flexDirection:"row",marginVertical:15}}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderRightWidth:0.5,paddingVertical:18 ,borderColor:"rgba(240, 240, 240, 0.5)",}}>
+                                                    <Text style={{fontSize:13, color:"white",}}>New Members</Text>
+                                                    <View style={{flexDirection:"row",}}>
+                                                        <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || 0}</Text>
+                                                        <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                    <Text style={{fontSize:13, color:"white",}}>Attendance</Text>
+                                                    <View style={{flexDirection:"row",}}>
+                                                        <Text style={styles.updateTxt}>{attendance ? attendance : updated?.attendance ||  0}</Text>
+                                                        <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/week</Text>
+                                                    </View>
+                                                </View>
                                             </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{"-"}</Text>
+
+                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:5 }}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Birthdays</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
+                                                        </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Events</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{NoOfEvent ? NoOfEvent : updated?.NoOfEvent || 0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Upcoming</Text>
+                                                        </View>
+                                                </View>
+                                            </View>  
+                                        </View>
+                                    }
+                                </Pressable>
+
+                                <Pressable onPress={() => showView(2)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 2 ? 480 : 260, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
+                                    
+                                    <View style={{borderBottomWidth:0.5,width:"100%",flex:1,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
+                                        <View style={{flexDirection:"row"}}>
+                                            <Ionicons name="calculator-outline" size={40} style={{elevation:3}} color={"white"}/>
+                                            <View style={{marginLeft:10}}>
+                                                <Text style={[styles.Update]}>{monthOfYear}</Text>
+                                                <Text style={{fontSize:10, color:"rgba(240, 240, 240, 0.7)"}}>Monthly statistic updates</Text>
                                             </View>
                                         </View>
-                                       
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Tithe/month:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{"-"}</Text>
-                                            </View>
-                                        </View>
-
-                                        <View style={{width:"100%", flexDirection:"row", alignItems:"center"}}>
-                                            <View style={{width:"60%"}}>
-                                                <Text style={styles.updateTxt}>Pledges:</Text>
-                                            </View>
-                                            <View style={{width:"40%", justifyContent:"center"}}>
-                                                <Text style={styles.updateTxt}>{NoOfPleges ? NoOfPleges : updated?.pledges || "-"}</Text>
-                                            </View>
-                                        </View>
+                                        <MaterialIcons name={ showDetails ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
                                     </View>
-                                </View>
 
+                                    <View style={{flex:3, width:"100%", marginBottom:35}}>
+                                         <InvertedSemiCircularProgressBar high={"High"} low={"Low"} stats={"Performance"} present={attendance ? attendance : updated?.attendance ||  0} percentage={totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || 0} radius={140} strokeWidth={15} />
+                                    </View>
+
+                                    {(showDetails ===2) && 
+                                        <View style={{width:"100%",justifyContent:"space-between",alignItems:"center", flex:5}}>
+                                            <View style={{flex:1,flexDirection:"row",marginVertical:15}}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderRightWidth:0.5,paddingVertical:18 ,borderColor:"rgba(240, 240, 240, 0.5)",}}>
+                                                    <Text style={{fontSize:13, color:"white",}}>New Members</Text>
+                                                    <View style={{flexDirection:"row",}}>
+                                                        <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || "-"}</Text>
+                                                        <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
+                                                    </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                    <Text style={{fontSize:13, color:"white",}}>Attendance</Text>
+                                                    <View style={{flexDirection:"row",}}>
+                                                        <Text style={styles.updateTxt}>{attendancePercent ? attendancePercent : 0}</Text>
+                                                        <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>% {status}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+
+                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:5 }}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Birthdays</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  "-"}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
+                                                        </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Pledges</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{NoOfPleges ? NoOfPleges : updated?.pledges || 0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Pending</Text>
+                                                        </View>
+                                                </View>
+                                            </View>  
+                                        </View>
+                                    }
+                                </Pressable>
 
                             </ScrollView>
                         </View>
                                     
 
                     <FAB variant="surface"  loading={loading} onPress={()=> {setLoading(true); Linking.openURL(whatsappUrl) ; setLoading(false); ToastAndroid.show("Thank you for the feedback!", ToastAndroid.SHORT);}} 
-                     icon={"whatsapp"} color="rgba(30, 30, 30, 1)"  style={{width:55,alignItems:"center",justifyContent:"center", height:55, position:"absolute" ,zIndex:9, bottom:80,elevation:5, backgroundColor:"white", right:15}}/>
+                     icon={"whatsapp"} color="rgba(30, 30, 30, 1)"  style={{width:55,alignItems:"center",justifyContent:"center", height:55, position:"absolute" ,zIndex:9, bottom:70,elevation:5, backgroundColor:"white", right:15}}/>
 
                     <View>
                         
-                        <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
+                        <View  style={{flexDirection:"row",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF', justifyContent:"space-between",paddingVertical:5,borderTopWidth:0.5,borderColor:"gray"}}>
                            
                             <Pressable style={{width:120}} onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName: ChurchName, events: events})}>
                                     
                                     <View style={{alignItems:"center"}}>
-                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
-                                        <Text style={{fontWeight:"500",fontSize:12, color:"gray"}}>
+                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={isDarkMode ? '#FFFFFF' : '#000000'} />
+                                        <Text style={{fontWeight:"500",fontSize:12, color:isDarkMode ? '#FFFFFF' : '#000000'}}>
                                             More
                                         </Text>
                                     </View>
@@ -658,7 +696,7 @@ export default function Home(){
                                 {({pressed})=>(
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"}   />
-                                    <Text style={{color: pressed || isActive ? "rgba(100, 200, 255, 1)": "gray",fontWeight:"500", fontSize:12}}>
+                                    <Text style={{color: pressed || isActive ? "rgba(100, 200, 255, 1)": isDarkMode ? '#FFFFFF' : '#000000',fontWeight:"500", fontSize:12}}>
                                         Home
                                     </Text>
                                 </View>
@@ -668,8 +706,8 @@ export default function Home(){
                             <Pressable style={{width:120}} onPress={()=> {navigation.navigate("Settings", {username:username, ChurchName: ChurchName, NoOfEvent: NoOfEvent, events: events}); setclicked(false)}} >
                                     
                                     <View style={{alignItems:"center"}}>
-                                        <Ionicons name="settings-outline" size={27} color= "gray"  />
-                                        <Text style={{color: "gray",fontWeight:"500", fontSize:12}}>
+                                        <Ionicons name="settings-outline" size={27} color= {isDarkMode ? '#FFFFFF' : '#000000'}  />
+                                        <Text style={{color: isDarkMode ? '#FFFFFF' : '#000000',fontWeight:"500", fontSize:12}}>
                                             Settings
                                         </Text>
                                         {(events && clicked) &&  <Badge style={{position:"absolute",top:0,right:38}} size={8}/>} 

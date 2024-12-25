@@ -1,5 +1,5 @@
 import React, {useState, useLayoutEffect, useEffect} from "react";
-import { View, Text, TextInput, TouchableOpacity,Image,Platform, ScrollView, Alert, ToastAndroid, TouchableHighlight } from "react-native";
+import { View, Text, TextInput,useColorScheme, TouchableOpacity,Image,Platform, ScrollView, Alert, ToastAndroid, TouchableHighlight } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Picker} from '@react-native-picker/picker';
@@ -20,7 +20,7 @@ export default function AddMembers(props){
     const db = getFirestore()
     const [churchName, setchurchName] = useState(null)
     const auth = getAuth()
-
+    const isDarkMode = useColorScheme() === 'dark';
 
     const [username, setUsername] = useState("");
 
@@ -392,16 +392,16 @@ export default function AddMembers(props){
     
 
     return(
-        <View style={{flex:1, justifyContent:"space-between",backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1, justifyContent:"space-between",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF'}}>
 
             {!props?.show &&
-                <><StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+                <><StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}/>
 
-                    <View style={{height:70, marginTop:20,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                    <View style={{height:70, marginTop:20,width:"100%",borderBottomWidth:0.5, borderColor:"gray", alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                         <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName,events: params.events})} />
-                         <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Registration</Text>
-                         <Ionicons name="person-add-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+                         <Ionicons name="arrow-back" size={25} style={{width:40,}} color={ isDarkMode ? '#FFFFFF' : '#000000'} onPress={() => navigation.navigate('ModalScreen',{username: params?.username, ChurchName: params.ChurchName,events: params.events})} />
+                         <Text style={{ fontSize: 22, color: isDarkMode ? '#FFFFFF' : '#000000', fontWeight: "800" }}>Registration</Text>
+                         <Ionicons name="person-add-sharp" size={25} color={ isDarkMode ? '#FFFFFF' : '#000000'} />
 
                     </View>
                 </>
@@ -409,13 +409,13 @@ export default function AddMembers(props){
 
             <ScrollView contentContainerStyle={{padding:10}} showsVerticalScrollIndicator={false}>
             <View style={{margin:10, alignItems:'center'}}>
-                <Text style={{fontSize:16, fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>
+                <Text style={{fontSize:16, fontWeight:"400",color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                     MEMBERSHIP DETAILS
                 </Text>
             </View>
             <View style={{flexDirection:"row", justifyContent:"space-between",alignItems:"center", marginTop:10}}>
-                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}  value={firstName || (props?.info?.length > 0 ? props?.info[0]?.FirstName : "")} onChangeText={(text) => setFirstName(text)} placeholderTextColor={"rgba(240, 240, 240, 1)"} placeholder={"First Name" }/>
-                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}   value={secondName || (props?.info?.length > 0 ? props?.info[0]?.SecondName : "")} onChangeText={(text) => setSecondName(text)} placeholder={"Last Name" } placeholderTextColor={"rgba(240, 240, 240, 1)"}/>
+                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}}  value={firstName || (props?.info?.length > 0 ? props?.info[0]?.FirstName : "")} onChangeText={(text) => setFirstName(text)} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'} placeholder={"First Name" }/>
+                <TextInput style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}}   value={secondName || (props?.info?.length > 0 ? props?.info[0]?.SecondName : "")} onChangeText={(text) => setSecondName(text)} placeholder={"Last Name" } placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}/>
             </View>
 
             <View style={{flexDirection:"row",marginTop:30, justifyContent:"space-between"}}>
@@ -425,7 +425,7 @@ export default function AddMembers(props){
                         <Ionicons name="calendar-outline" size={37} color={" rgba(100, 200, 255, 1)"}/>
                     </TouchableOpacity>
 
-                    <TextInput readOnly={true}   style={{width:"80%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:45, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"}   placeholder={NewDateShow ? formattedDateOfBirth : (props.info ? props.info[0].Date_Of_Birth : "Date of Birth" )} />
+                    <TextInput readOnly={true}   style={{width:"80%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:45, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}}placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}   placeholder={NewDateShow ? formattedDateOfBirth : (props.info ? props.info[0].Date_Of_Birth : "Date of Birth" )} />
                 </View>
 
                 <View style={{flexDirection:"row", justifyContent:"space-between", width:"45%",alignItems:"center"}}>
@@ -434,58 +434,58 @@ export default function AddMembers(props){
                     <Ionicons name="calendar-outline" size={37} color={" rgba(100, 200, 255, 1)"}/>
                 </TouchableOpacity>
 
-                <TextInput readOnly={true}  style={{width:"80%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:45, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"}  placeholder={NewDateShow ? formattedRegDate : (props.info ? props.info[0].Registration_Date : "Registration Date" ) } />
+                <TextInput readOnly={true}  style={{width:"80%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:45, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}  placeholder={NewDateShow ? formattedRegDate : (props.info ? props.info[0].Registration_Date : "Registration Date" ) } />
                 </View>
             </View>
 
             <View style={{marginTop:30, flexDirection:"row", justifyContent:"space-between"}}>
-                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"}  inputMode="tel"  value={phone1 || (props?.info?.length > 0 ? props?.info[0]?.Number1 : "")} onChangeText={(text) => setPhone1(text)} placeholder={"Phone Number 1"} />
-                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15, color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="tel"  value={phone2 || (props?.info?.length > 0 ? props?.info[0]?.Number2 : "")} onChangeText={(text) => setPhone2(text)} placeholder={"Phone Number 2" } />
+                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15, color: isDarkMode ? '#FFFFFF' : '#000000'}}placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}  inputMode="tel"  value={phone1 || (props?.info?.length > 0 ? props?.info[0]?.Number1 : "")} onChangeText={(text) => setPhone1(text)} placeholder={"Phone Number 1"} />
+                <TextInput  style={{width:"48%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15, color: isDarkMode ? '#FFFFFF' : '#000000'}} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'} inputMode="tel"  value={phone2 || (props?.info?.length > 0 ? props?.info[0]?.Number2 : "")} onChangeText={(text) => setPhone2(text)} placeholder={"Phone Number 2" } />
             </View>
 
             <View style={{marginTop:30, flexDirection:"row"}}>
-                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="email"  value={email || (props?.info?.length > 0 ? props?.info[0]?.Email : "")} onChangeText={(text) => setemail(text)} placeholder={"Email address" } />
+                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'} inputMode="email"  value={email || (props?.info?.length > 0 ? props?.info[0]?.Email : "")} onChangeText={(text) => setemail(text)} placeholder={"Email address" } />
             </View>
 
             <View style={{marginTop:30, flexDirection:"row"}}>
-                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15,color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text"  value={location || (props?.info?.length > 0 ? props?.info[0]?.Location : "")} onChangeText={(text) => setLocation(text)} placeholder={"Residential address" } />
+                <TextInput  style={{width:"100%", borderWidth:1,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15,color: isDarkMode ? '#FFFFFF' : '#000000'}} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'} inputMode="text"  value={location || (props?.info?.length > 0 ? props?.info[0]?.Location : "")} onChangeText={(text) => setLocation(text)} placeholder={"Residential address" } />
             </View>
 
             <View style={{marginTop:30}}>
-                <Text style={{fontSize:16, fontWeight:"normal", color:"rgba(240, 240, 240, 1)"}}>
+                <Text style={{fontSize:16, fontWeight:"normal", color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                     Marital status:
                 </Text>
                 <View style={{flexDirection:"row", justifyContent:"space-between",marginTop:10}}>
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14, fontWeight:"300", color:"rgba(240, 240, 240, 1)"}}>Single  </Text> 
+                        <Text style={{fontSize:14, fontWeight:"300", color: isDarkMode ? '#FFFFFF' : '#000000'}}>Single  </Text> 
                         <RadioButton  status={(marital  || (props?.info && props?.info[0]?.Marital_Status)) === "single"  ? "checked" : "unchecked"} onPress={()=> radiobtn("single")}/>
                     </View>
                    
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Married  </Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Married  </Text> 
                         <RadioButton  status={(marital || (props?.info && props.info[0].Marital_Status)) === "married" ? "checked" : "unchecked"}  onPress={()=> radiobtn("married")} />
                     </View>
                     
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Divorced  </Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Divorced  </Text> 
                         <RadioButton  status={(marital || (props.info && props?.info[0]?.Marital_Status)) === "divorced" ? "checked" : "unchecked"} onPress={()=> radiobtn("divorced")} />
                     </View>
                     
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Widowed  </Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Widowed  </Text> 
                         <RadioButton  status={(marital || (props.info && props?.info[0]?.Marital_Status)) === "widowed" ? "checked" : "unchecked"} value="" onPress={() => radiobtn("widowed")}/>
                     </View>
                 </View>
             </View>
 
             <View style={{marginTop:30, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                <Text style={{fontSize:16, fontWeight:'400',color:"rgba(240, 240, 240, 1)"}}>Number of Children</Text>
-                <View style={{borderRadius:10,borderWidth:1,height:45, borderColor:"gray", flexDirection:"row", minWidth:100,justifyContent:"space-around",alignItems:"center",paddingHorizontal:5}}><Text style={ { fontSize:16, color:"rgba(240, 240, 240, 1)"}}>{selectedValue || "Select"}</Text>
+                <Text style={{fontSize:16, fontWeight:'400',color: isDarkMode ? '#FFFFFF' : '#000000'}}>Number of Children</Text>
+                <View style={{borderRadius:10,borderWidth:1,height:45, borderColor:"gray", flexDirection:"row", minWidth:100,justifyContent:"space-around",alignItems:"center",paddingHorizontal:5}}><Text style={ { fontSize:16, color: isDarkMode ? '#FFFFFF' : '#000000'}}>{selectedValue || "Select"}</Text>
                             <Picker
                                 selectedValue={selectedValue || (props?.info && props?.info[0].No_Of_Children)}
-                                dropdownIconColor={" rgba(100, 200, 255, 1)"}
+                                dropdownIconColor={ isDarkMode ? '#FFFFFF' : '#000000'}
                                 enabled={marital === "single" ? false : true}
-                                style={{ height:20, width:40, color:"rgba(240, 240, 240, 1)" }}
+                                style={{ height:20, width:40, color: isDarkMode ? '#FFFFFF' : '#000000'}}
                                 onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                             >
                                 <Picker.Item label="1" value="1" />
@@ -504,62 +504,62 @@ export default function AddMembers(props){
             </View>
 
             <View style={{marginTop:30}}>
-            <Text style={{fontSize:16, fontWeight:"normal",color:"rgba(240, 240, 240, 1)"}}>
+            <Text style={{fontSize:16, fontWeight:"normal",color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                     Department:
                 </Text>
                 <View style={{flexDirection:"row", justifyContent:"space-between",marginTop:10}}>
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Youth</Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Youth</Text> 
                         <RadioButton  status={(department || (props.info && props?.info[0]?.Department)) === "youth" ? "checked" : "unchecked"} onPress={()=> radiobtn("youth")}/>
                     </View>
                    
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Men</Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Men</Text> 
                         <RadioButton  status={(department || (props.info && props?.info[0]?.Department)) === "men" ? "checked" : "unchecked"}  onPress={()=> radiobtn("men")} />
                     </View>
                     
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Women </Text> 
+                        <Text style={{fontSize:14, fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Women </Text> 
                         <RadioButton status={(department || (props.info && props?.info[0]?.Department)) === "women" ? "checked" : "unchecked"} onPress={()=> radiobtn("women")} />
                     </View>
                     
                     <View style={{flexDirection:"row",alignItems:"center"}}>
-                        <Text style={{fontSize:14,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Children</Text> 
+                        <Text style={{fontSize:14,fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Children</Text> 
                         <RadioButton    status={(department || (props.info && props?.info[0]?.Department)) === "children" ? "checked" : "unchecked"} value="" onPress={() => radiobtn("children")}/>
                     </View>
                 </View>
             </View>
 
             <View style={{marginTop:30, flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-                <Text style={{fontSize:16,color:"rgba(240, 240, 240, 1)"}}>
+                <Text style={{fontSize:16,color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                     Are you Baptized?
                 </Text>
                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <Text style={{fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Yes</Text>
+                    <Text style={{fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Yes</Text>
                     <Switch thumbColor={"gray"}   value={(baptized || (props.info && props?.info[0]?.Baptized)) === "Yes" ? true : false} onValueChange={() => setBaptized("Yes")} />
                 </View>
                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <Text style={{fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>No</Text>
+                    <Text style={{fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>No</Text>
                     <Switch thumbColor={"gray"}  value={(baptized || (props.info && props?.info[0]?.Baptized)) === "No" ? true : false } onValueChange={() => setBaptized("No")} />
                 </View>
             </View>
 
             <View style={{marginTop:30, flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
-                <Text style={{fontSize:16,color:"rgba(240, 240, 240, 1)"}}>
+                <Text style={{fontSize:16,color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                     Are you Visiting?
                 </Text>
                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <Text style={{fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Yes</Text>
+                    <Text style={{fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>Yes</Text>
                     <Switch thumbColor={"gray"}  value={(visiting || (props.info && props?.info[0]?.Visting)) === "Yes" ? true : false} onValueChange={() => setVisiting("Yes")} />
                 </View>
                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <Text style={{fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>No</Text>
+                    <Text style={{fontWeight:"300",color: isDarkMode ? '#FFFFFF' : '#000000'}}>No</Text>
                     <Switch thumbColor={"gray"} value={(visiting || (props.info && props?.info[0]?.Visting)) === "No" ? true : false } onValueChange={() => setVisiting("No")} />
                 </View>
             </View>
 
             <View style={{marginTop:30}}>
-                <TextInput  style={{width:"100%",color:"rgba(240, 240, 240, 1)", borderWidth:1, marginTop:5,borderColor:"gray",backgroundColor:"rgba(50, 50, 50, 1)", height:50, borderRadius:10,padding:10, fontSize:15}} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" value={Occupation || (props?.info?.length > 0 ? props?.info[0]?.occupation : "")} onChangeText={(text) => setOccupation(text)} placeholder={"Occupation"} />
+                <TextInput  style={{width:"100%",color: isDarkMode ? '#FFFFFF' : '#000000', borderWidth:1, marginTop:5,borderColor:"gray",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '', height:50, borderRadius:10,padding:10, fontSize:15}} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'} inputMode="text" value={Occupation || (props?.info?.length > 0 ? props?.info[0]?.occupation : "")} onChangeText={(text) => setOccupation(text)} placeholder={"Occupation"} />
             </View>
 
             <View style={{marginTop:30, flexDirection:'row',justifyContent:"space-around",alignItems:"center"}}> 
@@ -570,7 +570,7 @@ export default function AddMembers(props){
                   { text: "CAMERA", onPress: () => {pickImage("camera")}},
                   { text: "GALLERY", onPress: () => {pickImage("gallery")}},
                 ]);
-              }} underlayColor="rgba(70, 70, 70, 1)" style={{borderRadius:60}} >
+              }} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray" }style={{borderRadius:60}} >
                 <>
                     {(selectedImage || (props.info && props?.info[0]?.Image !== null) ) ? (
                         <View style={{borderWidth:2.5, borderRadius:60,height:120,width:120, alignItems:"center",justifyContent:"center", borderColor:"dimgray"}}>
@@ -578,7 +578,7 @@ export default function AddMembers(props){
                         </View>
                         )
                         :
-                        <View style={{borderWidth:2.5,borderColor:"gray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
+                        <View style={{borderWidth:2.5,borderColor:isDarkMode ? "gray" : "dimgray",elevation:5,alignSelf:"center", width:120,height:120,alignItems:"center",justifyContent:"center", borderRadius:100}}>
                             <Ionicons name="person-circle-sharp" size={138} style={{width:135, position:"absolute",right:-8.5 }} color="dimgray"/>
                         </View>
                     }
@@ -592,11 +592,11 @@ export default function AddMembers(props){
 
             
             <View style={{marginTop:30 ,marginBottom:10, alignItems:"center"}}>
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit(username))}} style={{backgroundColor:"rgba(50, 50, 50, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
+                <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" :"lightgray"} onPress={() => {setSubmitting(true); (props.show ? handleUpdate() : handleSubmit(username))}} style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" :  "rgba(100, 200, 255, 1)", width:"60%",height:50, borderRadius:10,elevation:3, alignItems:"center", justifyContent:"center"}}>
                     {showSubmitting ? 
-                    <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
+                    <ActivityIndicator  color={ isDarkMode ? "rgba(100, 200, 255, 1)" : "white"}/> 
                     :
-                    <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:18, fontWeight:"500"}}>{props?.show? "Update Data":"Register Member"}</Text>
+                    <Text style={{color: isDarkMode ? "rgba(100, 200, 255, 1)" :"white", fontSize:18, fontWeight:"500"}}>{props?.show? "Update Data":"Register Member"}</Text>
                     }
                 </TouchableHighlight>
             </View>

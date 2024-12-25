@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
 
     container:{
         flex:1,
-        backgroundColor:"rgba(30, 30, 30, 1)"
     },
 
     overlay:{
@@ -22,7 +21,6 @@ const styles = StyleSheet.create({
 
     main :{
         width:"100%",
-        backgroundColor:"rgba(30, 30, 30, 1)",
         paddingHorizontal:15,
         paddingTop:15,
         borderTopRightRadius:50,
@@ -61,19 +59,17 @@ const styles = StyleSheet.create({
         flexDirection:"row"
     },
     Update:{
-        fontSize:28,
-        color:"rgba(100, 200, 255, 1)",
+        fontSize:18,
+        color:"white",
         fontWeight:"500",
         
     },
 
     updateTxt:{
-        fontSize:16,
-        fontWeight:"normal",
-        textAlign:"justify",
-        padding:3,
-        marginTop:10,
-        color:"rgba(240, 240, 240, 1)"
+        fontSize:35,
+        fontWeight:"700",
+        marginRight:5,
+        color:"white"
     }
 })
 

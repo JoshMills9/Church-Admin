@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState ,useRef} from "react";
-import { TextInput, View, Text,Pressable, FlatList, Image,ToastAndroid, TouchableOpacity,Alert, Switch, ScrollView } from "react-native";
+import { TextInput, View, Text,Pressable, useColorScheme, Image,ToastAndroid, TouchableOpacity,Alert, Switch, ScrollView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -23,7 +23,7 @@ const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload prese
 
 export default function Settings ({route}){
     const navigation = useNavigation()
-
+    const isDarkMode = useColorScheme() === 'dark';
     const {username, ChurchName, events, NoOfEvent} = route.params
 
     const [isActive, setActive] = useState(true)
@@ -319,18 +319,18 @@ export default function Settings ({route}){
     
 
     return(
-        <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1, justifyContent:"space-between", backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' }}>
 
 
-            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+            <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF' }/>
 
 
 
-            <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+            <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",borderBottomWidth:0.5,borderColor:"gray",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' }}>
     
-                <MaterialIcons name="admin-panel-settings" color={"rgba(240, 240, 240, 1)"} size={38}/>
+                <MaterialIcons name="admin-panel-settings" color={isDarkMode ? '#FFFFFF' : '#000000' } size={38}/>
 
-                <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>Settings</Text>
+                <Text style={{fontSize:25,fontWeight:"800",color:isDarkMode ? '#FFFFFF' : '#000000' , marginLeft:20}}>Settings</Text>
             </View>
 
             
@@ -338,13 +338,13 @@ export default function Settings ({route}){
             <View style={{paddingHorizontal:15,paddingVertical:5, justifyContent:"space-between", flex:1, }}>
                 <View >
                     <View>
-                        <Text style={{fontSize:18, fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>
+                        <Text style={{fontSize:18, fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }}>
                             Account
                         </Text>
 
                     </View>
 
-                    <View style={{flexDirection:"row",elevation:3, backgroundColor:"rgba(50, 50, 50, 1)",marginTop:10,borderRadius:15, height:80, alignItems:"center",padding:10 , justifyContent:"flex-start", marginBottom:10}}>
+                    <View style={{flexDirection:"row",elevation:4, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",marginTop:10,borderRadius:15, height:80, alignItems:"center",padding:10 , justifyContent:"flex-start", marginBottom:10}}>
                         <TouchableOpacity onPress={() => {Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
                                 { text: "CAMERA", onPress: () => {pickImage("camera")}},
                                 { text: "GALLERY", onPress: () => {pickImage("gallery")}},
@@ -369,7 +369,7 @@ export default function Settings ({route}){
                         </TouchableOpacity>
 
                         <View>
-                            <Text style={{fontSize:19,fontWeight:"800",color:"rgba(240, 240, 240, 1)", width:280}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                            <Text style={{fontSize:19,fontWeight:"800",color:isDarkMode ? '#FFFFFF' : '#000000' , width:280}} adjustsFontSizeToFit={true} numberOfLines={1}>
                                 {info?.ChurchName?.toUpperCase()}
                             </Text>
 
@@ -379,7 +379,7 @@ export default function Settings ({route}){
                         </View>
 
                         <TouchableOpacity onPress={() => navigation.navigate("ChangeAccountName", {username:username, ChurchName: ChurchName, NoOfEvent: NoOfEvent, events: events})} style={{position:"absolute", right:0, width:50,height:30,justifyContent:"center", alignItems:"center", bottom:10}}>
-                            <Ionicons name="pencil" size={16} color={"white"}/>
+                            <Ionicons name="pencil" size={16} color={ isDarkMode ? '#FFFFFF' : '#000000'}/>
                         </TouchableOpacity>
                     </View>
 
@@ -389,15 +389,15 @@ export default function Settings ({route}){
                     <View >
 
                         <View>
-                            <Text style={{fontSize:18, fontWeight:"500",color:"rgba(240, 240, 240, 1)"}}>
+                            <Text style={{fontSize:18, fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }}>
                                 General
                             </Text>
 
                         </View>
                         
-                        <View style={{backgroundColor:"rgba(50, 50, 50, 1)" ,elevation:1, marginTop:10, borderRadius:15, }}>
+                        <View style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF" ,elevation:4, marginTop:10, marginHorizontal:3, borderRadius:15, }}>
 
-                            <TouchableHighlight onPress={()=>{}} underlayColor="rgba(70, 70, 70, 1)" style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
+                            <TouchableHighlight onPress={()=>{}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
                                 <> 
                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                     <View style={{marginRight:15}}>
@@ -405,7 +405,7 @@ export default function Settings ({route}){
                                     </View>
 
                                     <View style={{paddingRight:25,}}>
-                                        <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                        <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                             Light mode
                                         </Text>
 
@@ -421,7 +421,7 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {navigation.navigate("Notification",{username: username , ChurchName : ChurchName,events: events})}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {navigation.navigate("Notification",{username: username , ChurchName : ChurchName,events: events})}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="notifications-outline" size={30}  color={"gray"}/>
@@ -429,7 +429,7 @@ export default function Settings ({route}){
                                 </View>
 
                                 <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                         Notifications
                                     </Text>
 
@@ -440,14 +440,14 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
                                 <> 
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="shield-checkmark-outline" size={30}  color={"gray"}/>
                                 </View>
 
                                 <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                         Privacy
                                     </Text>
 
@@ -458,14 +458,14 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="lock-closed-outline" size={30} color={"gray"}/>
                                 </View>
 
                                 <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                         Security
                                     </Text>
 
@@ -476,14 +476,14 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="language-outline" size={30} color={"gray"} />
                                 </View>
 
                                 <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                    <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                         Language
                                     </Text>
 
@@ -497,7 +497,7 @@ export default function Settings ({route}){
                         </View>
                     </View>
 
-                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> { navigation.navigate("Payment",{username: username , ChurchName : ChurchName, events: events})}} style={{flexDirection:"row", backgroundColor:"rgba(50, 50, 50, 1)",elevation:1, borderRadius:15,marginTop:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
+                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> { navigation.navigate("Payment",{username: username , ChurchName : ChurchName, events: events})}} style={{flexDirection:"row", backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",elevation:4, borderRadius:15,marginTop:15, height:60,marginHorizontal:3, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
                                     <>
                                     <View style={{flexDirection:"row",alignItems:"center"}}>
                                         <View style={{marginRight:15}}>
@@ -505,7 +505,7 @@ export default function Settings ({route}){
                                         </View>
 
                                         <View style={{paddingRight:25,}}>
-                                            <Text style={{fontSize:19,fontWeight:"500",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                            <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
                                                 Payments
                                             </Text>
 
@@ -523,7 +523,7 @@ export default function Settings ({route}){
 
                         
 
-                        <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)" onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:"rgba(50, 50, 50, 1)",elevation:1,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 , justifyContent:"flex-start"}}>
+                        <TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",elevation:4,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 ,marginHorizontal:3, justifyContent:"flex-start"}}>
                                 <>
                                     <View style={{marginRight:15}}>
                                         <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
@@ -564,14 +564,14 @@ export default function Settings ({route}){
 
             
             <View style={{position:"static"}}>
-                <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
+                <View  style={{flexDirection:"row",backgroundColor:isDarkMode ? "#000000" : "#FFFFFF", justifyContent:"space-between",paddingVertical:5,borderTopWidth:0.5,borderColor:"gray"}}>
                        
                     
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("ModalScreen", {username:username, ChurchName : ChurchName , events: events})} >
                            
                                     <View style={{alignItems:"center"}}>
-                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={"gray"} />
-                                        <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
+                                        <MaterialCommunityIcons name="view-dashboard-outline" size={28} color={isDarkMode ? '#FFFFFF' : '#000000' } />
+                                        <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000' ,fontWeight:"500", fontSize:12}}>
                                             More
                                         </Text>
                                     </View>
@@ -581,8 +581,8 @@ export default function Settings ({route}){
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
-                                    <Ionicons name="home-outline" size={27} color={"gray"}   />
-                                    <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
+                                    <Ionicons name="home-outline" size={27} color={isDarkMode ? '#FFFFFF' : '#000000' }   />
+                                    <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000' ,fontWeight:"500", fontSize:12}}>
                                         Home
                                     </Text>
                                 </View>
@@ -593,8 +593,8 @@ export default function Settings ({route}){
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName})}  >
                                 {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
-                                        <Ionicons name="settings-sharp" size={27} color={pressed || isActive ? " rgba(100, 200, 255, 1)" :"gray"} />
-                                        <Text style={{color: pressed || isActive ? " rgba(100, 200, 255, 1)" : "gray",fontWeight:"500", fontSize:12}}>
+                                        <Ionicons name="settings-sharp" size={27} color={pressed || isActive ? " rgba(100, 200, 255, 1)" :isDarkMode ? '#FFFFFF' : '#000000' } />
+                                        <Text style={{color: pressed || isActive ? " rgba(100, 200, 255, 1)" : isDarkMode ? '#FFFFFF' : '#000000' ,fontWeight:"500", fontSize:12}}>
                                             Settings
                                         </Text>
                                     </View>

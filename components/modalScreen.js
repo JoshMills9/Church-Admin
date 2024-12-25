@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, Text,ActivityIndicator,Keyboard, ScrollView,Pressable, ToastAndroid, TextInput, TouchableHighlight} from "react-native";
+import { View, TouchableOpacity, Text,ActivityIndicator,Keyboard,useColorScheme, ScrollView,Pressable, ToastAndroid, TextInput, TouchableHighlight} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import {StatusBar} from 'expo-status-bar'
@@ -19,16 +19,23 @@ export default function ModalScreen({route}){
     const [cellName, setCellName] = useState("");
     const [cellLocation, setCellLocation] = useState("")
     const db = getFirestore()
-
+    const isDarkMode = useColorScheme() === 'dark';
 
 
       //Function to handle submit
       const handleSubmit = async (Email) => {
-        setSubmitting(true);
-        ToastAndroid.show("Creating...", ToastAndroid.SHORT)
+
+        if(!cellName || !cellLocation){
+            setSubmitting(false)
+            return ToastAndroid.show("Please enter cell name and location!", ToastAndroid.LONG)
+
+        }
 
         try {
     
+            setSubmitting(true);
+            ToastAndroid.show("Creating...", ToastAndroid.SHORT)
+
             // Step 2: Fetch church details based on user email
             const tasksCollectionRef = collection(db, 'UserDetails');
             const querySnapshot = await getDocs(tasksCollectionRef);
@@ -103,22 +110,22 @@ export default function ModalScreen({route}){
     const createCell = () => {
         return (
             <BottomSheet visible={isBottomSheetVisible} onBackButtonPress={toggleBottomSheet}  onBackdropPress={toggleBottomSheet} >
-                <View style={{borderRadius:15,height:350,backgroundColor:"rgba(30, 30, 30, 1)",padding:10, width:"100%" ,justifyContent:"space-around"}}>
-                    <Text style={{color:"white",fontSize:16, alignSelf:"center",fontWeight:"700"}}>CREATE CELL</Text>
+                <View style={{borderTopLeftRadius:15,borderTopRightRadius:15,height:350,backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' ,padding:10, width:"100%" ,justifyContent:"space-around"}}>
+                    <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000',fontSize:16, alignSelf:"center",fontWeight:"700"}}>CREATE CELL</Text>
                     <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                        <TextInput onFocus={()=> setBottomTab(false)} value={cellName} onChangeText={(txt) => setCellName(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}}  cursorColor={"lightgray"} placeholderTextColor={"lightgray"}  placeholder="Cell name"/>
-                        <TextInput onFocus={()=> setBottomTab(false)} value={cellLocation} onChangeText={(txt) => setCellLocation(txt)} style={{width:"47%", height:50,fontWeight:"600", color:"white",fontSize:16,textAlign:"center",  borderRadius:10,backgroundColor:"rgba(50, 50, 50, 1)",padding:10}} cursorColor={"lightgray"} placeholderTextColor={"lightgray"}  placeholder="Location"/>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellName} onChangeText={(txt) => setCellName(txt)} style={{width:"47%", height:50,fontWeight:"600", color:isDarkMode ? '#FFFFFF' : '#000000',fontSize:16,textAlign:"center",borderColor:isDarkMode ? "gray" :"lightgray", borderWidth:1,  borderRadius:10,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '',padding:10}}  cursorColor={"gray"} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}  placeholder="Cell name"/>
+                        <TextInput onFocus={()=> setBottomTab(false)} value={cellLocation} onChangeText={(txt) => setCellLocation(txt)} style={{width:"47%", height:50,fontWeight:"600", color:isDarkMode ? '#FFFFFF' : '#000000',fontSize:16,textAlign:"center",borderColor:isDarkMode ? "gray" :"lightgray", borderWidth:1,  borderRadius:10,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '',padding:10}} cursorColor={"gray"} placeholderTextColor={isDarkMode ? '#FFFFFF' : 'gray'}  placeholder="Location"/>
                     </View>
                     <View style={{flexDirection:"row",height:70, justifyContent:"space-between",alignItems:"center",}}>
-                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {toggleBottomSheet() ; navigation.navigate("Cell List",  {username: username, ChurchName: ChurchName,events: events})}}>
+                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {toggleBottomSheet() ; navigation.navigate("Cell List",  {username: username, ChurchName: ChurchName,events: events})}}>
                             <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>View</Text>
                         </TouchableHighlight>
 
-                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {toggleBottomSheet() ; navigation.navigate("Update Cell",  {username: username, ChurchName: ChurchName,events: events})}}>
+                        <TouchableHighlight style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {toggleBottomSheet() ; navigation.navigate("Update Cell",  {username: username, ChurchName: ChurchName,events: events})}}>
                             <Text style={{color:"rgba(100, 200, 255, 1)",fontSize:16}}>Update</Text>
                         </TouchableHighlight>
 
-                        <TouchableHighlight  style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={() => {Keyboard.dismiss(); handleSubmit(username)}} >
+                        <TouchableHighlight  style={{width:"30%", alignItems:"center",justifyContent:"center", height:35, borderRadius:8}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {Keyboard.dismiss(); handleSubmit(username)}} >
                             {!showSubmitting ? <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:16}}>Create</Text>
                             :
                             <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
@@ -126,7 +133,7 @@ export default function ModalScreen({route}){
                         </TouchableHighlight>
 
                     </View>
-                    <TouchableHighlight style={{width:"50%",alignSelf:"center", alignItems:"center",justifyContent:"center",flexDirection:"row", height:35, borderRadius:8}} underlayColor="rgba(70, 70, 70, 1)" onPress={toggleBottomSheet}>
+                    <TouchableHighlight style={{width:"50%",alignSelf:"center", alignItems:"center",justifyContent:"center",flexDirection:"row", height:35, borderRadius:8}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={toggleBottomSheet}>
                             <Text style={{color:"red",fontSize:16}}>Cancel</Text>
                     </TouchableHighlight>
                 </View>
@@ -137,16 +144,16 @@ export default function ModalScreen({route}){
 
  
     return (
-        <View  style={{flex:1,justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View  style={{flex:1,justifyContent:"space-between", backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' }}>
     
-            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+            <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}/>
 
 
-                    <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15, elevation:5, backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                    <View style={{height:60,marginTop:20, width:"100%", alignItems:"center",flexDirection:'row',paddingHorizontal:15,borderBottomWidth:0.5,borderColor:"gray", elevation:5, backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' }}>
     
-                        <MaterialIcons name="dashboard"  color={"rgba(240, 240, 240, 1)"} size={30}/>
+                        <MaterialIcons name="dashboard"  color={isDarkMode ? '#FFFFFF' : '#000000'} size={30}/>
 
-                        <Text style={{fontSize:25,fontWeight:"800",color:"rgba(240, 240, 240, 1)", marginLeft:20}}>Dashboard</Text>
+                        <Text style={{fontSize:25,fontWeight:"800",color:isDarkMode ? '#FFFFFF' : '#000000', marginLeft:20}}>Dashboard</Text>
                     </View>
 
 
@@ -157,15 +164,15 @@ export default function ModalScreen({route}){
                         <View style={{marginTop:10,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
 
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Registration", {username: username, ChurchName: ChurchName, events: events} )}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Registration", {username: username, ChurchName: ChurchName, events: events} )}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF' , elevation:6 }}>
                                         <Ionicons name="person-add-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Register Member</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Register Member</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Update Member Data", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Update Member Data", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:5 }}>
                                         <Ionicons name="pencil-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Update Member Data</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000', textAlign:'center'}} >Update Member Data</Text>
                                 </TouchableOpacity>
                             </>
                         </View>
@@ -173,61 +180,61 @@ export default function ModalScreen({route}){
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("MemberList", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("MemberList", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF' , elevation:6 }}>
                                         <Ionicons name="people-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Members List</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Members List</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("markAttendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5}}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("markAttendance", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:10,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF' , elevation:5}}>
                                         <Ionicons name="book-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)", textAlign:'center'}} >Record Church Attendance</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000', textAlign:'center'}} >Record Church Attendance</Text>
                                 </TouchableOpacity>
                             </>
                         </View>
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Events",{id: "" ,image : null, name: "", guest: "", About: "", start:"" ,username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Events",{id: "" ,image : null, name: "", guest: "", About: "", start:"" ,username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:6 }}>
                                         <Ionicons name="calendar-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Create Event</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Create Event</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Prepare Sms", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Prepare Sms", {username: username, ChurchName: ChurchName,events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF' , elevation:5 }}>
                                         <Ionicons name="chatbox-ellipses-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}} >Prepare SMS</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}} >Prepare SMS</Text>
                                 </TouchableOpacity>
                             </>
                         </View>
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:6 }}>
                                         <Ionicons name="receipt-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>SMS Receipt</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>SMS Receipt</Text>
                                 </TouchableOpacity>
                             </>
                             <>
-                                <TouchableOpacity onPress={()=> {navigation.navigate("Make Pledge", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:"rgba(50, 50, 50, 1)", elevation:5 }}>
+                                <TouchableOpacity onPress={()=> {navigation.navigate("Make Pledge", {username: username, ChurchName: ChurchName, events: events})}} style={{height:130, width:"48%",padding:15,alignItems:"center",  justifyContent:"space-between",borderRadius:15, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:5 }}>
                                         <Ionicons name="cash-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}} >Make Pledge</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}} >Make Pledge</Text>
                                 </TouchableOpacity>
                             </>
                         </View>
 
                         <View style={{marginTop:15,alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                             <>
-                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:6 }}>
                                         <Ionicons name="calculator-outline" color={" rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Statistics</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Statistics</Text>
                                 </TouchableOpacity>
                             </>
 
                             <>
-                                <TouchableOpacity onPress={() => toggleBottomSheet()} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:"rgba(50, 50, 50, 1)", elevation:6 }}>
+                                <TouchableOpacity onPress={() => toggleBottomSheet()} style={{height:130, width:"48%",padding:5,alignItems:"center",justifyContent:"space-around",borderRadius:20, backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '#FFFFFF', elevation:6 }}>
                                         <Ionicons name="add" color={"rgba(100, 200, 255, 1)"} size={50}/>
-                                        <Text style={{fontSize:18,fontWeight:"400",color:"rgba(240, 240, 240, 1)"}}>Create Cell</Text>
+                                        <Text style={{fontSize:18,fontWeight:"400",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Create Cell</Text>
                                 </TouchableOpacity>
                             </>
                         
@@ -241,12 +248,12 @@ export default function ModalScreen({route}){
 
                 <View>
     
-                    <View  style={{flexDirection:"row",backgroundColor:"rgba(50, 50, 50, 1)", justifyContent:"space-between",paddingVertical:5,borderTopWidth:1,borderColor:"gray"}}>
+                    <View  style={{flexDirection:"row",backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' , justifyContent:"space-between",paddingVertical:5,borderTopWidth:0.5,borderColor:"gray"}}>
                             <Pressable style={{width:120}}>
                             {({pressed})=>(
                                     <View style={{alignItems:"center"}}>
                                         <MaterialIcons name="dashboard" size={27} color={pressed || isActive ? "rgba(100, 200, 255, 1)" :"gray"} />
-                                        <Text style={{color: pressed || isActive ? "rgba(100, 200, 255, 1)" : "gray",fontWeight:"500", fontSize:12}}>
+                                        <Text style={{color: pressed || isActive ? "rgba(100, 200, 255, 1)" : isDarkMode ? '#FFFFFF' : '#000000',fontWeight:"500", fontSize:12}}>
                                             More
                                         </Text>
                                     </View>
@@ -257,8 +264,8 @@ export default function ModalScreen({route}){
                             <Pressable style={{width:120}}  onPress={()=> navigation.replace("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
-                                    <Ionicons name="home-outline" size={27} color={"gray"}   />
-                                    <Text style={{color:"gray",fontWeight:"500", fontSize:12}}>
+                                    <Ionicons name="home-outline" size={27} color={isDarkMode ? '#FFFFFF' : '#000000'}   />
+                                    <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000',fontWeight:"500", fontSize:12}}>
                                         Home
                                     </Text>
                                 </View>
@@ -269,8 +276,8 @@ export default function ModalScreen({route}){
                             <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Settings", {username: username, ChurchName:ChurchName, events: events})}  >
                                     
                                     <View style={{alignItems:"center"}}>
-                                        <Ionicons name="settings-outline" size={27} color= "gray"  />
-                                        <Text style={{color: "gray",fontWeight:"500", fontSize:12}}>
+                                        <Ionicons name="settings-outline" size={27} color= {isDarkMode ? '#FFFFFF' : '#000000'}  />
+                                        <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000',fontWeight:"500", fontSize:12}}>
                                             Settings
                                         </Text>
                                     </View>

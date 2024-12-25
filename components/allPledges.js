@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect } from "react";
-import { View, Text, FlatList, Alert, ToastAndroid } from "react-native";
+import { View, Text, FlatList, Alert,useColorScheme, ToastAndroid } from "react-native";
 
 import {
   getFirestore,
@@ -28,6 +28,7 @@ export default function AllPledges() {
   const db = getFirestore();
   const [search, setSearch] = useState("")
   const [seen, setSeen] = useState(true)
+  const isDarkMode = useColorScheme() === 'dark';
 
   const [redeemed, setRedeemed] = useState(false)
 
@@ -204,11 +205,11 @@ export default function AllPledges() {
   return (
     <View style={{ flex: 1 }}>
 
-      <Searchbar iconColor="rgba(240, 240, 240, 1)"  elevation={2} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search} 
+      <Searchbar iconColor={isDarkMode ? '#FFFFFF' : '#000000'}  elevation={2} style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "white",marginBottom:6}} value={search} 
        onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search by name"/>
 
       <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: 16, color: "rgba(240, 240, 240, 1)" }}>
+        <Text style={{ fontSize: 16, color:  isDarkMode ? '#FFFFFF' : '#000000'}}>
           Total No. of Pledges : {NoOfPleges ? NoOfPleges : "-"}
         </Text>
       </View>
@@ -223,7 +224,7 @@ export default function AllPledges() {
             keyExtractor={(index, item) => item.FullName}
             ListEmptyComponent={() => (
               <View style={{ alignItems: "center" }}>
-                <Text style={{ color: "rgba(240, 240, 240, 1)" }}>
+                <Text style={{ color: isDarkMode ? '#FFFFFF' : '#000000'}}>
                   Not Found!
                 </Text>
               </View>
@@ -238,9 +239,9 @@ export default function AllPledges() {
                     ]);
                   }}
                   style={{
-                    backgroundColor: "rgba(50, 50, 50, 1)",
+                    backgroundColor:isDarkMode?  "rgba(50, 50, 50, 1)" :"white",
                     elevation: 5,
-                    marginVertical: 10,
+                    margin: 10,
                     justifyContent: "space-evenly",
                     padding: 15,
                     height: 210,
@@ -258,7 +259,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 15,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color:  isDarkMode ? '#FFFFFF' : '#000000',
                         textDecorationLine:"underline"
                       }}
                     >
@@ -286,7 +287,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 10,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color: isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       Title Of Pledge :
@@ -318,7 +319,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 10,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color: isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       Name :
@@ -351,7 +352,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 10,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color: isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       Contact :
@@ -384,7 +385,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 10,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color: isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       Amount :
@@ -416,7 +417,7 @@ export default function AllPledges() {
                       style={{
                         marginBottom: 10,
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color:  isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       MoP :
@@ -447,7 +448,7 @@ export default function AllPledges() {
                     <Text
                       style={{
                         fontSize: 16,
-                        color: "rgba(240, 240, 240, 1)",
+                        color: isDarkMode ? '#FFFFFF' : '#000000',
                       }}
                     >
                       Duration :
@@ -474,8 +475,8 @@ export default function AllPledges() {
             )}
           />
           :
-          <View style={{alignItems:"center",justifyContent:"center",alignSelf:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-            <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Pledges"}</Text>
+          <View style={{alignItems:"center",justifyContent:"center",alignSelf:"center", backgroundColor: isDarkMode ? 'rgba(100, 100, 100, 0.2)' : "lightgray",width:230, height:45, borderRadius:10}}>
+            <Text style={{color: isDarkMode ? '#FFFFFF' : '#000000'}}>{ seen ? "Loading ..." : "No Pledges"}</Text>
           </View>
           }
       </View>  

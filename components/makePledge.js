@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from "react";
-import { View , Text, TextInput, TouchableOpacity, TouchableHighlight,ActivityIndicator,Alert, ScrollView, ToastAndroid} from "react-native";
+import { View , Text, TextInput, TouchableOpacity,useColorScheme, TouchableHighlight,ActivityIndicator,Alert, ScrollView, ToastAndroid} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -23,6 +23,8 @@ export default function Pledge(){
     const [showPicker, setShowPicker] = useState(false);
     const [display, setDisplay] = useState(false);
     const [username, setUsername] = useState("");
+    const isDarkMode = useColorScheme() === 'dark';
+
 
 
     const onChange = (event, selectedDate) => {
@@ -162,39 +164,39 @@ export default function Pledge(){
     return(
 
         <ScrollView>
-        <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1, backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' }}>
 
             <View>
-                <TextInput value={fullName} onChangeText={(txt) => setFullName(txt)}  inputMode="text" placeholder="Full Name" placeholderTextColor={"rgba(240, 240, 240, 1)"} style={{width:"100%", borderColor:"gray",color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={fullName} onChangeText={(txt) => setFullName(txt)}  inputMode="text" placeholder="Full Name" placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} style={{width:"100%", borderColor:"gray",color:isDarkMode ? '#FFFFFF' : '#000000', height:60,borderWidth:1,borderRadius:10,padding:15,fontSize:17,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '',}}/>
             </View>
 
             <View>
-                <TextInput value={contact} onChangeText={(txt) => setContact(txt)}  inputMode="numeric" placeholder="Contact" placeholderTextColor={"rgba(240, 240, 240, 1)"} style={{width:"100%", borderColor:"gray",color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,marginTop:20,borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={contact} onChangeText={(txt) => setContact(txt)}  inputMode="numeric" placeholder="Contact" placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} style={{width:"100%", borderColor:"gray",color:isDarkMode ? '#FFFFFF' : '#000000', height:60,borderWidth:1,marginTop:20,borderRadius:10,padding:15,fontSize:17,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '',}}/>
             </View>
 
             <View style={{marginVertical:30,justifyContent:"space-between",flexDirection:"row"}}>
-                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:"rgba(240, 240, 240, 1)", height:60,borderWidth:1,borderRadius:10,padding:10,alignItems:"center",fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
-                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="numeric" placeholder={ "Amount"} style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:"rgba(240, 240, 240, 1)",padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput value={pledgeTitle} onChangeText={(txt) => setPledgeTitle(txt)} placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} inputMode="text" placeholder="Title of Pledge" style={{width:"45%", borderColor:"gray", color:isDarkMode ? '#FFFFFF' : '#000000', height:60,borderWidth:1,borderRadius:10,padding:10,alignItems:"center",fontSize:17,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : '',}}/>
+                <TextInput value={Amount} onChangeText={(txt) => setAmount(txt)} placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} inputMode="numeric" placeholder={ "Amount"} style={{width:"45%", borderColor:"gray", height:60,borderWidth:1,borderRadius:10, color:isDarkMode ? '#FFFFFF' : '#000000',padding:15,fontSize:17,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : ''}}/>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center"}}>
-                <Text style={{fontSize:18, color:"rgba(240, 240, 240, 1)"}}>Mode of Payment</Text>
-                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor:"rgba(50, 50, 50, 1)",borderRadius:10, width:150,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? " rgba(100, 200, 255, 1)" : "rgba(240, 240, 240, 1)"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
+                <Text style={{fontSize:18, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Mode of Payment</Text>
+                <TouchableOpacity onPress={()=>setMode(prevMode => !prevMode)} style={{backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : "rgba(100, 200, 255, 1)",borderRadius:10, width:150,height:45,marginLeft:20,alignItems:"center",justifyContent:"center",elevation:3}}><Text style={{fontSize:17,color:payment ? (isDarkMode ? " rgba(100, 200, 255, 1)" :"white") : "rgba(240, 240, 240, 1)"}}>{payment ? payment : "Select"}</Text></TouchableOpacity>
             </View>
 
             <View style={{flexDirection:"row",alignItems:"center",marginVertical:30}}>
-                <Text style={{fontSize:18,marginRight:20,color:"rgba(240, 240, 240, 1)"}}>Select Date</Text>
+                <Text style={{fontSize:18,marginRight:20,color:isDarkMode ? '#FFFFFF' : '#000000'}}>Select Date</Text>
                 <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"} onPress={()=> {setShowPicker(true); setDisplay(true)}}/>
-                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1,borderRadius:5, height:40,padding:10,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}>{formattedDate}</Text>}
+                {display && <Text style={{fontSize:16,marginLeft:20,borderWidth:1,borderRadius:5, height:40,padding:10,borderColor:"gray",color:isDarkMode ? '#FFFFFF' : '#000000'}}>{formattedDate}</Text>}
             </View>
 
             <View>
-                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} placeholderTextColor={"rgba(240, 240, 240, 1)"} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"gray", height:60,borderWidth:1,color:"rgba(240, 240, 240, 1)",borderRadius:10,padding:15,fontSize:17,backgroundColor:"rgba(50, 50, 50, 1)"}}/>
+                <TextInput  value={duration} onChangeText={(txt) => setDuration(txt)} placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} inputMode="text" placeholder="Duration" style={{width:"100%", borderColor:"gray", height:60,borderWidth:1,color:isDarkMode ? '#FFFFFF' : '#000000',borderRadius:10,padding:15,fontSize:17,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : ''}}/>
             </View>
 
 
-            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={()=> {setSubmitting(true);handleSubmit(username)}} style={{marginTop:40,alignItems:"center",backgroundColor:"rgba(50, 50, 50, 1)",height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
-                {submitting ?  <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> : <Text style={{fontSize:17,fontWeight:"500",color:" rgba(100, 200, 255, 1)"}}>Pledge</Text>}
+            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : ""}   onPress={()=> {setSubmitting(true);handleSubmit(username)}} style={{marginVertical:40,alignItems:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : 'rgba(100, 200, 255, 1)',height:50,justifyContent:"center",borderRadius:15,elevation:3}}>
+                {submitting ?  <ActivityIndicator  color={isDarkMode ? "rgba(100, 200, 255, 1)" :"#FFFFFF"}/> : <Text style={{fontSize:17,fontWeight:"500",color:isDarkMode ? "rgba(100, 200, 255, 1)" :"#FFFFFF"}}>Pledge</Text>}
             </TouchableHighlight>
 
           {mode && Mode()} 

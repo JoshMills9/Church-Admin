@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { TextInput, View, Text, Image,ToastAndroid, TouchableOpacity,Alert,ActivityIndicator, Platform, ScrollView} from "react-native";
+import { TextInput, View, Text, Image,ToastAndroid,useColorScheme, TouchableOpacity,Alert,ActivityIndicator, Platform, ScrollView, TouchableHighlight} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -16,6 +16,7 @@ export default function Events({navigation, route}){
     const {name,About,start,image,guest,id} = route.params
 
     const [selectedImage, setSelectedImage] = useState(null);
+    const isDarkMode = useColorScheme() === 'dark';
 
     const [eventName, setEventName] = useState("")
     const [guestName, setGuestName] = useState("")
@@ -165,6 +166,14 @@ export default function Events({navigation, route}){
 
     //Function to handle submit
     const handleSubmit = async (email) => {
+        if (!eventName || !formattedDate || !about ){
+            setSubmitting(false)
+            return ToastAndroid.show("Please fill all fields", ToastAndroid.SHORT)
+        }else if(!selectedImage){
+            setSubmitting(false)
+            return ToastAndroid.show("Please upload an event photo!", ToastAndroid.SHORT)
+        }
+
         try {
     
             // Step 2: Fetch church details based on user email
@@ -319,14 +328,14 @@ export default function Events({navigation, route}){
 
 
     return(
-        <View style={{flex:1, justifyContent:"space-between" ,backgroundColor:"rgba(30, 30, 30, 1)"}}>
-                   <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+        <View style={{flex:1, justifyContent:"space-between" ,backgroundColor: isDarkMode ? '#121212' : '#FFFFFF'}}>
+                   <StatusBar style={'auto'} backgroundColor={ isDarkMode ? '#121212' : '#FFFFFF'}/>
 
-                    <View style={{height:70,width:"100%",marginTop:20, alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                    <View style={{height:70,borderBottomWidth:0.5,borderColor:"gray",width:"100%",marginTop:20, alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                         <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
-                         <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
-                         <Ionicons name="calendar-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+                         <Ionicons name="arrow-back" size={25} style={{width:40,}} color={isDarkMode ? '#FFFFFF' : '#000000'} onPress={() => navigation.navigate('ModalScreen',{username:"", ChurchName:""})} />
+                         <Text style={{ fontSize: 22, color: isDarkMode ? '#FFFFFF' : '#000000', fontWeight: "800" }}>{name? "Edit Event" : "Create Event"}</Text>
+                         <Ionicons name="calendar-sharp" size={25} color={isDarkMode ? '#FFFFFF' : '#000000'} />
 
                     </View>
               
@@ -357,24 +366,25 @@ export default function Events({navigation, route}){
                     
                 
                         <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10,color:"rgba(240, 240, 240, 1)", borderWidth:1,padding:15,borderColor:"gray"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} value={eventName} onChangeText={(text) => setEventName(text)} placeholder={name ? name : "Event name"}/>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10,color:isDarkMode ? '#FFFFFF' : '#000000', borderWidth:1,padding:15,borderColor: eventName ? " rgba(100, 200, 255, 1)" : "gray"}} placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} value={eventName || (name ? name : "") } onChangeText={(text) => setEventName(text)} placeholder={"Event name"}/>
                         </View>
 
-                        <View style={{borderWidth:1,borderColor:"gray", height:70, flexDirection:"row",borderRadius:10,padding:15, alignItems:"center" ,}}>
-                            <TouchableOpacity onPress={() => {showMode("date");setDisplay("calendar");setValue(true)}}>
-                                <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"}/>
-                            </TouchableOpacity>
-                            
-                            <Text style={{fontSize:18,marginLeft:20,color:"rgba(240, 240, 240, 1)"}}>{value ? formattedDate : (start ? start : "Start date")}</Text>
+                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => {showMode("date");setDisplay("calendar");setValue(true)}}style={{borderWidth:1,borderColor:value ? "rgba(100, 200, 255, 1)" : "gray", height:70, flexDirection:"row",borderRadius:10,padding:15, alignItems:"center" ,}}>
+                            <>
+                                <View>
+                                    <Ionicons name="calendar-number" size={40} color={" rgba(100, 200, 255, 1)"}/>
+                                </View>
+                                
+                                <Text style={{fontSize:18,marginLeft:20,color:isDarkMode ? '#FFFFFF' : '#000000'}}>{value ? formattedDate : (start ? start : "Start date")}</Text>
+                            </>
+                        </TouchableHighlight>
 
+                        <View>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor: guestName ? " rgba(100, 200, 255, 1)" : "gray",color:isDarkMode ? '#FFFFFF' : '#000000'}} placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000' } value={guestName || (guest ? guest : "")} onChangeText={(text) => setGuestName(text)} placeholder={"Guests"}/>
                         </View>
 
                         <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}} placeholderTextColor={"rgba(240, 240, 240, 1)"} value={guestName} onChangeText={(text) => setGuestName(text)} placeholder={guest ? guest :  "Guests"}/>
-                        </View>
-
-                        <View>
-                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor:"gray",color:"rgba(240, 240, 240, 1)"}}placeholderTextColor={"rgba(240, 240, 240, 1)"} value={about} onChangeText={(text) => setAbout(text)} placeholder={About? About : "What are the details"}/>
+                            <TextInput   style={{height:70,fontSize:18, borderRadius:10, borderWidth:1,padding:15,borderColor: about ? " rgba(100, 200, 255, 1)" :  "gray",color:isDarkMode ? '#FFFFFF' : '#000000'}}placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000' } value={about || (About? About : "")} onChangeText={(text) => setAbout(text)} placeholder={"What are the details"}/>
                         </View>
 
                      
@@ -384,23 +394,23 @@ export default function Events({navigation, route}){
 
                 </ScrollView>
 
-                    <View style={{flexDirection: name ? "row" : "column" , justifyContent:"space-between",paddingHorizontal:20}}>
-                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(username): handleSubmit(username))}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                    <View style={{flexDirection: name ? "row" : "column" , justifyContent:"space-between",paddingHorizontal:20,marginBottom:3}}>
+                        <TouchableOpacity onPress={()=>{setSubmitting(true); (name ? handleUpdate(username): handleSubmit(username))}} style={{justifyContent:"center",marginBottom:8,elevation:4,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "rgba(100, 200, 255, 1)"}}>
                         {showSubmitting ? 
-                            <ActivityIndicator  color=" rgba(100, 200, 255, 1)"/> 
+                            <ActivityIndicator  color={isDarkMode ? "rgba(100, 200, 255, 1)" :"white"}/> 
                             :
-                            <Text style={{fontSize:20,fontWeight:"700", color:" rgba(100, 200, 255, 1)"}}>
+                            <Text style={{fontSize:20,fontWeight:"700", color:isDarkMode ? "rgba(100, 200, 255, 1)" :"white"}}>
                                 {name ? "Edit" : "Create"}
                             </Text>
                         }
                         </TouchableOpacity>
 
                         {name &&
-                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id, username); SetDelete(true)}} style={{justifyContent:"center",marginBottom:15,elevation:2,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:"rgba(50, 50, 50, 1)"}}>
+                            <TouchableOpacity onPress={()=>{handleDeleteEvent(id, username); SetDelete(true)}} style={{justifyContent:"center",marginBottom:8,elevation:4,borderRadius:10,height:50,width:"45%",flexDirection:"row", alignSelf:"center",alignItems:"center", backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "red"}}>
                                 {Delete ? 
-                                    <ActivityIndicator  color="red"/> 
+                                    <ActivityIndicator  color={isDarkMode ? "red" : "white"}/> 
                                     :
-                                    <Text style={{fontSize:20,fontWeight:"700", color:"orangered"}}>
+                                    <Text style={{fontSize:20,fontWeight:"700", color:isDarkMode? "red" : "white"}}>
                                         Delete
                                     </Text>
                                 }

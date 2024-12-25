@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from "react";
-import { View, Image, Text, ToastAndroid, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
+import { View, Image, Text, ToastAndroid, TextInput,useColorScheme, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
 import styles from "./styles";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
@@ -24,9 +24,8 @@ export default function SignUp() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [upload, setUpload] = useState(false)
     const [ViewPass, setViewPass] = useState(true)
-    const newAdmin = true
     const navigation = useNavigation()
-
+    const isDarkMode = useColorScheme() === 'dark';
     //add user  to  database
     const db = getFirestore();
     const auth = getAuth(); 
@@ -165,46 +164,46 @@ export default function SignUp() {
 
 
     return(
-        <View style={[styles.container,{justifyContent:"flex-start"}]}>
+        <View style={[styles.container,{backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"flex-start"}]}>
         
     
         <View style={[styles.searchView,{height:300,}]}>
             
             <View>
                 <FontAwesome5 style={{position:"absolute", left:20, top:20,zIndex:2}}  name="home" size={22} color="dimgray" />
-                <TextInput style={{ width:"100%",color:"white",  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}value={Username} onChangeText ={(text) => setUsername(text)}  keyboardType="default" inputMode="text" placeholder="Church Name" placeholderTextColor={"lightgray"}  cursorColor={"dimgray"}/>
+                <TextInput style={{ width:"100%",color: isDarkMode ? '#FFFFFF' : '#000000' ,  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:isDarkMode ? "gray" :"lightgray",borderWidth:1}}value={Username} onChangeText ={(text) => setUsername(text)}  keyboardType="default" inputMode="text" placeholder="Church Name" placeholderTextColor={ isDarkMode ? '#FFFFFF' : '#000000' }  cursorColor={ isDarkMode ? '#FFFFFF' : '#000000' }/>
             </View>
             
             <View>
                 <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color="dimgray" />
-                <TextInput style={{ width:"100%",color:"white", height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="email-address" inputMode="email" placeholder="Email" placeholderTextColor={"lightgray"} textContentType="emailAddress"  cursorColor={"dimgray"}/>
+                <TextInput style={{ width:"100%",color: isDarkMode ? '#FFFFFF' : '#000000' , height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:isDarkMode ? "gray" :"lightgray",borderWidth:1}} value={signUpEmail} onChangeText ={(text) => setSignUpEmail(text)}  keyboardType="email-address" inputMode="email" placeholder="Email" placeholderTextColor={ isDarkMode ? '#FFFFFF' : '#000000' } textContentType="emailAddress"  cursorColor={ isDarkMode ? '#FFFFFF' : '#000000' }/>
             </View>
 
             <View>
                 <MaterialIcons style={{position:"absolute", left:20, top:20,zIndex:2}}  name="key" size={24} color="dimgray" />
-                <TextInput style={{ width:"100%",color:"white",  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:"gray",borderWidth:1}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password"  secureTextEntry={ViewPass} textContentType="newPassword" placeholderTextColor={"lightgray"} cursorColor={"dimgray"}/>
+                <TextInput style={{ width:"100%",color: isDarkMode ? '#FFFFFF' : '#000000' ,  height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:isDarkMode ? "gray" :"lightgray",borderWidth:1}}  keyboardType="default" inputMode="text" value ={signUpPassword} onChangeText={(txt) => setSignUpPassword(txt)} placeholder="Password"  secureTextEntry={ViewPass} textContentType="newPassword" placeholderTextColor={ isDarkMode ? '#FFFFFF' : '#000000' } cursorColor={ isDarkMode ? '#FFFFFF' : '#000000' }/>
                 <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color="dimgray"/></TouchableOpacity>
             </View>
 
 
-            <TouchableOpacity style={{flexDirection:"row",elevation:2, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:upload ?"white" : "rgba(50, 50, 50, 1)", height:40}} onPress={() => {
+            <TouchableOpacity style={{flexDirection:"row",elevation:2, justifyContent:"space-evenly", width:"35%",alignItems:"center",borderRadius:10, backgroundColor:isDarkMode ? (upload ? "rgba(50, 50, 50, 1)" :"rgba(50, 50, 50, 1)" ): " rgba(100, 200, 255, 1)", height:40}} onPress={() => {
                 Alert.alert("", "CHOOSE HOW TO UPLOAD IMAGE", [
                   { text: "CAMERA", onPress: () => {pickImage("camera")}},
                   { text: "GALLERY", onPress: () => {pickImage("gallery")}},
                 ]);
               }} >
                 <>
-                    <Text style={{fontWeight:"500",color:upload ? " rgba(100, 200, 255, 1)" : " rgba(100, 200, 255, 1)"}}>{upload ? "Uploaded" :"Upload Logo"}</Text>
-                    <Ionicons name="image" size={20} color={upload? " rgba(100, 200, 255, 1)" :  " rgba(100, 200, 255, 1)"}/>
+                    <Text style={{fontWeight:"500",color:isDarkMode ? (upload ? " rgba(100, 200, 255, 1)" : "white" )  : "white"}}>{upload ? "Uploaded" :"Upload Logo"}</Text>
+                    <Ionicons name="image" size={20} color={isDarkMode ? (upload ? " rgba(100, 200, 255, 1)" : "white" )  : "white"}/>
                 </>
             </TouchableOpacity>
            
         </View>
 
         <View style={{marginBottom:30}}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center", justifyContent:"center",backgroundColor:"rgba(50, 50, 50, 1)", borderRadius:50,elevation:3}}>
-            { showIndicator ? <ActivityIndicator size={"small"} color={" rgba(100, 200, 255, 1)"}/> :
-                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:" rgba(100, 200, 255, 1)"}]}>Register</Text>
+            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center", justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
+            { showIndicator ? <ActivityIndicator size={"small"} color={isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}/> :
+                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>Register</Text>
             }
             </TouchableOpacity>
             

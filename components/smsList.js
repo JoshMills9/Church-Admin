@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, Image, TouchableHighlight, Alert, FlatList, ToastAndroid } from "react-native";
+import { View, Text, Image, TouchableHighlight,useColorScheme, Alert, FlatList, ToastAndroid } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,7 +12,7 @@ import *  as SMS from 'expo-sms'
 
 export default function SmsList({navigation, route}){
     const {username, ChurchName, events} = route.params || {};
-
+    const isDarkMode = useColorScheme() === 'dark';
     const [sms, setSms] = useState();
  
    
@@ -80,15 +80,15 @@ export default function SmsList({navigation, route}){
 
 
     return(
-        <View style={{flex:1, backgroundColor:"rgba(30, 30, 30, 1)"}}>
-             <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+        <View style={{flex:1, backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' }}>
+             <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF' }/>
 
-             <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginTop:20}}>
-                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+             <View style={{alignItems:"center",borderBottomWidth:0.5, borderColor:"gray", flexDirection:"row", justifyContent:"space-between",marginTop:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' ,justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.push('Prepare Sms',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>All SMS</Text>
-                                <Ionicons name={"chatbox-ellipses-outline"} size={25} color={"rgba(240, 240, 240, 1)"} />
+                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={isDarkMode ? '#FFFFFF' : '#000000' } onPress={() => navigation.push('Prepare Sms',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color: isDarkMode ? '#FFFFFF' : '#000000' , fontWeight: "800" }}>All SMS</Text>
+                                <Ionicons name={"chatbox-ellipses-outline"} size={25} color={isDarkMode ? '#FFFFFF' : '#000000' } />
 
                             </View>
             </View>
@@ -112,13 +112,13 @@ export default function SmsList({navigation, route}){
                             { text: "RESEND", onPress: () => {sendSMS(index.toString())}},
                             { text: "DELETE", onPress: () => {deleteSms(index?.toString())}, style: "cancel" },
                             ]);
-                        }}  underlayColor="rgba(70, 70, 70, 1)" style={{ backgroundColor: "rgba(50, 50, 50, 1)",padding: 10,elevation:3,  borderRadius:5, maxWidth: '85%', alignSelf: 'flex-end',}}>
+                        }}  underlayColor={ isDarkMode ? "rgba(70, 70, 70, 0.5)" :"lightgray"} style={{ backgroundColor:isDarkMode ? "#1F2C34" : "#DCF8C6",padding: 10,elevation:3,  borderRadius:5, maxWidth: '85%', alignSelf: 'flex-end',}}>
                             <>
-                                <Text style={{fontSize: 16,marginBottom:10, color:"white", fontWeight:"800", alignSelf:"center"}} numberOfLines={1} adjustsFontSizeToFit={true}>{item?.defaultHeader}</Text>
-                                <Text style={{fontSize: 13,lineHeight: 18, color:"white",  fontWeight:"300", textAlign:"justify"}}>{item?.sms}</Text>
+                                <Text style={{fontSize: 16,marginBottom:10, color:isDarkMode ? '#FFFFFF' : '#000000', fontWeight:"800", alignSelf:"center"}} numberOfLines={1} adjustsFontSizeToFit={true}>{item?.defaultHeader}</Text>
+                                <Text style={{fontSize: 13,lineHeight: 18, color:isDarkMode ? '#FFFFFF' : '#000000',  fontWeight:"300", textAlign:"justify"}}>{item?.sms}</Text>
                                 <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:20}}>
                                 
-                                    <View style={{flexDirection:"row", backgroundColor:"dimgray",borderRadius:15,justifyContent:"space-around",height:25,alignItems:"center", width:90}}>
+                                    <View style={{flexDirection:"row", backgroundColor:isDarkMode ? "gray" : "lightgray",borderRadius:15,justifyContent:"space-around",height:25,alignItems:"center", width:90}}>
                                       {item?.smsListImg?.slice(0, 4).map((i , index)=> {
                                         return(
                                           <View key={index}>
@@ -133,7 +133,7 @@ export default function SmsList({navigation, route}){
                                         )})
                                   
                                       }
-                                      <Text style={{fontSize: 12,color:'lightgray', height:25, verticalAlign:"middle"}}>{item?.smsListImg.length}</Text>
+                                      <Text style={{fontSize: 12,color:isDarkMode ? "lightgray" : 'gray', height:25, verticalAlign:"middle"}}>{item?.smsListImg.length}</Text>
                                     </View>
                                     <Text style={{fontSize: 12,color: 'gray',height:25, verticalAlign:"middle"}}>{item?.date}</Text>
                                 </View>
@@ -145,8 +145,8 @@ export default function SmsList({navigation, route}){
             
                 />
                 :
-                <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                    <Text style={{color:"white"}}>No Messages</Text>
+                <View style={{alignItems:"center",justifyContent:"center", backgroundColor:isDarkMode ? 'rgba(100, 100, 100, 0.2)' : "lightgray",width:230, height:45, borderRadius:10}}>
+                    <Text style={{color: isDarkMode ? "white" :"black"}}>No Messages</Text>
                 </View>
             }
             </View>

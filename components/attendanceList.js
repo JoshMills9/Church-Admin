@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from "react";
-import { View ,Text, TouchableHighlight, FlatList} from "react-native";
+import { View ,Text, TouchableHighlight,useColorScheme, FlatList} from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StatusBar } from "expo-status-bar";
@@ -19,7 +19,7 @@ export default function AttendanceList ({navigation, route}){
     const [formattedDate, setFormattedDate] = useState(null)
     const [selected, setSelected] = useState(false)
     const [seen, setSeen] = useState(true)
-  
+    const isDarkMode = useColorScheme() === 'dark';
 
        // Handle date change
        const onChange = (event, selectedDate) => {
@@ -177,16 +177,16 @@ export default function AttendanceList ({navigation, route}){
 
 
     return(
-        <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1,backgroundColor:isDarkMode ? '#121212' : '#FFFFFF'}}>
 
-                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>                
+                <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}/>                
 
-                <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
-                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                <View style={{alignItems:"center",borderBottomWidth:0.5,borderColor:"gray", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('markAttendance',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Church Attendance</Text>
-                                <Ionicons name="book-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+                                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={isDarkMode ? '#FFFFFF' : '#000000'} onPress={() => navigation.navigate('markAttendance',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color:isDarkMode ? '#FFFFFF' : '#000000', fontWeight: "800" }}>Church Attendance</Text>
+                                <Ionicons name="book-sharp" size={25} color={isDarkMode ? '#FFFFFF' : '#000000'} />
 
                             </View>
                 </View>
@@ -194,11 +194,11 @@ export default function AttendanceList ({navigation, route}){
 
                 <View style={{flex:1}}>
                     <View style={{flexDirection:"row",justifyContent:"center", alignItems:"center",marginBottom:10}}>
-                        <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)"  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
+                        <TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
                             <>
                             <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:13}}>{selected ? formattedDate : "Select attendance date"}</Text>
 
-                            <MaterialIcons name={"keyboard-arrow-down"} size={25} color="gray" />
+                            <MaterialIcons name={"keyboard-arrow-down"} size={25} color={isDarkMode ? '#FFFFFF' : '#000000'}/>
                             </>    
                         </TouchableHighlight>
                     </View>
@@ -216,7 +216,7 @@ export default function AttendanceList ({navigation, route}){
                                 ListEmptyComponent={()=> 
                                     (Show ? 
                                     <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                                        <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Choose CANCEL to view all attendance </Text>
+                                        <Text style={{fontSize:15,fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Choose CANCEL to view all attendance </Text>
                                     </View>
                                     : 
                                     <View></View>
@@ -226,14 +226,14 @@ export default function AttendanceList ({navigation, route}){
                                 renderItem={({item, index}) => {
                                     return(
                                         <View style={{flex:1}}>
-                                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={()=> handlePress(index)} style={{margin:10,borderRadius:10,padding:10,backgroundColor:"rgba(50, 50, 50, 1)",}}>
+                                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> handlePress(index)} style={{margin:10,borderRadius:10,padding:10,elevation:4,backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',}}>
                                                 <>
                                                 <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                                                    <Text style={{color:"white", fontSize:16}}>
+                                                    <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000', fontSize:16}}>
                                                         Date: {item.formattedDate}
                                                     </Text>
                                                     <View style={{flexDirection:"row", }}>
-                                                        <Text style={{color:"white", fontSize:16}}>
+                                                        <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000', fontSize:16}}>
                                                            {item.department?.toUpperCase()}
                                                         </Text>
 
@@ -250,7 +250,7 @@ export default function AttendanceList ({navigation, route}){
                                                                 const firstName = memberData?.FirstName;
                                                                 const lastName = memberData?.SecondName;
                                                                 return (
-                                                                    <Text style={{color:"white", fontSize:14 , padding:5}} key={key}> {idx + 1}. {firstName} {lastName}</Text>
+                                                                    <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000', fontSize:14 , padding:5}} key={key}> {idx + 1}. {firstName} {lastName}</Text>
                                                                 );
                                                             }
                                                             return null;
@@ -265,8 +265,8 @@ export default function AttendanceList ({navigation, route}){
                                 }}
                             />
                             :
-                            <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                                <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Attendance"}</Text>
+                            <View style={{alignItems:"center",justifyContent:"center", backgroundColor:isDarkMode? 'rgba(100, 100, 100, 0.2)' :"lightgray",width:230, height:45, borderRadius:10}}>
+                                <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000'}}>{ seen ? "Loading ..." : "No Attendance"}</Text>
                             </View> 
 
                             }

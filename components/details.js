@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, ScrollView, TouchableHighlight, } from "react-native";
+import { View, Text, Image, useColorScheme, ActivityIndicator, Alert, ScrollView, TouchableHighlight, } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ export default function Details ({navigation, route}){
 
     const {member,id ,username, ChurchName,events} = route.params 
     const db = getFirestore()
-
+    const isDarkMode = useColorScheme() === 'dark';
     const [Delete, SetDelete] = useState(false)
    
 
@@ -40,16 +40,16 @@ export default function Details ({navigation, route}){
 
 
     return(
-        <View style={{flex:1,justifyContent:"space-between",backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1,justifyContent:"space-between",backgroundColor: isDarkMode ? '#121212' : '#FFFFFF'}}>
 
-                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+                <StatusBar style={'auto'} backgroundColor={ isDarkMode ? '#121212' : '#FFFFFF'}/>
 
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
-                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                        <View style={{alignItems:"center",borderBottomWidth:0.5, borderColor:"gray", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor: isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={25} style={{width:50,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('MemberList',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Member Details</Text>
-                                <Ionicons name="book-outline" size={25} color={"rgba(240, 240, 240, 1)"} />
+                                <Ionicons name="arrow-back" size={25} style={{width:50,}} color={isDarkMode ? '#FFFFFF' : '#000000'} onPress={() => navigation.navigate('MemberList',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color:isDarkMode ? '#FFFFFF' : '#000000', fontWeight: "800" }}>Member Details</Text>
+                                <Ionicons name="book-outline" size={25} color={isDarkMode ? '#FFFFFF' : '#000000'} />
 
                             </View>
                         </View>
@@ -71,91 +71,91 @@ export default function Details ({navigation, route}){
                     </View>
 
                     <View style={{marginTop:30,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Full Name:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Full Name:</Text>
                         <View style={{width:"50%"}}>
                             <Text style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].FirstName} {member[0].SecondName}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Date Of Birth:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Date Of Birth:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Date_Of_Birth}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Registration Date:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Registration Date:</Text>
                         <View  style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Registration_Date}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Phone Number 1:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Phone Number 1:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Number1}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Phone Number 2:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Phone Number 2:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Number2}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Email:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Email:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Email}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Residential Address:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Residential Address:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Location}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Marital Status:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Marital Status:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Marital_Status}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>No. of children:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>No. of children:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].No_Of_Children}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Department:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Department:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Department}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Baptized:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Baptized:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Baptized}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Visiting:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Visiting:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}}  adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].Visting}</Text>
                         </View>
                     </View>
 
                     <View style={{marginTop:15,flexDirection:"row",justifyContent:"space-between", alignItems:"center"}}>
-                        <Text style={{fontSize:16, fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Occupation:</Text>
+                        <Text style={{fontSize:16, fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Occupation:</Text>
                         <View style={{width:"50%"}}>
                             <Text  style={{fontSize:16, fontWeight:"500",color:"rgba(100, 200, 255, 1)"}} adjustsFontSizeToFit={true} numberOfLines={1}>{member[0].occupation}</Text>
                         </View>
@@ -166,8 +166,8 @@ export default function Details ({navigation, route}){
                 
 
                 
-                <TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)" onPress={()=> {handleDeleteDocument(member[0].id); SetDelete(true)}}
-                    style={{justifyContent:"center",marginVertical:20,alignItems:"center" ,alignSelf:"center",height:55, borderRadius:10,  width:180,backgroundColor:"rgba(50, 50, 50, 1)", elevation:3}}>
+                <TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {handleDeleteDocument(member[0].id); SetDelete(true)}}
+                    style={{justifyContent:"center",marginVertical:10,alignItems:"center" ,alignSelf:"center",height:55, borderRadius:10,  width:180,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" :"white", elevation:3}}>
                     { Delete ? 
                         <ActivityIndicator color={"orangered"} />
                         :

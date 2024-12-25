@@ -1,5 +1,5 @@
 import React ,{useLayoutEffect,useEffect, useState} from "react";
-import { View, Text ,PanResponder,Dimensions,TextInput, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
+import { View, Text ,PanResponder,Dimensions,TextInput,useColorScheme, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
 import *  as SMS from 'expo-sms'
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
@@ -33,7 +33,7 @@ export default function SendSMS({title, Search, save}){
     const [smsList, setSmsList] = useState([]);
     const [smsListImg, setSmsListImg] = useState([])
     const [seen, setSeen] = useState(true)
-
+    const isDarkMode = useColorScheme() === 'dark';
 
 
     
@@ -292,7 +292,7 @@ export default function SendSMS({title, Search, save}){
                         return
                     }
                 }catch (error) {
-                        console.log("Error getting member documents:", error);
+                        console.log("Error getting member documents:", error.message);
                     }
                 }
 
@@ -417,6 +417,7 @@ export default function SendSMS({title, Search, save}){
                                 // Handle attendance list update if the checkbox is checked
                                 if (updatedMember.Check) {
                                     setSmsList((prevList) => [updatedMember?.Number1 , ...prevList]);
+                                    setSmsListImg((prevList) => [updatedMember?.Image, ...prevList])
                                 } else {
                                     setSmsList([]);
                                     setSmsListImg([]) // Clear the attendance list if unchecked
@@ -501,21 +502,20 @@ export default function SendSMS({title, Search, save}){
 
 
     return(
-        <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
-                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+        <View style={{flex:1, justifyContent:"space-between", backgroundColor: isDarkMode ? '#121212' : '#FFFFFF'}}>
 
-                <View>
+                <View style={{borderBottomWidth:0.5,borderColor:"lightgray"}}>
                        {(title === "absentees") && 
                        <View style={{marginVertical:5, alignItems:"center"}}>
                             <Text style={{color:"white", fontWeight:"500"}}>Absentees: {noOfAbsentees ? noOfAbsentees : "-"}</Text>
                        </View>
                        }
                         <View style={{flexDirection:"row",marginHorizontal:10 , justifyContent:"space-evenly", alignItems:"center"}}>
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:8, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Select all</Text>         
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:8, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Clear all</Text>         
                             </TouchableHighlight>
                         </View>     
@@ -550,30 +550,30 @@ export default function SendSMS({title, Search, save}){
 
                                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                                         {(!item.Title) ?
-                                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
-                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
+                                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',elevation:4}}>
                                             <>
                                                 {item.Image ?
                                                             <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                                             :
-                                                            <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                            <View style={{width:30,height:30,borderColor:"gray" ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
                                                                 <Fontisto name="person"  size={20} color={"gray"}/>
                                                             </View>
                                             
                                                 }
                                                 
-                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
+                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:isDarkMode ? '#FFFFFF' : '#000000'}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
                                             </>
                                         </TouchableHighlight>
                                         :
-                                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
-                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
+                                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',elevation:4}}>
                                             <>
                                               
                                                 <View style={{width:30,height:30 ,borderColor:"gray",borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
                                                     <Fontisto name="person"  size={20} color={"gray"}/>
                                                 </View>
-                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FullName}</Text>
+                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:isDarkMode ? '#FFFFFF' : '#000000'}} adjustsFontSizeToFit={true}>{item.FullName}</Text>
                                             </>
                                         </TouchableHighlight>
                                         }
@@ -583,8 +583,8 @@ export default function SendSMS({title, Search, save}){
                                             checked={item.Check}
                                             onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
                                             size={24}
-                                            checkedColor="rgba(240, 240, 240, 1)"
-                                            containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
+                                            checkedColor={isDarkMode ? '#FFFFFF' : '#000000'}
+                                            containerStyle={{backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',width:"15%",elevation:4, borderLeftWidth:isDarkMode ? 1 : 0.5, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
                                             uncheckedColor="gray"
                                             />
                                                                 
@@ -594,21 +594,21 @@ export default function SendSMS({title, Search, save}){
                         )}}
                         />
                         :
-                        <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                            <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Members"}</Text>
+                        <View style={{alignItems:"center",justifyContent:"center", backgroundColor: isDarkMode ? 'rgba(100, 100, 100, 0.2)' : "lightgray",width:230, height:45, borderRadius:10}}>
+                            <Text style={{color:isDarkMode ? "white" : "black"}}>{ seen ? "Loading ..." : "No Members"}</Text>
                         </View>
                         }
                     </View>
 
 
             <View style={{marginTop:10}}>
-                <View style={{ width:"100%", justifyContent:"center", maxHeight:200, marginBottom:8}}>
+                <View style={{ width:"100%", justifyContent:"center", maxHeight:150, marginBottom:8}}>
                     
                     <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
-                        <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", minHeight:45, elevation:1,backgroundColor:"rgba(50, 50, 50, 1)",color:"rgba(240, 240, 240,1)", borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
+                        <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", maxHeight:120, elevation:1,backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" :"lightgray",color:isDarkMode ? '#FFFFFF' : '#000000', borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
                         <TouchableOpacity   style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{sendSMS()}} >
-                            <Ionicons name="arrow-forward-circle-sharp" size={50}  color={"rgba(240, 240, 240, 0.5)"}/>
+                            <Ionicons name="arrow-forward-circle-sharp" size={50}  color={isDarkMode ? "rgba(240, 240, 240, 0.5)" : "gray"}/>
                         </TouchableOpacity>
                     </View>
                 </View>

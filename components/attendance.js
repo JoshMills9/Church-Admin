@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useLayoutEffect, Children } from "react";
-import { View,FlatList, Text,PanResponder, Image,ToastAndroid,Dimensions, TouchableHighlight, ActivityIndicator } from "react-native";
+import { View,FlatList, Text,useColorScheme, Image,ToastAndroid,Dimensions, TouchableHighlight, ActivityIndicator } from "react-native";
 
 import { getFirestore,collection,getDocs, doc, setDoc ,updateDoc, addDoc} from "firebase/firestore";
 import { Fontisto } from '@expo/vector-icons';
@@ -19,7 +19,7 @@ export default function Attendance ({department, Search, cell, found}){
     const [churchName, setchurchName] = useState(null)
     const [save, setSave] = useState(false);
     const [seen, setSeen] = useState(true)
-
+    const isDarkMode = useColorScheme() === 'dark';
 
     const db = getFirestore()
     const auth = getAuth()
@@ -99,7 +99,7 @@ export default function Attendance ({department, Search, cell, found}){
                                 id: doc.id,
                                 ...doc.data().Member}))
 
-                                
+
                                 if(department === "men"){
                                     const Men =tasks.filter(department => department.Department === "men" );
                                     setshowMembers(Men)
@@ -313,7 +313,7 @@ export default function Attendance ({department, Search, cell, found}){
           } catch (error) {
             console.error('Error checking onboarding status', error);
           }
-        };
+        }
         checkLoginStatus()
       }, [db]);
 
@@ -327,7 +327,7 @@ export default function Attendance ({department, Search, cell, found}){
             if(!found){
                 ToastAndroid.show("Please search for cell!", ToastAndroid.LONG);
                 setSave(false)
-                clearAll()
+                setClearAll(true)
                 return
             }
             try {
@@ -390,14 +390,14 @@ export default function Attendance ({department, Search, cell, found}){
   
 
     return(
-        <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>  
+        <View style={{flex:1,backgroundColor: isDarkMode ? '#121212' : '#FFFFFF'}}>  
 
         
             <View style={{ flex:1}}>
 
-            <View style={{flexDirection:"row",width:"100%" ,marginVertical:10, alignItems:"center",justifyContent:"space-evenly"}}>
+            <View style={{flexDirection:"row",width:"100%" ,marginVertical:10,borderBottomWidth:0.5, borderColor:"lightgray", alignItems:"center",justifyContent:"space-evenly"}}>
                 <View style={{flexDirection:"row" ,justifyContent:selected ? "space-around" : "flex-start" ,alignItems:"center"}}>
-                    {!cell &&<TouchableHighlight  underlayColor="rgba(70, 70, 70, 1)"  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
+                    {!cell &&<TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={showDatePicker} style={{flexDirection:"row",paddingVertical:3,paddingHorizontal:5, borderRadius:8, alignItems:"center"}}>
                         <>
                         <Text style={{color:" rgba(100, 200, 255, 1)", fontSize:13}}>{selected ? formattedDate : "Select date"}</Text>
 
@@ -407,15 +407,15 @@ export default function Attendance ({department, Search, cell, found}){
                     }
                 </View>
 
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:8, width:"20%",paddingVertical:6,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                     <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Select all</Text>         
                 </TouchableHighlight>
 
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:8, width:"20%",paddingVertical:6,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                     <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Clear all</Text>         
                 </TouchableHighlight>
 
-                <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => {cell ? updateCell(email, found?.id) : markAttendance(email)}} style={{flexDirection:"row", borderRadius:10, width:"20%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => {cell ? updateCell(email, found?.id) : markAttendance(email)}} style={{flexDirection:"row", borderRadius:8, width:"20%",paddingVertical:6,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                     {save ?  
                         <View style={{flexDirection:"row"}}>
                             <Text style={{color:" rgba(100, 200, 255, 1)"}}>Saving </Text>
@@ -432,7 +432,7 @@ export default function Attendance ({department, Search, cell, found}){
                 {showMembers?.length !== 0 ?
                 <FlatList 
 
-                data = {cell ? showMembers : showMembers?.filter(member => 
+                data = {showMembers?.filter(member => 
                     member.FirstName && member.SecondName && 
                     (member.FirstName.toLowerCase().includes(Search.toLowerCase()) || 
                     member.SecondName.toLowerCase().includes(Search.toLowerCase()))
@@ -442,7 +442,7 @@ export default function Attendance ({department, Search, cell, found}){
 
                 ListEmptyComponent={()=>(
                     <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                        <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Not Found!</Text>
+                        <Text style={{fontSize:15,fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Not Found!</Text>
                     </View>
                     )}
 
@@ -454,19 +454,19 @@ export default function Attendance ({department, Search, cell, found}){
 
                         <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                         
-                                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
-                                                style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
+                                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                                style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',elevation:4}}>
                                                 <>
                                                     {item.Image ?
                                                                 <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                                                 :
-                                                                <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                                <View style={{width:30,height:30 ,borderColor:"gray",borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
                                                                     <Fontisto name="person"  size={20} color={"gray"}/>
                                                                 </View>
                                                 
                                                     }
                                                     
-                                                    <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
+                                                    <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color: isDarkMode ? '#FFFFFF' : '#000000'}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
                                                 </>
                                             </TouchableHighlight>
 
@@ -476,8 +476,8 @@ export default function Attendance ({department, Search, cell, found}){
                                                 checked={item.Check}
                                                 onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
                                                 size={24}
-                                                checkedColor="rgba(240, 240, 240, 1)"
-                                                containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
+                                                checkedColor= { isDarkMode ? '#FFFFFF' : '#000000'}
+                                                containerStyle={{backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',width:"15%",elevation:4, borderLeftWidth:isDarkMode ? 1 : 0.5, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
                                                 uncheckedColor="gray"
                                                 />
                                                                     
@@ -487,8 +487,8 @@ export default function Attendance ({department, Search, cell, found}){
                 )}}
                 />
                 :
-                <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                        <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Members"}</Text>
+                <View style={{alignItems:"center",justifyContent:"center", backgroundColor:isDarkMode? 'rgba(100, 100, 100, 0.2)':'lightgray',width:230, height:45, borderRadius:10}}>
+                        <Text style={{color:isDarkMode? "white" : "black"}}>{ seen ? "Loading ..." : "No Members"}</Text>
                 </View> 
                 }
             </View>

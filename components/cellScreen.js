@@ -1,5 +1,5 @@
 import React, {useState, useRef} from "react";
-import { View , Text, PanResponder, useWindowDimensions, TouchableHighlight, ToastAndroid, TextInput} from "react-native";
+import { View , useColorScheme,Text, PanResponder, useWindowDimensions, TouchableHighlight, ToastAndroid, TextInput} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Searchbar } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
@@ -14,6 +14,7 @@ export default function UpdateCell({navigation, route}){
     const [found, setFound] = useState()
     const db = getFirestore()
     const [search, setSearch] = useState("");
+    const isDarkMode = useColorScheme() === 'dark';
 
 
     //Function to handle submit
@@ -116,22 +117,22 @@ export default function UpdateCell({navigation, route}){
 
 
     return(
-        <View style={{flex:1,backgroundColor:"rgba(30, 30, 30, 1)"}}>
+        <View style={{flex:1,backgroundColor:isDarkMode ? '#121212' : '#FFFFFF'}}>
 
-            <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/> 
+            <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}/> 
 
-            <View style={{height:70,width:"100%",marginTop:20, alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+            <View style={{height:70,width:"100%",borderBottomWidth:0.5, borderColor:"gray",marginTop:20, alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events: events})} />
-                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>Update Cell</Text>
-                <Ionicons name="people-sharp" size={28} color={"rgba(240, 240, 240, 1)"} />
+                <Ionicons name="arrow-back" size={25} style={{width:40,}} color={isDarkMode ? '#FFFFFF' : '#000000' } onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events: events})} />
+                <Text style={{ fontSize: 22, color: isDarkMode ? '#FFFFFF' : '#000000' , fontWeight: "800" }}>Update Cell</Text>
+                <Ionicons name="people-sharp" size={28} color={isDarkMode ? '#FFFFFF' : '#000000' } />
 
             </View>
 
             <View style={{padding:8}}>
-                <TextInput elevation={2} returnKeyType="search" keyboardType="default" on onEndEditing={()=>{ToastAndroid.show("Searching cell...", ToastAndroid.LONG); handleSubmit(search)}} 
-                 style={{backgroundColor:"rgba(50, 50, 50, 1)",fontSize:15,height:50,borderRadius:50,padding:15, width:"100%", color: "white",marginBottom:5}}   value={search}  
-                 onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={found ? "lightgreen" : 'gray'} placeholder={found ? (`Found Cell : ${found.cellName} ✓`) : `search cell name`}/>
+                <TextInput elevation={2} autoFocus={true} returnKeyType="search" keyboardType="default" on onSubmitEditing={()=>{ToastAndroid.show("Searching cell...", ToastAndroid.LONG); handleSubmit(search)}} 
+                 style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "white",fontSize:15,height:50,borderRadius:50,padding:15, width:"100%", color:isDarkMode ? '#FFFFFF' : '#000000',marginBottom:5}}   value={search}  
+                 onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={found ? "lightgreen" : 'gray'} placeholder={found ? (`Found Cell : ${found.cellName} ✓`) : `Search cell name`}/>
             </View>
 
             <View style={{flex:1, marginBottom:10}}>
@@ -139,11 +140,11 @@ export default function UpdateCell({navigation, route}){
             </View>
 
             <View {...panResponder.panHandlers}  style={[{position:"absolute",width:120, height:55,
-                backgroundColor:"white",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
-                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => navigation.navigate("Cell List", {username: username, ChurchName: ChurchName, events: events})} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
+                backgroundColor:isDarkMode ? "white" : "black",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
+                    <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => navigation.navigate("Cell List", {username: username, ChurchName: ChurchName, events: events})} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                            <Text>Cells</Text>
-                            <MaterialIcons name={"keyboard-arrow-right"} size={20} />
+                            <Text style={{color:isDarkMode ? '#000000' : '#FFFFFF' }}>Cells</Text>
+                            <MaterialIcons name={"keyboard-arrow-right"} size={20} color={isDarkMode ? '#000000' : '#FFFFFF' } />
                         </View>
                     </TouchableHighlight>
             </View>
