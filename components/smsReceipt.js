@@ -1,5 +1,5 @@
 import React ,{useRef,useEffect, useState} from "react";
-import { View, Text ,PanResponder,Dimensions,TextInput, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
+import { View, Text ,PanResponder,Dimensions,TextInput,useColorScheme, ToastAndroid,Alert,FlatList,Image, TouchableOpacity, TouchableHighlight} from "react-native";
 import *  as SMS from 'expo-sms'
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from '@expo/vector-icons';
@@ -34,8 +34,13 @@ export default function SendSMS({navigation, route}){
     const [Show, setshow] = useState(false)
     const [smsList, setSmsList] = useState([]);
     const [seen, setSeen] = useState(true)
+    const isDarkMode = useColorScheme() === 'dark';
 
-         const getMember = async(email) => {
+    
+    
+    
+    
+    const getMember = async(email) => {
    
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -327,18 +332,18 @@ export default function SendSMS({navigation, route}){
 
 
     return(
-        <View style={{flex:1, justifyContent:"space-between", backgroundColor:"rgba(30, 30, 30, 1)"}}>
-                <StatusBar style={'auto'} backgroundColor={"rgba(50, 50, 50, 1)"}/>
+        <View style={{flex:1, justifyContent:"space-between", backgroundColor: isDarkMode ? '#121212' : '#FFFFFF' }}>
+                <StatusBar style={'auto'} backgroundColor={isDarkMode ? '#121212' : '#FFFFFF' }/>
 
 
                 <View>
 
-                        <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
-                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:"rgba(50, 50, 50, 1)",justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
+                        <View style={{alignItems:"center",borderBottomWidth:0.5,borderColor:"gray", flexDirection:"row", justifyContent:"space-between",marginVertical:20}}>
+                            <View style={{height:70,width:"100%", alignItems: "center",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' ,justifyContent:"space-between", flexDirection: "row",paddingHorizontal:10, marginBottom: 5 }}>
 
-                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={"rgba(240, 240, 240, 1)"} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
-                                <Text style={{ fontSize: 22, color: "rgba(240, 240, 240, 1)", fontWeight: "800" }}>SMS Receipt</Text>
-                                <Ionicons name="chatbubbles-sharp" size={25} color={"rgba(240, 240, 240, 1)"} />
+                                <Ionicons name="arrow-back" size={28} style={{width:40,}} color={isDarkMode ? '#FFFFFF' : '#000000'} onPress={() => navigation.navigate('ModalScreen',{username: username, ChurchName: ChurchName,events:events})} />
+                                <Text style={{ fontSize: 22, color:isDarkMode ? '#FFFFFF' : '#000000', fontWeight: "800" }}>SMS Receipt</Text>
+                                <Ionicons name="chatbubbles-sharp" size={25} color={isDarkMode ? '#FFFFFF' : '#000000'} />
 
                             </View>
                         </View>
@@ -347,39 +352,39 @@ export default function SendSMS({navigation, route}){
                         <View  style={{flexDirection:"row",justifyContent:"space-around",alignItems:"center",paddingHorizontal:10,marginBottom:15}}>
 
                              {Show ?
-                                <Searchbar iconColor="rgba(240, 240, 240, 1)"   elevation={2} style={{backgroundColor:"rgba(50, 50, 50, 1)",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
+                                <Searchbar autoFocus={Show} iconColor={isDarkMode ? '#FFFFFF' : '#000000'}   elevation={2} style={{backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : "white",marginBottom:6}} value={search}  onChangeText={(text)=> {searchQueryHandler(text)}} placeholderTextColor={'gray'} placeholder="Search member by name"/>
                             
                                 :
                                 <>
-                                <View style={{ width:"95%"}}>
+                                <View style={{ width:"90%"}}>
                                     <ButtonGroup
                                         buttons={['GENERAL', 'TITHE', 'PLEDGE']}
                                         selectedIndex={selectedIndex}
                                         onPress={(value) => {
                                             setSelectedIndex(value);
                                         }}
-                                        buttonContainerStyle={{borderColor:"gray"}}
-                                        containerStyle={{  elevation:5, borderBottomLeftRadius:15,borderTopLeftRadius:15, borderColor:"dimgray",  backgroundColor:"rgba(50, 50, 50, 1)"}}
+                                        buttonContainerStyle={{}}
+                                        containerStyle={{elevation:5, borderBottomLeftRadius:15,borderTopLeftRadius:15,  backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' }}
                                         selectedButtonStyle={{backgroundColor:" rgba(100, 200, 255, 0.8)"}}                      
                                         />
                                 </View>
 
 
-                            <View style={{ width:"10%",backgroundColor:"rgba(50, 50, 50, 1)",height:39,alignItems:"center",justifyContent:"center",elevation:4, borderTopRightRadius:15,borderBottomRightRadius:15}}>
-                                <TouchableOpacity onPress={()=> setshow(true)}>
-                                    <Ionicons name="search" size={28} color={"rgba(240, 240, 240, 1)"}/>
-                                </TouchableOpacity>
-                            </View>
+                                <View style={{ width:"15%",backgroundColor:isDarkMode ? '#121212' : '#FFFFFF' ,height:39.7,alignItems:"center",borderWidth:isDarkMode? 1.5 :0, borderLeftWidth:isDarkMode? 0 : 0.5, borderColor:"gray",justifyContent:"center",elevation:2, borderTopRightRadius:15,borderBottomRightRadius:15}}>
+                                    <TouchableOpacity onPress={()=> setshow(true)}>
+                                        <Ionicons name="search" size={28} color={ isDarkMode ? '#FFFFFF' : '#000000' }/>
+                                    </TouchableOpacity>
+                                </View>
                             </>
                             }
                         </View>
 
                         <View style={{flexDirection:"row",marginHorizontal:10 , justifyContent:"space-evenly", alignItems:"center"}}>
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setSelectAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Select all</Text>         
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() => setClearAll(true)} style={{flexDirection:"row",borderRadius:10, width:"30%",paddingVertical:8,paddingHorizontal:5,justifyContent:"center", alignItems:"center"}}>
                                 <Text style={{color:" rgba(100, 200, 255, 1)",fontSize:13}}>Clear all</Text>         
                             </TouchableHighlight>
                         </View>
@@ -402,7 +407,7 @@ export default function SendSMS({navigation, route}){
                         ListEmptyComponent={()=> 
                             (Show ? 
                             <View style={{flex:1,padding:50, justifyContent:"center",alignItems:"center"}}>
-                                <Text style={{fontSize:15,fontWeight:"300",color:"rgba(240, 240, 240, 1)"}}>Not Found!</Text>
+                                <Text style={{fontSize:15,fontWeight:"300",color:isDarkMode ? '#FFFFFF' : '#000000'}}>Not Found!</Text>
                             </View>
                             : 
                             <View></View>
@@ -417,19 +422,19 @@ export default function SendSMS({navigation, route}){
 
                                     <View style={{alignItems:"center", flexDirection:"row", justifyContent:"space-around"}}>
                     
-                                        <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)" onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
-                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor:"rgba(50, 50, 50, 1)",elevation:2}}>
+                                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
+                                            style={{height:45,width:"85%",alignItems:"center",flexDirection:"row",borderTopLeftRadius:50 , borderBottomLeftRadius:50, padding:10, backgroundColor: isDarkMode ? "rgba(50, 50, 50, 1)" : "white",elevation:4}}>
                                             <>
                                                 {item.Image ?
                                                             <Image source={{uri: item.Image}} borderRadius={50}  width={30} height={30} />
                                                             :
-                                                            <View style={{width:30,height:30 ,borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
+                                                            <View style={{width:30,height:30 ,borderColor:"gray",borderRadius:50,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
                                                                 <Fontisto name="person"  size={20} color={"gray"}/>
                                                             </View>
                                             
                                                 }
                                                 
-                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:"rgba(240, 240, 240, 1)"}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
+                                                <Text style={{fontSize:18,fontWeight:"400",marginLeft:10,alignSelf:"center",color:isDarkMode ? '#FFFFFF' : '#000000'}} adjustsFontSizeToFit={true}>{item.FirstName} {item.SecondName}</Text>
                                             </>
                                         </TouchableHighlight>
 
@@ -439,8 +444,8 @@ export default function SendSMS({navigation, route}){
                                             checked={item.Check}
                                             onPress={() => {handleAttendance(item.id, item.Number1); setMarked(prevList => [...prevList , index])}}  
                                             size={24}
-                                            checkedColor="rgba(240, 240, 240, 1)"
-                                            containerStyle={{backgroundColor:"rgba(50, 50, 50, 1)",width:"15%", borderLeftWidth:1, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
+                                            checkedColor={isDarkMode ? '#FFFFFF' : '#000000'}
+                                            containerStyle={{backgroundColor:isDarkMode ?  "rgba(50, 50, 50, 1)" : '#FFFFFF',width:"15%",elevation:4, borderLeftWidth:isDarkMode ? 1 : 0.5, borderColor:"gray", borderTopRightRadius:50,borderBottomRightRadius:50, alignSelf:"center",}}
                                             uncheckedColor="gray"
                                             />
                                                                 
@@ -461,21 +466,21 @@ export default function SendSMS({navigation, route}){
                 <View style={{ width:"100%", justifyContent:"center", maxHeight:200, marginBottom:8}}>
                     
                     <View style={{flexDirection:"row", justifyContent:"space-around", alignItems:"center"}}>
-                        <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", minHeight:45, elevation:1,backgroundColor:"rgba(50, 50, 50, 1)",color:"rgba(240, 240, 240,1)", borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
+                        <TextInput  multiline={true} style={{width:"80%",paddingHorizontal:28,paddingVertical:10,textAlign:"justify", minHeight:45, elevation:1,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "lightgray",color:isDarkMode ? '#FFFFFF' : '#000000', borderRadius:50,fontSize:16, fontWeight:"300"}}   value={sms} onChangeText={(txt) => setSms(txt)} placeholder="Send Message" placeholderTextColor={"gray"}/>
                         
                         <TouchableOpacity style={{flexDirection:"row", alignSelf:"flex-end"}} onPress={()=>{handleSave(messages); sendSMS()}} >
-                            <Ionicons name="arrow-forward-circle-sharp" size={50}  color={"rgba(240, 240, 240, 0.5)"}/>
+                            <Ionicons name="arrow-forward-circle-sharp" size={50}  color={isDarkMode ? "rgba(240, 240, 240, 0.5)" : "gray"}/>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
             <View {...panResponder.panHandlers}  style={[{position:"absolute",width:120, height:55,
-                backgroundColor:"white",borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
-                    <TouchableHighlight underlayColor="rgba(70, 70, 70, 1)"  onPress={() =>{handleSave(messages); navigation.push("Sms Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{color:"rgba(30, 30, 30, 1)",justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
+                backgroundColor:isDarkMode ? '#FFFFFF' : '#000000',borderRadius:15,top: positionY, left: screenWidth - 110 }]}>
+                    <TouchableHighlight underlayColor={isDarkMode ?  "rgba(70, 70, 70, 1)" : "lightgray"}  onPress={() =>{handleSave(messages); navigation.push("Sms Receipt", {username: username, ChurchName: ChurchName, events: events})}} style={{justifyContent:"center", alignItems:"center",width:"100%", height:"100%",borderRadius:15}}>
                         <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                            <Text style={{marginRight:5}}>Receipts</Text>
-                            <Ionicons name={"receipt-outline"} size={24}  color={"rgba(50, 50, 50, 1)"} />
+                            <Text style={{marginRight:5, color:isDarkMode ? '#000000' : '#FFFFFF'}}>Receipts</Text>
+                            <Ionicons name={"receipt-outline"} size={24}  color={isDarkMode ? '#000000' : '#FFFFFF'} />
                         </View>
                     </TouchableHighlight>
             </View>
