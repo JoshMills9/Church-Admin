@@ -261,7 +261,7 @@ export default function ModalScreen({route}){
                             </Pressable>
 
 
-                            <Pressable style={{width:120}}  onPress={()=> navigation.replace("Church Admin")}>
+                            <Pressable style={{width:120}}  onPress={()=> navigation.navigate("Church Admin")}>
                                
                                 <View style={{alignItems:"center",}}>
                                     <Ionicons name="home-outline" size={27} color={isDarkMode ? '#FFFFFF' : '#000000'}   />

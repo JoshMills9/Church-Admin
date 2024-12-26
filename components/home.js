@@ -2,6 +2,7 @@ import React, {useLayoutEffect, useState, useEffect} from "react";
 import { View, Text, Pressable, Modal,ToastAndroid,useColorScheme, Linking,Image,ScrollView,RefreshControl, TouchableOpacity, FlatList, Alert, ImageBackground } from "react-native";
 import styles from "./styles";
 import { Ionicons } from '@expo/vector-icons';
+import * as Network from 'expo-network';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
@@ -60,10 +61,6 @@ export default function Home(){
     const monthOfYear = monthsOfYear[date.getMonth()];
 
 
-    useEffect(()=>{
-        ToastAndroid.show("Loading updates, please wait!", ToastAndroid.SHORT)
-    },[])
-
 
     //useEffect to save list to Storage
   useEffect(() => {
@@ -117,7 +114,7 @@ export default function Home(){
   
                 const church = tasks?.find(item => item.email === userEmail);
                 setChurchName(church);
-                
+          
 
                 const handleSaveChurchDetails = async () => {
                     try {
@@ -219,7 +216,7 @@ export default function Home(){
                     
                         }
                     }catch(error){
-                        console.log("Error fetching PLedges", error)
+                        console.log("Error fetching Pledges", error)
                     }
 
 
@@ -350,7 +347,7 @@ export default function Home(){
                         console.error("Error fetching or processing attendance data:", error);
                     }
                 }else{
-                    ToastAndroid.show("Check network connection", ToastAndroid.LONG);
+                    ToastAndroid.show("No data found!", ToastAndroid.LONG);
                     setrefreshing(false)
                     return;
                 };
@@ -368,7 +365,7 @@ export default function Home(){
                 handleSave(update);
 
                 }catch(error){
-                    ToastAndroid.show("Internet connection error", ToastAndroid.LONG);
+                    ToastAndroid.show("Something went wrong, please try again!", ToastAndroid.SHORT);
                     console.log(error)
                 
                 }
@@ -376,20 +373,32 @@ export default function Home(){
     };
 
 
-    
-      
-      
-  
 
     
     useLayoutEffect(() => {
+        setrefreshing(true)
         getUpdates();
+
         const checkLoginStatus = async () => {
           try {
             const value = await AsyncStorage.getItem('UserEmail');
+            const networkState = await Network.getNetworkStateAsync();
             if (value !== '') {
-              getMember(value);
+
               setUsername(value);
+              const checkConnectivity = () => {
+                    if(networkState.isConnected === true){
+                        getUpdates()
+                        getMember(value);
+                    }else{
+                        ToastAndroid.show("No internet connection, please check your network!", ToastAndroid.SHORT)
+                    }
+                };
+        
+                checkConnectivity();
+        
+                const interval = setInterval(checkConnectivity, 5000); // Check every 5 seconds
+                return () => clearInterval(interval);
             } else {
               console.log("no item")
             }
@@ -399,23 +408,6 @@ export default function Home(){
         };
         checkLoginStatus()
       }, []);
-
-
-
-
-    const onRefresh = () => {
-        setrefreshing(true);
-        ToastAndroid.show("Loading updates, please wait!", ToastAndroid.SHORT)
-        // Your refresh logic here
-        getMember(username); // Example: Fetch new data from an API
-      
-        // After refreshing completes, set refreshing to false
-        setTimeout(() => {
-          setrefreshing(false);
-        }, 2000); // Simulating a delay
-      };
-      
-
 
 
 
@@ -548,15 +540,7 @@ export default function Home(){
                                         
                             </View>
 
-                            <ScrollView showsVerticalScrollIndicator={false} refreshControl={
-                                <RefreshControl
-                                refreshing={Refreshing}
-                                onRefresh={onRefresh}
-                                colors={[isDarkMode ? "white" : 'black']}
-                                progressBackgroundColor={isDarkMode ? '#121212' : '#FFFFFF'}
-                                />
-                                } 
-                                >
+                            <ScrollView showsVerticalScrollIndicator={false} >
 
                                 <Pressable onPress={() => showView(1)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 1 ? 480 : 260, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
                                     
