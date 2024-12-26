@@ -13,6 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 
 import InvertedSemiCircularProgressBar from './semi-circle bar/SemiCircularProgressBar'
 
+
 import Animated, {
     useSharedValue,
     withRepeat,
@@ -24,7 +25,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 
 
@@ -59,6 +59,7 @@ export default function Home(){
     const date = new Date();
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const monthOfYear = monthsOfYear[date.getMonth()];
+
 
 
 
@@ -347,7 +348,7 @@ export default function Home(){
                         console.error("Error fetching or processing attendance data:", error);
                     }
                 }else{
-                    ToastAndroid.show("No data found!", ToastAndroid.LONG);
+                    ToastAndroid.show("No data found, check your network!", ToastAndroid.LONG);
                     setrefreshing(false)
                     return;
                 };
@@ -390,7 +391,7 @@ export default function Home(){
                     if(networkState.isConnected === true){
                         getUpdates()
                         getMember(value);
-                    }else{
+                    }else if (networkState.isConnected === false){
                         ToastAndroid.show("No internet connection, please check your network!", ToastAndroid.SHORT)
                     }
                 };
@@ -621,7 +622,7 @@ export default function Home(){
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderRightWidth:0.5,paddingVertical:18 ,borderColor:"rgba(240, 240, 240, 0.5)",}}>
                                                     <Text style={{fontSize:13, color:"white",}}>New Members</Text>
                                                     <View style={{flexDirection:"row",}}>
-                                                        <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || "-"}</Text>
+                                                        <Text style={styles.updateTxt}>{newMember ? newMember : updated?.NewMember || 0}</Text>
                                                         <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
                                                     </View>
                                                 </View>
@@ -638,7 +639,7 @@ export default function Home(){
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
                                                         <Text style={{fontSize:13, color:"white",}}>Birthdays</Text>
                                                         <View style={{flexDirection:"row",}}>
-                                                            <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  "-"}</Text>
+                                                            <Text style={styles.updateTxt}>{birthDayComing ? birthDayComing : updated?.birthDayComing ||  0}</Text>
                                                             <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>/month</Text>
                                                         </View>
                                                 </View>

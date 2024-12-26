@@ -12,6 +12,8 @@ const CLOUDINARY_UPLOAD_PRESET = 'my_images';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const PushNotification = require("./sendNotification")
+
 export default function Events({navigation, route}){
     const {name,About,start,image,guest,id} = route.params
 
@@ -211,6 +213,7 @@ export default function Events({navigation, route}){
                 createdAt: new Date().getTime(),
             };
     
+            PushNotification("Upcoming Event", `New event added ${eventName}`)
             // Set a document within the Members subcollection
             await setDoc(doc(membersCollectionRef), {Events: Event});
 
@@ -260,6 +263,7 @@ export default function Events({navigation, route}){
             
                     // Reference to the Members subcollection within UserDetails
                     const memberDocRef = doc(userDetailsDocRef, 'Events', id); // Replace 'documentId' with the actual document ID of memberData
+                    PushNotification("Successfully updated an event", `Event updated ${eventName || name}`)
                     // Update fields in the memberData document within the Members subcollection
                     await updateDoc(memberDocRef, {
                         Events: {

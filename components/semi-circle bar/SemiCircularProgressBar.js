@@ -69,7 +69,7 @@ const InvertedSemiCircularProgressBar = ({high, low, stats, present, percentage,
 
       {/* Percentage Text */}
       <View style={[styles.textContainer,{ right: stats === "Members" ? 150 : 138}]}>
-        <Text style={styles.percentageText}>{percentage}</Text>
+        <Text style={styles.percentageText}>{stats === "Members" ? percentage : ((progressPercentage !== NaN ? + 20 : + 0) )+"%"}</Text>
         <Text style={{ fontSize: 15, textAlign: "center", fontWeight: "400", color: "rgba(240, 240, 240, 0.6)" }}>
           {stats}
         </Text>

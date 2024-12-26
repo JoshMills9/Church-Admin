@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 
 
-export const Notifications = ({route}) => {
+export const NotificationsScreen = ({route}) => {
     const navigation = useNavigation()
     const {username, ChurchName, events} = route.params
     const isDarkMode = useColorScheme() === 'dark';

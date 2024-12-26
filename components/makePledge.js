@@ -9,6 +9,9 @@ import { getAuth, } from 'firebase/auth';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+const PushNotification = require("./sendNotification")
+
 export default function Pledge(){
     const [mode, setMode] = useState(false)
     const [payment, setPayment] = useState("")
@@ -132,6 +135,7 @@ export default function Pledge(){
             createdAt: new Date().getTime(),
         };
 
+        PushNotification("New Pledge Made", `${fullName} made a pledge of ${Amount}`)
         // Set a document within the Members subcollection
         await setDoc(doc(membersCollectionRef), {Pledges: Pledge});
 

@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { ButtonGroup } from '@rneui/themed';
 import { CheckBox } from "@rneui/themed";
 
-
+const PushNotification = require("./sendNotification")
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -348,6 +348,7 @@ export default function SendSMS({title, Search, save}){
         }
 
         try {
+          PushNotification(defaultHeader, sms)
           await SMS.sendSMSAsync(
             smsList, // Array of recipient phone numbers
             `${defaultHeader}\n\n${sms}` // Message body

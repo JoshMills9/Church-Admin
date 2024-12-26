@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs } from "firebase/firestore";
 import { BottomSheet } from 'react-native-btr';
 
-
+const PushNotification = require("./sendNotification")
 
 export default function ModalScreen({route}){
     const {username, ChurchName, events} = route.params
@@ -70,6 +70,7 @@ export default function ModalScreen({route}){
                 cellLocation,
             };
     
+            PushNotification("New Cell Created", `You created a cell ${cellName}`)
             // Set a document within the Members subcollection
             await setDoc(doc(membersCollectionRef), {Cell: cell});
 

@@ -12,8 +12,11 @@ import { getAuth, } from 'firebase/auth';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const PushNotification = require("./sendNotification")
+
 
 export default function AddMembers(props){
+
     const {params} = props?.route || {};
     const [selectedImage, setSelectedImage] = useState(null);
     const navigation = useNavigation()
@@ -26,7 +29,6 @@ export default function AddMembers(props){
 
     const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
     const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload preset
-
 
 
     //useEffect and function to select image
@@ -300,10 +302,10 @@ export default function AddMembers(props){
                 Image: selectedImage || null,
                 Check: false
             };
-    
+
+            PushNotification("New Member Registered", `Added ${firstName} ${secondName}`)
             // Set a document within the Members subcollection
             await setDoc(doc(membersCollectionRef), {Member: member});
-
             // Clear form fields after successful registration
             setFirstName('');
             setSecondName('');
@@ -353,7 +355,8 @@ export default function AddMembers(props){
         
                 // Reference to the Members subcollection within UserDetails
                 const memberDocRef = doc(userDetailsDocRef, 'Members', props?.info[0]?.id); // Replace 'documentId' with the actual document ID of memberData
-        
+                
+                PushNotification("Member Data Updated", `Successfully updated ${firstName || props?.info[0].FirstName} ${secondName  || props?.info[0].SecondName}`)
                 // Update fields in the memberData document within the Members subcollection
                 await updateDoc(memberDocRef, {
                     Member:{

@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-
+const PushNotification = require("./sendNotification")
 
 
 export default function Attendance ({department, Search, cell, found}){
@@ -199,7 +199,7 @@ export default function Attendance ({department, Search, cell, found}){
             
                     // Reference to the Members subcollection within UserDetails
                     const membersCollectionRef = collection(userDetailsDocRef, 'Attendance');
-            
+                    PushNotification("Attendance",  `View attendance for ${formattedDate}`)
                     // Set a document within the Members subcollection
                     await setDoc(doc(membersCollectionRef), {AttendanceList, Date:{formattedDate}, Department: {department}});
             
@@ -354,7 +354,7 @@ export default function Attendance ({department, Search, cell, found}){
         
                 // Reference to the Pledges subcollection within UserDetails
                 const membersCollectionRef = doc(userDetailsDocRef, 'Cells', id);
-        
+                PushNotification("Cell update successful", `View cell`)
                 // Set a document within the Pledges subcollection
                 await updateDoc(membersCollectionRef, {Cell: AttendanceList, found});
                 ToastAndroid.show("Cell updated successfully!", ToastAndroid.LONG);

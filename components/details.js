@@ -6,6 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { doc,getFirestore, collection, deleteDoc } from 'firebase/firestore';
 import { ToastAndroid } from "react-native";
 
+const PushNotification = require("./sendNotification")
 
 export default function Details ({navigation, route}){
 
@@ -25,7 +26,7 @@ export default function Details ({navigation, route}){
 
 
                 const docRef = doc(membersCollectionRef, documentId); 
-
+                PushNotification(`Member Removed", "You have removed ${member[0].FirstName} ${member[0].SecondName}`)
                 await deleteDoc(docRef);
 
                 ToastAndroid.show(`${member[0].FirstName} ${member[0].SecondName} removed successfully!`, ToastAndroid.LONG)
