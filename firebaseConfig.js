@@ -2,14 +2,15 @@
 import { initializeApp } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA0DW1NkkDlEiaKKKNo2ipNvTgHuAkFDwc",
-  authDomain: "church-admin-13582.firebaseapp.com",
-  projectId: "church-admin-13582",
-  storageBucket: "church-admin-13582.appspot.com",
-  messagingSenderId: "619970995366",
-  appId: "1:619970995366:web:a71aea43c21d5255c70067",
-  measurementId: "G-5H7VNBZKGP"
+  apiKey: "AIzaSyC5MKyp60BTit8AOC-X80vaA5SPiW4FwQ4",
+  authDomain: "church-administrator.firebaseapp.com",
+  projectId: "church-administrator",
+  storageBucket: "church-administrator.firebasestorage.app",
+  messagingSenderId: "319571230379",
+  appId: "1:319571230379:web:99809c22458053efd2c1ee",
+  measurementId: "G-W04Q3CN2BY"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
