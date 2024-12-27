@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Image, Text, TouchableOpacity, View, useWindowDimensions} from 'react-native'
 import styles from './styles'
 import { Ionicons } from '@expo/vector-icons';
@@ -13,13 +13,20 @@ import { useNavigation } from '@react-navigation/native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useColorScheme } from 'react-native';
 
+import PayStack from './paystack';
+
+
+
 export const Payments = ({route}) => {
     const navigation = useNavigation()
     const {username, ChurchName, events} = route.params
     const isDarkMode = useColorScheme() === 'dark';
     const WindowsWidth = useWindowDimensions().width
     const WindowHeight = useWindowDimensions().height
- 
+
+    const [pay, setPay] = useState(false)
+
+
   return (
     <View style={[styles.container,{backgroundColor:isDarkMode ? '#121212' : '#FFFFFF',justifyContent:"space-between",paddingHorizontal:20, paddingVertical:10}]}>
         <View style={{flex:1, justifyContent:"space-between",marginTop:30}}>
@@ -48,7 +55,7 @@ export const Payments = ({route}) => {
         </View>
 
         <View style={{flex:2, paddingHorizontal:10,paddingBottom:5, justifyContent:"space-between", marginTop: WindowHeight < 800 && 10}}>
-            <TouchableOpacity style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height: WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+            <TouchableOpacity onPress={() => setPay(!pay)} style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height: WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <View style={{flexDirection:"row", alignItems:"center", width:190, justifyContent:"space-between"}}>
                     <Image source={require("../assets/momo.png")}  resizeMode='cover' style={{backgroundColor: isDarkMode ? "white" : "lightgray", padding:10, borderRadius:15, width:50, height:50}}  />
                     <Text style={{fontSize:20,marginLeft:10, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Mobile Money</Text>
@@ -80,6 +87,10 @@ export const Payments = ({route}) => {
                 <MaterialIcons name="arrow-drop-down" size={30} color={isDarkMode ? '#FFFFFF' : '#000000'} />
             </TouchableOpacity>
         </View>
+
+        {
+            pay && <PayStack pay={pay}/>
+        }
 
     </View>
   )
