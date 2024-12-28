@@ -3,11 +3,6 @@
     "name": "Church Administrator",
     "slug": "Church-Admin",
     "platforms": ["ios", "android"],
-    "notification": {
-      "icon": "./assets/adaptive-icon.png",
-      "color": "#000000",
-      "iosDisplayInForeground": true
-    },
     "version": "2.0.0",
     "orientation": "default",
     "icon": "./assets/adaptive-icon.png",
@@ -24,7 +19,6 @@
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
