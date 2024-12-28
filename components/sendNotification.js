@@ -11,7 +11,6 @@ const checkToken = async (title, body) => {
     try {
         const tasksCollectionRef = collection(db, 'deviceTokens');
         const querySnapshot = await getDocs(tasksCollectionRef);
-
         if (!querySnapshot.empty) {
             // Filter tasks to find matching church based on user email
             const tokens = querySnapshot.docs.map(doc => ({
@@ -37,7 +36,7 @@ const checkToken = async (title, body) => {
     }
 
     const message = {
-      to: Token, // Replace this with an array of tokens for multiple users
+      to: Token,
       title: title,
       body: body,
       sound: 'default',
@@ -54,7 +53,7 @@ const checkToken = async (title, body) => {
         body: JSON.stringify(message),
       });
 
-      const data = await response.json();
+     await response.json();
     } catch (error) {
       console.error('Error sending push notification:', error);
     }
