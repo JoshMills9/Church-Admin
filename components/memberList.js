@@ -26,7 +26,7 @@ export default function MemberList ({route}){
     const [username, setUsername] = useState("");
 
 
-         const GetMember = async(email) => {
+    const GetMember = async(email) => {
    
         // Step 2: Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');

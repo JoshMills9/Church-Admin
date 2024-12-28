@@ -34,6 +34,7 @@ export default function PayStack({pay}){
                 phone={'0241380745'}
                 currency='GHS'
                 amount={2500}
+                channels={["mobile_money",'card']}
                 onCancel={(e) => {
                 console.log(e)
                 }}

@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs } from "firebase/firestore";
 
 import * as Notifications from 'expo-notifications';
 
@@ -53,7 +54,7 @@ Notifications.setNotificationHandler({
 
 
 export default function MyStack (){
-
+  const db = getFirestore()
   const [hasSeenHomeScreen, setHasSeenHomeScreen] = useState(null);
 
   const [expoPushToken, setExpoPushToken] = useState(null);
@@ -111,7 +112,22 @@ export default function MyStack (){
   
   //useEffect to save list to Storage
   useEffect(() => {
+    
     if(expoPushToken){
+       const addToken = async(token) => {
+          try {
+            const usersCollectionRef = collection(db, 'deviceTokens'); // Reference to 'users' collection
+            await addDoc(usersCollectionRef, {
+              token
+            })
+            console.log('Token saved to Firestore.');
+          } catch (error) {
+            console.error('Error saving token to Firestore:', error);
+          }
+        
+       }
+        addToken(expoPushToken)
+
       const handleSave = async () => {
           try {
             await AsyncStorage.setItem('NotificationToken', JSON.stringify(expoPushToken));
