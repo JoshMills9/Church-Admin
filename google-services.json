@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "319571230379",
+    "project_id": "church-administrator",
+    "storage_bucket": "church-administrator.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319571230379:android:101e9d96747533c8d2c1ee",
+        "android_client_info": {
+          "package_name": "com.ziptechinc.churchadministrator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHN6C49OYPlwI1-LO4ecYXxj5zQQY6Yr8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
