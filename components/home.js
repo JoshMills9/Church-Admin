@@ -75,15 +75,19 @@ export default function Home(){
           const userData = userDocSnap.data();
           const now = new Date();
       
-          if (userData.isPaid && new Date(userData.subscriptionEnd) > now) {
-            console.log("Access granted. Subscription is active.");
+          const trialActive = now < new Date(userData.trialEnd);
+          const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
+      
+          if (trialActive || subscriptionActive) {
+            console.log("Access granted.");
           } else {
             // Block access
             const blockedDocRef = doc(db, "blockedDevices", deviceToken);
             await setDoc(blockedDocRef, {
               deviceToken: deviceToken,
+              church: ChurchName?.ChurchName,
               blockedAt: now.toISOString(),
-              reason: "Subscription expired or no payment received."
+              reason: "Trial and subscription expired."
             });
       
             Alert.alert(
@@ -103,7 +107,7 @@ export default function Home(){
       }
       
 
-      
+
       useLayoutEffect(() =>{
         checkAccess();
         const interval = setInterval(checkAccess, 20000);

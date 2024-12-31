@@ -4,7 +4,7 @@ import { View, TouchableOpacity,Text ,useColorScheme} from 'react-native';
 import { BottomSheet } from 'react-native-btr';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, updateDoc,getDoc } from "firebase/firestore";
 import { useNavigation } from '@react-navigation/native';
 
 export default function PayStack({pay, mode}){
@@ -42,20 +42,34 @@ export default function PayStack({pay, mode}){
 
 async function markAsPaid() {
   const db = getFirestore();
+  const now = new Date();
+
+  // Fetch the user document
   const userDocRef = doc(db, "deviceTokens", token);
+  const userDocSnap = await getDoc(userDocRef);
 
-  const paymentDate = new Date();
-  const subscriptionEnd = new Date();
-  subscriptionEnd.setMonth(subscriptionEnd.getMonth() + 4); // Add 4 months to the payment date
+  if (userDocSnap.exists()) {
+    const userData = userDocSnap.data();
 
-  await updateDoc(userDocRef, {
-    isPaid: true,
-    lastChecked: new Date().toISOString(),
-    subscriptionEnd: subscriptionEnd.toISOString(),
-    lastPaymentDate: paymentDate.toISOString()
-  });
+    // Calculate subscription start date
+    const trialEndDate = new Date(userData.trialEnd);
+    const subscriptionStartDate = now > trialEndDate ? now : trialEndDate;
 
-  navigation.navigate("Church Admin")
+    // Calculate subscription end date (4 months from start)
+    const subscriptionEndDate = new Date(subscriptionStartDate);
+    subscriptionEndDate.setMonth(subscriptionStartDate.getMonth() + 4);
+
+    // Update Firestore
+    await updateDoc(userDocRef, {
+      isPaid: true,
+      subscriptionEnd: subscriptionEndDate.toISOString(),
+      lastPaymentDate: now.toISOString()
+    });
+
+    navigation.navigate("Church Admin")
+  }else {
+    console.error("User document not found.");
+  }
 }
 
 
