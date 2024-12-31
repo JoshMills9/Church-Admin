@@ -23,7 +23,7 @@ export const Payments = ({route}) => {
     const isDarkMode = useColorScheme() === 'dark';
     const WindowsWidth = useWindowDimensions().width
     const WindowHeight = useWindowDimensions().height
-
+    const [mode, setMode] = useState()
     const [pay, setPay] = useState(false)
 
 
@@ -42,20 +42,21 @@ export const Payments = ({route}) => {
             
         </View>
 
-        <View style={{flex:1,justifyContent: WindowHeight < 800 ? "flex-end" : "center", alignItems:"center"}}>
-            <View>
-                <Text style={{fontSize: WindowHeight < 800 ? 25 : 30, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Balance</Text>
+        <View style={{flex:1,justifyContent: WindowHeight < 800 ? "flex-end" : "center", alignItems:"center",marginVertical:15,}}>
+            <View >
+                <Text style={{fontSize: WindowHeight < 800 ? 25 : 30, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Renewal</Text>
                 <View style={{borderBottomWidth:3, borderColor:"rgba(100, 200, 255, 1)", width:40, alignSelf:"center"}}></View>
             </View>
 
             <View>
-                <Text style={{fontSize: WindowHeight < 800 ? 35 : 45,marginTop: WindowHeight < 800 ? 10 : 15, color:isDarkMode ? '#FFFFFF' : '#000000'}}>GH₵ {100}.00</Text>
+                <Text style={{fontSize: WindowHeight < 800 ? 30 : 40,marginTop: WindowHeight < 800 ? 10 : 15, color:isDarkMode ? '#FFFFFF' : '#000000'}}>GH₵ {250}.00</Text>
+                <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000', alignSelf:"center"}}>4 months</Text>
             </View>
 
         </View>
 
-        <View style={{flex:2, paddingHorizontal:10,paddingBottom:5, justifyContent:"space-between", marginTop: WindowHeight < 800 && 10}}>
-            <TouchableOpacity onPress={() => setPay(!pay)} style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height: WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+        <View style={{flex:2, paddingHorizontal:10, justifyContent:"space-evenly", marginTop: WindowHeight < 800}}>
+            <TouchableOpacity onPress={() => {setPay(!pay); setMode("mobile_money")}} style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height: WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <View style={{flexDirection:"row", alignItems:"center", width:190, justifyContent:"space-between"}}>
                     <Image source={require("../assets/momo.png")}  resizeMode='cover' style={{backgroundColor: isDarkMode ? "white" : "lightgray", padding:10, borderRadius:15, width:50, height:50}}  />
                     <Text style={{fontSize:20,marginLeft:10, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Mobile Money</Text>
@@ -63,7 +64,7 @@ export const Payments = ({route}) => {
                 <MaterialIcons name="arrow-drop-down" size={30} color={isDarkMode ? '#FFFFFF' : '#000000'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height:WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
+            <TouchableOpacity onPress={() => {setPay(!pay); setMode('card')}} style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height:WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
                 <View style={{flexDirection:"row", alignItems:"center", width:190, justifyContent:"space-between"}}>
                     <FontAwesome name="bank"  size={25} style={{backgroundColor:isDarkMode ? "white" : "lightgray", padding:10, borderRadius:15, width:50 , height:50, marginRight:15}} color="dimgray" />
                     <Text style={{fontSize:20, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Bank Transfer</Text>
@@ -79,17 +80,10 @@ export const Payments = ({route}) => {
                 <MaterialIcons name="arrow-drop-down" size={30} color={isDarkMode ? '#FFFFFF' : '#000000'} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={{backgroundColor:isDarkMode? "rgba(50, 50, 50, 1)" :"white",elevation:4,height:WindowHeight < 800 ? 70 : 90, borderRadius:20,padding: WindowHeight < 800 ? 10 : 15, flexDirection:"row", justifyContent:"space-between", alignItems:"center"}}>
-                <View style={{flexDirection:"row", alignItems:"center", width:120, justifyContent:"space-between"}}>
-                    <Zocial name="bitcoin" size={25} style={{backgroundColor:isDarkMode ? "white" : "lightgray", padding:10, borderRadius:15, width:50 , height:50}} color="brown" />
-                    <Text style={{fontSize:20, color:isDarkMode ? '#FFFFFF' : '#000000'}}>Other</Text>
-                </View>
-                <MaterialIcons name="arrow-drop-down" size={30} color={isDarkMode ? '#FFFFFF' : '#000000'} />
-            </TouchableOpacity>
         </View>
 
         {
-            pay && <PayStack pay={pay}/>
+            pay && <PayStack pay={pay} mode={mode}/>
         }
 
     </View>

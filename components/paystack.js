@@ -1,20 +1,62 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
 import { View, TouchableOpacity,Text ,useColorScheme} from 'react-native';
 import { BottomSheet } from 'react-native-btr';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
 
-
-
-export default function PayStack({pay}){
+export default function PayStack({pay, mode}){
   const paystackWebViewRef = useRef(paystackProps.PayStackRef); 
+  const navigation = useNavigation()
   const isDarkMode = useColorScheme() === 'dark';
-
+  const [token, setToken] = useState()
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(pay);
 
+
+
+  
   const toggleBottomSheet = () => {
     setBottomSheetVisible(!pay);
   };
+
+
+
+  useEffect(()=>{
+    const getToken = async () => {
+      try {
+        const value = await AsyncStorage.getItem('deviceToken');
+        if (value !== '') {
+          setToken(JSON.parse(value))
+        } else {
+          console.log("no item")
+        }
+      } catch (error) {
+        console.error('Error checking Token', error);
+      }
+    };
+    getToken()
+  }, [])
+
+
+async function markAsPaid() {
+  const db = getFirestore();
+  const userDocRef = doc(db, "deviceTokens", token);
+
+  const paymentDate = new Date();
+  const subscriptionEnd = new Date();
+  subscriptionEnd.setMonth(subscriptionEnd.getMonth() + 4); // Add 4 months to the payment date
+
+  await updateDoc(userDocRef, {
+    isPaid: true,
+    lastChecked: new Date().toISOString(),
+    subscriptionEnd: subscriptionEnd.toISOString(),
+    lastPaymentDate: paymentDate.toISOString()
+  });
+
+  navigation.navigate("Church Admin")
+}
 
 
  
@@ -33,12 +75,14 @@ export default function PayStack({pay}){
                 billingEmail="churchad9@gmail.com"
                 phone={'0241380745'}
                 currency='GHS'
-                amount={2500}
-                channels={["mobile_money",'card']}
+                amount={250}
+                channels={[mode]}
                 onCancel={(e) => {
+                  navigation.replace("Church Admin")
                 console.log(e)
                 }}
                 onSuccess={(res) => {
+                 markAsPaid()
                 console.log(res)
                 }}
                 ref={paystackWebViewRef}

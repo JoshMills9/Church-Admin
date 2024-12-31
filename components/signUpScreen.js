@@ -2,7 +2,7 @@ import React, { useState ,useEffect } from "react";
 import { View, Image, Text, ToastAndroid, TextInput,useColorScheme, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
 import styles from "./styles";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, setDoc } from "firebase/firestore";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -11,9 +11,14 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 
+import * as Notifications from 'expo-notifications';
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
+
 
 export default function SignUp() {
 
@@ -30,6 +35,9 @@ export default function SignUp() {
     const db = getFirestore();
     const auth = getAuth(); 
 
+
+
+
  const handleAddData = async () => {
    // Write data to Firebase Realtime Database
    const usersCollectionRef = collection(db, 'UserDetails'); // Reference to 'users' collection
@@ -45,10 +53,37 @@ export default function SignUp() {
  };
 
 
+async function registerDevice() {
+  const db = getFirestore();
+  const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
+
+ 
+  await AsyncStorage.setItem('deviceToken', JSON.stringify(deviceToken));
+    
+  const trialPeriod = 14; // Free trial period in days
+  const trialStart = new Date().toISOString();
+  const trialEnd = new Date(Date.now() + trialPeriod * 24 * 60 * 60 * 1000).toISOString();
+
+  const docRef = doc(db, "deviceTokens", deviceToken);
+  await setDoc(docRef, {
+    deviceToken: deviceToken,
+    trialStart: trialStart,
+    trialEnd: trialEnd,
+    isPaid: false, // Initial state
+    lastChecked: trialStart,
+    ChurchName: Username,
+  });
+
+  console.log("Device registered with trial period:", { trialStart, trialEnd });
+}
+
+
+
  //sign up func
  const handleSignUp = async () => {
     try {
       await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+      registerDevice()
       handleAddData();
       ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
       setShowIndicator(false)
@@ -59,6 +94,9 @@ export default function SignUp() {
       console.error('Error signing up:' , error);
     }
   }
+
+
+
 
 
 

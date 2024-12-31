@@ -5,13 +5,15 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Network from 'expo-network';
 
 import { MaterialIcons } from '@expo/vector-icons';
-import { getFirestore, collection, getDocs,query,where, doc} from "firebase/firestore";
 import { getAuth,} from 'firebase/auth';
 import { ActivityIndicator, Badge ,FAB} from "react-native-paper";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
 import InvertedSemiCircularProgressBar from './semi-circle bar/SemiCircularProgressBar'
+import { getFirestore,doc, addDoc, collection, getDoc, setDoc, updateDoc,getDocs } from "firebase/firestore";
+
+import * as Notifications from 'expo-notifications';
 
 
 import Animated, {
@@ -59,6 +61,56 @@ export default function Home(){
     const date = new Date();
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const monthOfYear = monthsOfYear[date.getMonth()];
+
+
+
+    async function checkAccess() {
+        const db = getFirestore();
+        const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
+      
+        const userDocRef = doc(db, "deviceTokens", deviceToken);
+        const userDocSnap = await getDoc(userDocRef);
+      
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          const now = new Date();
+      
+          if (userData.isPaid && new Date(userData.subscriptionEnd) > now) {
+            console.log("Access granted. Subscription is active.");
+          } else {
+            // Block access
+            const blockedDocRef = doc(db, "blockedDevices", deviceToken);
+            await setDoc(blockedDocRef, {
+              deviceToken: deviceToken,
+              blockedAt: now.toISOString(),
+              reason: "Subscription expired or no payment received."
+            });
+      
+            Alert.alert(
+              "Subscription Expired!",
+              "Your subscription has expired. Please renew to continue using the app.",
+              [
+                { 
+                  text: "Renew", 
+                  onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events}) 
+                }
+              ]
+            );
+          }
+        } else {
+          console.log("Device not registered.");
+        }
+      }
+      
+
+      
+      useLayoutEffect(() =>{
+        checkAccess();
+        const interval = setInterval(checkAccess, 20000);
+        return () => clearInterval(interval);
+      },[])
+
+
 
 
 

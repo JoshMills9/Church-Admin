@@ -2,10 +2,8 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getFirestore,doc, addDoc, collection, setDoc, updateDoc,getDocs } from "firebase/firestore";
 
-import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import LogIn from './components/loginScreen';
 import SignUp from './components/signUpScreen';
@@ -31,118 +29,17 @@ import MarkAttendance from './components/markAttendanceScreen';
 import CellList from './components/cells';
 
 
+
+
 const Stack = createNativeStackNavigator();
 
-// Configure notification handlers
-Notifications.setNotificationHandler({
-  handleNotification: async (notification) => {
-    const { data } = notification.request.content;
-    if (data?.image) {
-      return {
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-      };
-    }
-    return {
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-    };
-}});
 
 
 
 export default function MyStack (){
-  const db = getFirestore()
   const [hasSeenHomeScreen, setHasSeenHomeScreen] = useState(null);
 
-  const [expoPushToken, setExpoPushToken] = useState(null);
-
-  // Request notification permissions and get the push token
-  useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => {
-      setExpoPushToken(token);
-    });
-
-    // Listener for when a notification is received while the app is foregrounded
-    const notificationListener = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
-    });
-
-    // Listener for when the user interacts with a notification
-    const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log('User interacted with notification:', response);
-      Alert.alert('Notification clicked!', JSON.stringify(response.notification.request.content));
-    });
-
-    return () => {
-      notificationListener.remove();
-      responseListener.remove();
-    };
-  }, []);
-
-
-
-  // Function to register for push notifications
-  async function registerForPushNotificationsAsync() {
-    const { status } = await Notifications.getPermissionsAsync();
-    let finalStatus = status;
-
-    if (status !== 'granted') {
-      const { status: newStatus } = await Notifications.requestPermissionsAsync();
-      finalStatus = newStatus;
-    }
-
-    if (finalStatus !== 'granted') {
-      Alert.alert('Error', 'Failed to get push token for notifications.');
-      return null;
-    }
-
-    try {
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      return token;
-    } catch (error) {
-      console.error('Error getting push token:', error);
-      Alert.alert('Error', 'Failed to fetch push token.');
-      return null;
-    }
-  }
-
   
-  //useEffect to save list to Storage
-  useEffect(() => {
-    
-    if(expoPushToken){
-       const addToken = async(token) => {
-          try {
-            const usersCollectionRef = collection(db, 'deviceTokens'); // Reference to 'users' collection
-            await addDoc(usersCollectionRef, {
-              token
-            })
-            console.log('Token saved to Firestore.');
-          } catch (error) {
-            console.error('Error saving token to Firestore:', error);
-          }
-        
-       }
-        addToken(expoPushToken)
-
-      const handleSave = async () => {
-          try {
-            await AsyncStorage.setItem('NotificationToken', JSON.stringify(expoPushToken));
-        
-          } catch (e) {
-            console.error('Failed to save the data to the storage', e);
-          }
-        };
-        handleSave();
-      }
-    }, [expoPushToken]);
-   
-      
-
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
