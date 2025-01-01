@@ -237,7 +237,7 @@ async function registerDevice() {
         </View>
 
         <View style={{marginBottom:30}}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center", justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
+            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center",borderWidth:(signUpEmail && signUpPassword && Username) ? 1 :0, borderColor:(signUpEmail && signUpPassword && Username) ?  "rgba(100, 200, 255, 1)" : "",  justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
             { showIndicator ? <ActivityIndicator size={"small"} color={isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}/> :
                 <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>Register</Text>
             }

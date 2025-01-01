@@ -247,7 +247,7 @@ export default function LogIn ({navigation}){
 
 
                         <View style={styles.loginbtnView}>
-                            <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:"100%", height:55, alignItems:"center",alignSelf:"center", justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" :"rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
+                            <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:"100%", height:55, alignItems:"center",alignSelf:"center",borderWidth:(signUpEmail && loginPassword) ? 1 :0,borderColor:(signUpEmail && loginPassword) ?  "rgba(100, 200, 255, 1)" : "", justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" :"rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
                                 {showActivity ? <ActivityIndicator size={"small"} color={ isDarkMode ? "rgba(100, 200, 255, 1)" : "white"}/>
                                 :
                                 <Text style={{color:isDarkMode ? "rgba(100, 200, 255, 1)" : "white", fontSize:18, fontWeight:"500"}}>LogIn</Text>
