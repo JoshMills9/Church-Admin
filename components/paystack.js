@@ -76,34 +76,6 @@ async function markAsPaid() {
       }else {
         console.error("User document not found.");
       }
-  }else{
-    const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
-       // Fetch the user document
-       const userDocRef = doc(db, "deviceTokens", deviceToken);
-       const userDocSnap = await getDoc(userDocRef);
- 
-       if (userDocSnap.exists()) {
-         const userData = userDocSnap.data();
- 
-         // Calculate subscription start date
-         const trialEndDate = new Date(userData.trialEnd);
-         const subscriptionStartDate = now > trialEndDate ? now : trialEndDate;
- 
-         // Calculate subscription end date (4 months from start)
-         const subscriptionEndDate = new Date(subscriptionStartDate);
-         subscriptionEndDate.setMonth(subscriptionStartDate.getMonth() + 4);
- 
-         // Update Firestore
-         await updateDoc(userDocRef, {
-           isPaid: true,
-           subscriptionEnd: subscriptionEndDate.toISOString(),
-           lastPaymentDate: now.toISOString()
-         });
- 
-         navigation.navigate("Church Admin")
-       }else {
-         console.error("User document not found.");
-       }
   }
   
 }
@@ -138,7 +110,7 @@ async function markAsPaid() {
                 ref={paystackWebViewRef}
             />
 
-            <TouchableOpacity style={{borderColor:" rgba(100, 200, 255, 1)", borderWidth:2, padding:10, borderRadius:10, width:'50%', alignItems:"center"}} onPress={()=> paystackWebViewRef.current.startTransaction()}>
+            <TouchableOpacity style={{borderColor:" rgba(100, 200, 255, 1)", borderWidth:2, padding:10, borderRadius:10, width:'50%', alignItems:"center"}} onPress={()=> token ? paystackWebViewRef.current.startTransaction() : alert("Only Admin can renew subscription!")}>
                 <Text style={{color:isDarkMode ? '#FFFFFF' : '#000000'}}>Pay Now</Text>
             </TouchableOpacity>
         </View>

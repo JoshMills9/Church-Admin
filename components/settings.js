@@ -231,7 +231,6 @@ export default function Settings ({route}){
                 if (user) {
                     // Delete the user
                     await deleteUser(user);
-                    ToastAndroid.show('Account deleted successfully!.', ToastAndroid.LONG);
                 } else {
                     // User is not signed in
                     console.log('No user signed in.');
@@ -245,7 +244,7 @@ export default function Settings ({route}){
 
 
         const deleteDocumentByEmail = async (emailToSearch) => {
-            deleteUserAccount();
+       
             const usersCollectionRef = collection(db, 'UserDetails');  // Reference to the collection
 
             // Query to find documents where the 'userDetails.email' field matches the given email
@@ -277,6 +276,7 @@ export default function Settings ({route}){
                 // Wait for all deletions to complete
                 await Promise.all(deletions);
                 clearAllData();
+                ToastAndroid.show('Account deleted successfully!.', ToastAndroid.LONG);
                 navigation.navigate("LogIn");  // Navigate to login screen after deletion
                 return true;  // Indicate success if deletion was successful
             } catch (error) {
@@ -397,7 +397,7 @@ export default function Settings ({route}){
                         
                         <View style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF" ,elevation:4, marginTop:10, marginHorizontal:3, borderRadius:15, }}>
 
-                            <TouchableHighlight onPress={()=>{}} underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
+                            <TouchableHighlight onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
                                 <> 
                                 <View style={{flexDirection:"row",alignItems:"center"}}>
                                     <View style={{marginRight:15}}>
@@ -440,7 +440,7 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                            <TouchableHighlight onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
                                 <> 
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="shield-checkmark-outline" size={30}  color={"gray"}/>
@@ -458,7 +458,7 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="lock-closed-outline" size={30} color={"gray"}/>
@@ -476,7 +476,7 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
-                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=>{}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="language-outline" size={30} color={"gray"} />
@@ -539,7 +539,7 @@ export default function Settings ({route}){
                         <TouchableOpacity onPress={() => {
                                         Alert.alert("", "CONFIRM DELETE", [
                                         { text: "Cancel", onPress:() => {},style: "cancel" },
-                                        { text: "Yes", onPress:() => {deleteDocumentByEmail(ChurchName?.email)} },
+                                        { text: "Yes", onPress:() => {deleteUserAccount(); deleteDocumentByEmail(ChurchName?.email)} },
                                         ]);
                                     }} style={{flexDirection:"row" , marginTop:10, height:60, alignItems:"center" , justifyContent:"center",}}>
                                 

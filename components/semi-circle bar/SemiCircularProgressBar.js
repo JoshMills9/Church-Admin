@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 
 const InvertedSemiCircularProgressBar = ({high, low, stats, present, percentage, radius, strokeWidth }) => {
+  const WindowWidth = useWindowDimensions().width
+
   const center = radius;
   const offset = 10; // Padding around the SVG container
   const adjustedRadius = radius; // Use the same radius for both arcs
@@ -47,6 +49,7 @@ const InvertedSemiCircularProgressBar = ({high, low, stats, present, percentage,
           fill="none"
           stroke="rgba(41, 128, 185, 1)" // Blue color for the background arc
           strokeLinecap="round"
+          strokeLinejoin='round'
           strokeWidth={strokeWidth}
         />
 
@@ -57,6 +60,7 @@ const InvertedSemiCircularProgressBar = ({high, low, stats, present, percentage,
             fill="none"
             stroke="white" // White color for the progress arc
             strokeWidth={strokeWidth}
+            strokeLinejoin='round'
             strokeLinecap="round" // Round the edges
           />
         )}
@@ -64,11 +68,11 @@ const InvertedSemiCircularProgressBar = ({high, low, stats, present, percentage,
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 15, width: "100%", marginBottom: 10, alignItems: "center" }}>
         <Text style={{ color: "white" }}>{high}</Text>
-        <Text style={{ color: "rgba(60, 208, 245, 1)", marginRight:10}}>{low}</Text>
+        <Text style={{ color: "rgba(60, 208, 245, 1)", marginRight:15}}>{low}</Text>
       </View>
 
       {/* Percentage Text */}
-      <View style={[styles.textContainer,{ right: stats === "Members" ? 150 : 138}]}>
+      <View style={[styles.textContainer,{ right: WindowWidth > 400 ? (stats === "Members" ? 150 : 138) : (stats === "Members" ? 140 : 128) }]}>
         <Text style={styles.percentageText}>{stats === "Members" ? percentage : ((progressPercentage === NaN ? progressPercentage + 20 : 0) )+"%"}</Text>
         <Text style={{ fontSize: 15, textAlign: "center", fontWeight: "400", color: "rgba(240, 240, 240, 0.6)" }}>
           {stats}
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     position: 'absolute',
-    bottom: 25,
+    bottom: 23,
   },
   percentageText: {
     fontSize: 45,

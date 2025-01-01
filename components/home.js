@@ -13,8 +13,6 @@ import { StatusBar } from 'expo-status-bar';
 import InvertedSemiCircularProgressBar from './semi-circle bar/SemiCircularProgressBar'
 import { getFirestore,doc, addDoc, collection, getDoc, setDoc, updateDoc,getDocs } from "firebase/firestore";
 
-import * as Notifications from 'expo-notifications';
-
 
 import Animated, {
     useSharedValue,
@@ -49,7 +47,7 @@ export default function Home(){
     const db = getFirestore();
     const [NoOfPleges, setNoOfPledges] = useState(null);
     const [showDetails, setShowDetails] = useState(false)
-    const [pressed, setPressed] = useState(true)
+
 
     const [loading,setLoading] = useState(false)
     const phoneNumber = '+233241380745';
@@ -68,8 +66,10 @@ export default function Home(){
 
         const value = await AsyncStorage.getItem('isLogged In');
         const userEmail = await AsyncStorage.getItem('UserEmail');
+        const token = await AsyncStorage.getItem('deviceToken');
+        const deviceToken = JSON.parse(token)
 
-
+    
         // Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
         const querySnapshot = await getDocs(tasksCollectionRef);
@@ -83,8 +83,7 @@ export default function Home(){
         const churchFound = tasks?.find(item => item.email === userEmail);
 
         const db = getFirestore();
-        const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
-      
+              
         if(value === "true"){
             const tasksCollectionRef = collection(db, 'deviceTokens');
             const querySnapshot = await getDocs(tasksCollectionRef);
@@ -114,9 +113,9 @@ export default function Home(){
                     return
                 } else {
                     // Block access
-                    const blockedDocRef = doc(db, "blockedDevices", deviceToken);
+                    const blockedDocRef = doc(db, "blockedDevices", church.deviceToken);
                     await setDoc(blockedDocRef, {
-                    deviceToken: deviceToken,
+                    deviceToken: church.deviceToken,
                     blockedAt: now.toISOString(),
                     reason: "Trial and subscription expired."
                     });

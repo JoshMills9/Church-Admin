@@ -11,8 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 
-import * as Notifications from 'expo-notifications';
 
+import uuid from 'react-native-uuid';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -55,7 +55,7 @@ export default function SignUp() {
 
 async function registerDevice() {
   const db = getFirestore();
-  const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
+  const deviceToken = uuid.v4(); // Generate a unique UUID
 
   await AsyncStorage.setItem('deviceToken', JSON.stringify(deviceToken));
     
