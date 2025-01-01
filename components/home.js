@@ -49,7 +49,7 @@ export default function Home(){
     const db = getFirestore();
     const [NoOfPleges, setNoOfPledges] = useState(null);
     const [showDetails, setShowDetails] = useState(false)
-
+    const [pressed, setPressed] = useState(true)
 
     const [loading,setLoading] = useState(false)
     const phoneNumber = '+233241380745';
@@ -64,11 +64,28 @@ export default function Home(){
 
 
 
-    async function checkAccess(loggedIn) {
+    async function checkAccess() {
+
+        const value = await AsyncStorage.getItem('isLogged In');
+        const userEmail = await AsyncStorage.getItem('UserEmail');
+
+
+        // Fetch church details based on user email
+        const tasksCollectionRef = collection(db, 'UserDetails');
+        const querySnapshot = await getDocs(tasksCollectionRef);
+
+        if (!querySnapshot.empty) {
+            const tasks = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data().userDetails
+            }));
+
+        const churchFound = tasks?.find(item => item.email === userEmail);
+
         const db = getFirestore();
         const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
       
-        if(loggedIn === "true"){
+        if(value === "true"){
             const tasksCollectionRef = collection(db, 'deviceTokens');
             const querySnapshot = await getDocs(tasksCollectionRef);
 
@@ -79,8 +96,8 @@ export default function Home(){
                     ...doc.data()
                 }));
                 
-                const church = tasks.find(item => item.ChurchName === ChurchName?.ChurchName);
-
+                const church = tasks.find(item => item.ChurchName === churchFound?.ChurchName);
+      
                 const userDocRef = doc(db, "deviceTokens", church?.deviceToken);
 
                 const userDocSnap = await getDoc(userDocRef);
@@ -93,7 +110,8 @@ export default function Home(){
                 const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
             
                 if ((trialActive || subscriptionActive)) {
-                    console.log("Access granted.");
+                    console.log("LoggedIn Access granted.");
+                    return
                 } else {
                     // Block access
                     const blockedDocRef = doc(db, "blockedDevices", deviceToken);
@@ -109,7 +127,7 @@ export default function Home(){
                     [
                         { 
                         text: "Renew", 
-                        onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events}) 
+                        onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events})
                         }
                     ]
                     );
@@ -121,7 +139,7 @@ export default function Home(){
                 }
             
             }
-        }else{  
+        }else if (!value){  
             const userDocRef = doc(db, "deviceTokens", deviceToken);
             const userDocSnap = await getDoc(userDocRef);
         
@@ -133,7 +151,8 @@ export default function Home(){
             const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
         
             if ((trialActive || subscriptionActive)) {
-                console.log("Access granted.");
+                console.log("Signup Access granted.");
+                return
             } else {
                 // Block access
                 const blockedDocRef = doc(db, "blockedDevices", deviceToken);
@@ -154,32 +173,20 @@ export default function Home(){
                 ]
                 );
             }
-            } else {
+            } 
+        }else {
             console.log("Device not registered.");
             }
-        }}
-      
+    }}
 
 
-      useEffect(() =>{
-        const getLoggedIn = async () => {
-            try {
-              const value = await AsyncStorage.getItem('isLogged In');
-              if (value !== '') {
-                checkAccess(value);
-              } else {
-                console.log("no item")
-              }
-            } catch (error) {
-              console.error('Error checking onboarding status', error);
-            }
-          };
-         getLoggedIn()
-        const interval = setInterval(getLoggedIn, 20000);
+    
+    useEffect(() => {
+        checkAccess();
+        const interval = setInterval(checkAccess, 20000); // Check every 5 seconds
         return () => clearInterval(interval);
-      },[])
-
-
+    },[])
+      
 
 
     //useEffect to save list to Storage
@@ -218,7 +225,7 @@ export default function Home(){
         
 
     const getMember = async (userEmail) => {
-
+        const value = await AsyncStorage.getItem('isLogged In');
         let update = { };
 
         try {
@@ -235,7 +242,6 @@ export default function Home(){
                 const church = tasks?.find(item => item.email === userEmail);
                 setChurchName(church);
           
-
                 const handleSaveChurchDetails = async () => {
                     try {
                     await AsyncStorage.setItem('churchInfo', JSON.stringify(church));

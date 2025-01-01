@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 25,
   },
   percentageText: {
     fontSize: 45,

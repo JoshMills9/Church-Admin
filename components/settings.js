@@ -245,6 +245,7 @@ export default function Settings ({route}){
 
 
         const deleteDocumentByEmail = async (emailToSearch) => {
+            deleteUserAccount();
             const usersCollectionRef = collection(db, 'UserDetails');  // Reference to the collection
 
             // Query to find documents where the 'userDetails.email' field matches the given email
@@ -271,12 +272,11 @@ export default function Settings ({route}){
                         })
                     );
                 });
-
+                
+                
                 // Wait for all deletions to complete
                 await Promise.all(deletions);
-
                 clearAllData();
-                deleteUserAccount()  // Make sure this function is defined and works as expected
                 navigation.navigate("LogIn");  // Navigate to login screen after deletion
                 return true;  // Indicate success if deletion was successful
             } catch (error) {

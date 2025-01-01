@@ -49,7 +49,7 @@ export default function SignUp() {
      Image: selectedImage
     }
    })
-   console.log("Data added successfully");
+   registerDevice();
  };
 
 
@@ -57,7 +57,6 @@ async function registerDevice() {
   const db = getFirestore();
   const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
 
- 
   await AsyncStorage.setItem('deviceToken', JSON.stringify(deviceToken));
     
   const trialPeriod = 14; // Free trial period in days
@@ -74,6 +73,9 @@ async function registerDevice() {
     ChurchName: Username,
   });
 
+  ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
+  setShowIndicator(false)
+  navigation.push("Church Admin");
   console.log("Device registered with trial period:", { trialStart, trialEnd });
 }
 
@@ -83,11 +85,7 @@ async function registerDevice() {
  const handleSignUp = async () => {
     try {
       await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
-      registerDevice()
       handleAddData();
-      ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
-      setShowIndicator(false)
-      navigation.push("Church Admin");
     } catch (error) {
       Alert.alert(error.message);
       setShowIndicator(false)
