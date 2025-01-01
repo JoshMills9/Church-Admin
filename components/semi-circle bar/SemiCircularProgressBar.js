@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
   percentageText: {
-    fontSize: 40,
+    fontSize: 45,
     fontWeight: 'bold',
     color: "white",
     textAlign: "center",

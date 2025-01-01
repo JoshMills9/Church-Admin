@@ -43,7 +43,8 @@ export default function LogIn ({navigation}){
 
     const Login = async () => {
         try {
-            await signInWithEmailAndPassword(auth, signUpEmail, loginPassword)
+            await signInWithEmailAndPassword(auth, signUpEmail, loginPassword);
+            handleSaveLoggedIn()
             navigation.push("Church Admin");
             setActivity(false)
         } catch (error) {
@@ -53,6 +54,15 @@ export default function LogIn ({navigation}){
         }
     
     };
+
+    //useEffect to save loggedIn to Storage
+    const handleSaveLoggedIn = async () => {
+        try {
+            await AsyncStorage.setItem('isLogged In', 'true');
+        } catch (e) {
+          console.error('Failed to save the data to the storage', e);
+        }
+      };
 
 
         //useEffect to save list to Storage

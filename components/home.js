@@ -64,57 +64,120 @@ export default function Home(){
 
 
 
-    async function checkAccess() {
+    async function checkAccess(loggedIn) {
         const db = getFirestore();
         const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
       
-        const userDocRef = doc(db, "deviceTokens", deviceToken);
-        const userDocSnap = await getDoc(userDocRef);
-      
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          const now = new Date();
-      
-          const trialActive = now < new Date(userData.trialEnd);
-          const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
-      
-          if (trialActive || subscriptionActive) {
-            console.log("Access granted.");
-          } else {
-            // Block access
-            const blockedDocRef = doc(db, "blockedDevices", deviceToken);
-            await setDoc(blockedDocRef, {
-              deviceToken: deviceToken,
-              church: ChurchName?.ChurchName,
-              blockedAt: now.toISOString(),
-              reason: "Trial and subscription expired."
-            });
-      
-            Alert.alert(
-              "Subscription Expired!",
-              "Your subscription has expired. Please renew to continue using the app.",
-              [
-                { 
-                  text: "Renew", 
-                  onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events}) 
+        if(loggedIn === "true"){
+            const tasksCollectionRef = collection(db, 'deviceTokens');
+            const querySnapshot = await getDocs(tasksCollectionRef);
+
+            if (!querySnapshot.empty) {
+                // Filter tasks to find matching church based on user email
+                const tasks = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                const church = tasks.find(item => item.ChurchName === ChurchName?.ChurchName);
+
+                const userDocRef = doc(db, "deviceTokens", church?.deviceToken);
+
+                const userDocSnap = await getDoc(userDocRef);
+            
+                if (userDocSnap.exists()) {
+                const userData = userDocSnap.data();
+                const now = new Date();
+            
+                const trialActive = now < new Date(userData.trialEnd);
+                const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
+            
+                if ((trialActive || subscriptionActive)) {
+                    console.log("Access granted.");
+                } else {
+                    // Block access
+                    const blockedDocRef = doc(db, "blockedDevices", deviceToken);
+                    await setDoc(blockedDocRef, {
+                    deviceToken: deviceToken,
+                    blockedAt: now.toISOString(),
+                    reason: "Trial and subscription expired."
+                    });
+            
+                    Alert.alert(
+                    "Subscription Expired!",
+                    "Your subscription has expired. Please renew to continue using the app.",
+                    [
+                        { 
+                        text: "Renew", 
+                        onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events}) 
+                        }
+                    ]
+                    );
+                    return
                 }
-              ]
-            );
-          }
-        } else {
-          console.log("Device not registered.");
-        }
-      }
+                } else {
+                    console.log("Device not registered.");
+                    return
+                }
+            
+            }
+        }else{  
+            const userDocRef = doc(db, "deviceTokens", deviceToken);
+            const userDocSnap = await getDoc(userDocRef);
+        
+            if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            const now = new Date();
+        
+            const trialActive = now < new Date(userData.trialEnd);
+            const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
+        
+            if ((trialActive || subscriptionActive)) {
+                console.log("Access granted.");
+            } else {
+                // Block access
+                const blockedDocRef = doc(db, "blockedDevices", deviceToken);
+                await setDoc(blockedDocRef, {
+                deviceToken: deviceToken,
+                blockedAt: now.toISOString(),
+                reason: "Trial and subscription expired."
+                });
+        
+                Alert.alert(
+                "Subscription Expired!",
+                "Your subscription has expired. Please renew to continue using the app.",
+                [
+                    { 
+                    text: "Renew", 
+                    onPress: () => navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events}) 
+                    }
+                ]
+                );
+            }
+            } else {
+            console.log("Device not registered.");
+            }
+        }}
       
 
 
-      useLayoutEffect(() =>{
-        checkAccess();
-        const interval = setInterval(checkAccess, 20000);
+      useEffect(() =>{
+        const getLoggedIn = async () => {
+            try {
+              const value = await AsyncStorage.getItem('isLogged In');
+              if (value !== '') {
+                checkAccess(value);
+              } else {
+                console.log("no item")
+              }
+            } catch (error) {
+              console.error('Error checking onboarding status', error);
+            }
+          };
+         getLoggedIn()
+        const interval = setInterval(getLoggedIn, 20000);
         return () => clearInterval(interval);
       },[])
-
-
 
 
 

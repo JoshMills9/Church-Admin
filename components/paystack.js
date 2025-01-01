@@ -7,6 +7,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFirestore, doc, updateDoc,getDoc } from "firebase/firestore";
 import { useNavigation } from '@react-navigation/native';
 
+
+import * as Notifications from 'expo-notifications';
+
+
+
 export default function PayStack({pay, mode}){
   const paystackWebViewRef = useRef(paystackProps.PayStackRef); 
   const navigation = useNavigation()
@@ -44,32 +49,63 @@ async function markAsPaid() {
   const db = getFirestore();
   const now = new Date();
 
-  // Fetch the user document
-  const userDocRef = doc(db, "deviceTokens", token);
-  const userDocSnap = await getDoc(userDocRef);
+  if(token){
+      // Fetch the user document
+      const userDocRef = doc(db, "deviceTokens", token);
+      const userDocSnap = await getDoc(userDocRef);
 
-  if (userDocSnap.exists()) {
-    const userData = userDocSnap.data();
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
 
-    // Calculate subscription start date
-    const trialEndDate = new Date(userData.trialEnd);
-    const subscriptionStartDate = now > trialEndDate ? now : trialEndDate;
+        // Calculate subscription start date
+        const trialEndDate = new Date(userData.trialEnd);
+        const subscriptionStartDate = now > trialEndDate ? now : trialEndDate;
 
-    // Calculate subscription end date (4 months from start)
-    const subscriptionEndDate = new Date(subscriptionStartDate);
-    subscriptionEndDate.setMonth(subscriptionStartDate.getMonth() + 4);
+        // Calculate subscription end date (4 months from start)
+        const subscriptionEndDate = new Date(subscriptionStartDate);
+        subscriptionEndDate.setMonth(subscriptionStartDate.getMonth() + 4);
 
-    // Update Firestore
-    await updateDoc(userDocRef, {
-      isPaid: true,
-      subscriptionEnd: subscriptionEndDate.toISOString(),
-      lastPaymentDate: now.toISOString()
-    });
+        // Update Firestore
+        await updateDoc(userDocRef, {
+          isPaid: true,
+          subscriptionEnd: subscriptionEndDate.toISOString(),
+          lastPaymentDate: now.toISOString()
+        });
 
-    navigation.navigate("Church Admin")
-  }else {
-    console.error("User document not found.");
+        navigation.navigate("Church Admin")
+      }else {
+        console.error("User document not found.");
+      }
+  }else{
+    const { data: deviceToken } = await Notifications.getDevicePushTokenAsync();
+       // Fetch the user document
+       const userDocRef = doc(db, "deviceTokens", deviceToken);
+       const userDocSnap = await getDoc(userDocRef);
+ 
+       if (userDocSnap.exists()) {
+         const userData = userDocSnap.data();
+ 
+         // Calculate subscription start date
+         const trialEndDate = new Date(userData.trialEnd);
+         const subscriptionStartDate = now > trialEndDate ? now : trialEndDate;
+ 
+         // Calculate subscription end date (4 months from start)
+         const subscriptionEndDate = new Date(subscriptionStartDate);
+         subscriptionEndDate.setMonth(subscriptionStartDate.getMonth() + 4);
+ 
+         // Update Firestore
+         await updateDoc(userDocRef, {
+           isPaid: true,
+           subscriptionEnd: subscriptionEndDate.toISOString(),
+           lastPaymentDate: now.toISOString()
+         });
+ 
+         navigation.navigate("Church Admin")
+       }else {
+         console.error("User document not found.");
+       }
   }
+  
 }
 
 
