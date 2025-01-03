@@ -51,7 +51,7 @@ export default function Home(){
 
     const [loading,setLoading] = useState(false)
     const phoneNumber = '+233241380745';
-    const message = "Hello there!";
+    const message = "Assistance needed!";
     const whatsappUrl = `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
     const [refreshing, setRefreshing] = useState(true);
     const [Refreshing, setrefreshing] = useState(false)
@@ -61,9 +61,25 @@ export default function Home(){
     const monthOfYear = monthsOfYear[date.getMonth()];
 
 
+    //alert user abt wen tri
+    useEffect(() =>{
+        const sub = async() => {
+            const value =  await AsyncStorage.getItem('subscription')
+            if(value === 'true'){
+                Alert.alert("Church Administrator", "Your trial period expires in 14 days!",
+                [ {text: "Continue", onPress: async() => await AsyncStorage.removeItem("subscription")},
+                  {text: "Subscribe", onPress: async() =>{await AsyncStorage.removeItem("subscription"); navigation.navigate("Payment",{username: username, ChurchName:ChurchName , events: events})}}
+                ]
+                )
+            }
+        }
+        sub()
+    },[])
 
+
+
+    //app subscription function
     async function checkAccess() {
-
         const value = await AsyncStorage.getItem('isLogged In');
         const userEmail = await AsyncStorage.getItem('UserEmail');
         const token = await AsyncStorage.getItem('deviceToken');
@@ -681,7 +697,7 @@ export default function Home(){
                                     </View>
 
                                     <View style={{flex:3, width:"100%", marginBottom:35}}>
-                                         <InvertedSemiCircularProgressBar high={"Present"} low={"Absent"} stats={"Members"}  present={attendance ? attendance : updated?.attendance ||  0} percentage={totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || 0} radius={140} strokeWidth={15} />
+                                         <InvertedSemiCircularProgressBar high={"Present"} low={"Absent"} stats={"Members"} attendance={attendancePercent}  present={attendance ? attendance : updated?.attendance ||  0} percentage={totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || 0} radius={140} strokeWidth={15} />
                                     </View>
 
                                     {(showDetails === 1)  && 
@@ -753,7 +769,7 @@ export default function Home(){
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
                                                     <Text style={{fontSize:13, color:"white",}}>Attendance</Text>
                                                     <View style={{flexDirection:"row",}}>
-                                                        <Text style={styles.updateTxt}>{attendancePercent ? attendancePercent : 0}</Text>
+                                                        <Text style={styles.updateTxt}>{attendancePercent ? (attendancePercent).toFixed(1) : 0}</Text>
                                                         <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>% {status}</Text>
                                                     </View>
                                                 </View>

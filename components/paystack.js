@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import  { Paystack , paystackProps}  from 'react-native-paystack-webview';
-import { View, TouchableOpacity,Text ,useColorScheme} from 'react-native';
+import { View, TouchableOpacity,Text ,useColorScheme, Alert} from 'react-native';
 import { BottomSheet } from 'react-native-btr';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -73,6 +73,7 @@ async function markAsPaid() {
         });
 
         navigation.navigate("Church Admin")
+        Alert.alert("Church Administrator", "🎉 Subscription renewed!")
       }else {
         console.error("User document not found.");
       }

@@ -1,7 +1,7 @@
 import React, { useState ,useEffect } from "react";
 import { View, Image, Text, ToastAndroid, TextInput,useColorScheme, TouchableOpacity, KeyboardAvoidingView, ScrollView, Alert, ActivityIndicator } from "react-native";
 import styles from "./styles";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword,sendEmailVerification  } from "firebase/auth";
 import { getFirestore, collection, addDoc, doc, setDoc } from "firebase/firestore";
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-export default function SignUp() {
+export default function SignUp({isVerified}) {
 
     const [signUpEmail, setSignUpEmail] = useState('');
     const [signUpPassword, setSignUpPassword] = useState("");
@@ -29,6 +29,7 @@ export default function SignUp() {
     const [selectedImage, setSelectedImage] = useState(null);
     const [upload, setUpload] = useState(false)
     const [ViewPass, setViewPass] = useState(true)
+    const [verify, setVerify] = useState(false)
     const navigation = useNavigation()
     const isDarkMode = useColorScheme() === 'dark';
     //add user  to  database
@@ -49,7 +50,7 @@ export default function SignUp() {
      Image: selectedImage
     }
    })
-   registerDevice();
+
  };
 
 
@@ -73,9 +74,6 @@ async function registerDevice() {
     ChurchName: Username,
   });
 
-  ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
-  setShowIndicator(false)
-  navigation.push("Church Admin");
   console.log("Device registered with trial period:", { trialStart, trialEnd });
 }
 
@@ -84,17 +82,28 @@ async function registerDevice() {
  //sign up func
  const handleSignUp = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+      const  userCredential = await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
       handleAddData();
+      registerDevice();
+
+      const user = userCredential.user;
+      await sendEmailVerification(user);
+      Alert.alert("Church Administrator","Verification email sent!");
+      setShowIndicator(false)
+      setVerify(true)
     } catch (error) {
       Alert.alert(error.message);
       setShowIndicator(false)
+      setVerify(false)
       console.error('Error signing up:' , error);
     }
   }
 
-
-
+  //function to alert user to verify
+  const showVerifyAgain = () => {
+      setShowIndicator(false)
+      Alert.alert("Church Administrator","Email is not verified. Please check your inbox.");
+  }
 
 
 
@@ -237,9 +246,9 @@ async function registerDevice() {
         </View>
 
         <View style={{marginBottom:30}}>
-            <TouchableOpacity onPress={() => {handleSignUp(); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center",borderWidth:(signUpEmail && signUpPassword && Username) ? 1 :0, borderColor:(signUpEmail && signUpPassword && Username) ?  "rgba(100, 200, 255, 1)" : "",  justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
-            { showIndicator ? <ActivityIndicator size={"small"} color={isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}/> :
-                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>Register</Text>
+            <TouchableOpacity onPress={() => {(verify ? showVerifyAgain() :  handleSignUp()); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center",borderWidth:(signUpEmail && signUpPassword && Username) ? 1 :0, borderColor:(signUpEmail && signUpPassword && Username) ?  "rgba(100, 200, 255, 1)" : "",  justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
+            { showIndicator || isVerified ? <ActivityIndicator size={"small"} color={isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}/> :
+                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>{verify ? "Connecting...":"Register"}</Text>
             }
             </TouchableOpacity>
             

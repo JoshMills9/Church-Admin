@@ -1,5 +1,5 @@
 import React,{useState,useLayoutEffect, useRef, useEffect} from "react";
-import { View , ImageBackground,Image,useColorScheme, Text,useWindowDimensions, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Alert, SafeAreaView} from "react-native";
+import { View , ImageBackground,Image,useColorScheme,ToastAndroid, Text,useWindowDimensions, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Alert, SafeAreaView} from "react-native";
 import styles from "./styles";
 import { StatusBar } from "expo-status-bar";
 import { Feather } from '@expo/vector-icons';
@@ -36,9 +36,36 @@ export default function LogIn ({navigation}){
     const WindowWidth = useWindowDimensions().width
     const WindowHeight = useWindowDimensions().height
     const isDarkMode = useColorScheme() === 'dark';
+    const [isVerified, setIsVerified] = useState(false)
+     
+      useEffect(() => {
+        if(step === 2 && !Switch){
+        const interval = setInterval(async () => {
+            const auth = getAuth();
+            const user = auth.currentUser;
+          if (user) {
+            await user.reload();
+            if (user.emailVerified) {
+              setIsVerified(true)
+              clearInterval(interval); // Stop checking once verified
+              ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
+              await AsyncStorage.setItem('subscription', 'true');
+              navigation.push("Church Admin")
+              clearInterval(interval); 
+            }
+          }else{
+            console.log("No user is signed in")
+          }
+        }, 1000); // Check every 5 seconds
+      
+        return () => clearInterval(interval); // Cleanup on unmount
+        }
+      }, [step, Switch]);
+      
 
 
-  // Function to log in a user
+
+    // Function to log in a user
     const auth = getAuth(app);
 
     const Login = async () => {
@@ -270,7 +297,7 @@ export default function LogIn ({navigation}){
                         :
                         (!Switch && step === 2 )&& (
                         <Animated.View style={[{flex:1},formStep2Style]}>
-                            <SignUp />
+                            <SignUp isVerified={isVerified} />
                         </Animated.View>
             
                         )

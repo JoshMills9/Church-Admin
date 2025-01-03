@@ -335,7 +335,7 @@ export default function Settings ({route}){
 
             
         
-            <View style={{paddingHorizontal:15,paddingVertical:5, justifyContent:"space-between", flex:1, }}>
+            <View style={{paddingHorizontal:15,paddingVertical:10, justifyContent:"space-between", flex:1, }}>
                 <View >
                     <View>
                         <Text style={{fontSize:18, fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }}>
