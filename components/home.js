@@ -47,8 +47,10 @@ export default function Home(){
     const db = getFirestore();
     const [NoOfPleges, setNoOfPledges] = useState(null);
     const [showDetails, setShowDetails] = useState(false)
-
-
+    const [men, setMen] = useState()
+    const [women, setWomen] = useState()
+    const [youth, setYouth] = useState()
+    const [children, setChildren] = useState()
     const [loading,setLoading] = useState(false)
     const phoneNumber = '+233241380745';
     const message = "Assistance needed!";
@@ -80,11 +82,12 @@ export default function Home(){
 
     //app subscription function
     async function checkAccess() {
-        const value = await AsyncStorage.getItem('isLogged In');
-        const userEmail = await AsyncStorage.getItem('UserEmail');
-        const token = await AsyncStorage.getItem('deviceToken');
-        const deviceToken = JSON.parse(token)
-
+        try{
+            const value = await AsyncStorage.getItem('isLogged In');
+            const userEmail = await AsyncStorage.getItem('UserEmail');
+            const token = await AsyncStorage.getItem('deviceToken');
+            const deviceToken = JSON.parse(token)
+         
     
         // Fetch church details based on user email
         const tasksCollectionRef = collection(db, 'UserDetails');
@@ -97,9 +100,8 @@ export default function Home(){
             }));
 
         const churchFound = tasks?.find(item => item.email === userEmail);
-
         const db = getFirestore();
-              
+
         if(value === "true"){
             const tasksCollectionRef = collection(db, 'deviceTokens');
             const querySnapshot = await getDocs(tasksCollectionRef);
@@ -110,9 +112,9 @@ export default function Home(){
                     id: doc.id,
                     ...doc.data()
                 }));
-                
+        
                 const church = tasks.find(item => item.ChurchName === churchFound?.ChurchName);
-      
+             
                 const userDocRef = doc(db, "deviceTokens", church?.deviceToken);
 
                 const userDocSnap = await getDoc(userDocRef);
@@ -120,7 +122,7 @@ export default function Home(){
                 if (userDocSnap.exists()) {
                 const userData = userDocSnap.data();
                 const now = new Date();
-            
+                    
                 const trialActive = now < new Date(userData.trialEnd);
                 const subscriptionActive = userData.isPaid && now < new Date(userData.subscriptionEnd);
             
@@ -192,7 +194,11 @@ export default function Home(){
         }else {
             console.log("Device not registered.");
             }
-    }}
+    } }catch(error){
+            console.log(error.message)
+        }
+
+}
 
 
     
@@ -218,9 +224,9 @@ export default function Home(){
     }, []);
 
 
-    const [updated, setUpdated] = useState([])
 
-  
+    //save member info to storage
+    const [updated, setUpdated] = useState([])
     const getUpdates = async () => {
         try {
           const value = await AsyncStorage.getItem('update');
@@ -238,7 +244,7 @@ export default function Home(){
 
 
         
-
+      //get members info from db
     const getMember = async (userEmail) => {
         const value = await AsyncStorage.getItem('isLogged In');
         let update = { };
@@ -316,14 +322,27 @@ export default function Home(){
                         id: doc.id,
                         ...doc.data().Member
                     }));
+                    const Men =membersData.filter(department => department.Department === "men" );
+                    const Women =membersData.filter(department => department.Department === "women" );
+                    const Youth =membersData.filter(department => department.Department === "youth" );
+                    const Children =membersData.filter(department => department.Department === "children" );
+
+                    setMen(Men.length)
+                    setWomen(Women.length)
+                    setYouth(Youth.length)
+                    setChildren(Children.length)
                     setTotalNumberOfMembers(membersData.length);
+
+                    update.Men = Men.length;
+                    update.Women = Women.length;
+                    update.Youth = Youth.length;
+                    update.Children = Children.length
                     update.totalNumberOfMembers = membersData.length;
 
 
                     const date = new Date();
                     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                     const monthOfYear = monthsOfYear[date.getMonth()];
-              
 
                     const monthAbr = monthOfYear.slice(0, 3);
                     const upcomingBirthdays = membersData.filter(member => {
@@ -683,9 +702,9 @@ export default function Home(){
 
                             <ScrollView showsVerticalScrollIndicator={false} >
 
-                                <Pressable onPress={() => showView(1)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 1 ? 480 : 260, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
+                                <Pressable onPress={() => showView(1)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 1 ? 760 : 275, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
                                     
-                                    <View style={{borderBottomWidth:0.5,width:"100%",flex:1,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
+                                    <View style={{borderBottomWidth:0.5,width:"100%",height:55,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
                                         <View style={{flexDirection:"row"}}>
                                             <Ionicons name="people-circle-sharp" size={40} style={{elevation:3}} color={"white"}/>
                                             <View style={{marginLeft:10}}>
@@ -693,15 +712,15 @@ export default function Home(){
                                                 <Text style={{fontSize:10, color:"rgba(240, 240, 240, 0.7)"}}>Monthly membership updates</Text>
                                             </View>
                                         </View>
-                                        <MaterialIcons name={ showDetails ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
+                                        <MaterialIcons name={ showDetails === 1 ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
                                     </View>
 
-                                    <View style={{flex:3, width:"100%", marginBottom:35}}>
+                                    <View style={{flex:2, width:"100%", marginBottom:35}}>
                                          <InvertedSemiCircularProgressBar high={"Present"} low={"Absent"} stats={"Members"} attendance={attendancePercent}  present={attendance ? attendance : updated?.attendance ||  0} percentage={totalNumberOfMembers ? totalNumberOfMembers : updated?.totalNumberOfMembers || 0} radius={140} strokeWidth={15} />
                                     </View>
 
                                     {(showDetails === 1)  && 
-                                        <View style={{width:"100%",justifyContent:"space-between",alignItems:"center", flex:5}}>
+                                        <View style={{width:"100%",justifyContent:"space-between",alignItems:"center", flex:6}}>
                                             <View style={{flex:1,flexDirection:"row",marginVertical:15}}>
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderRightWidth:0.5,paddingVertical:18 ,borderColor:"rgba(240, 240, 240, 0.5)",}}>
                                                     <Text style={{fontSize:13, color:"white",}}>New Members</Text>
@@ -719,7 +738,41 @@ export default function Home(){
                                                 </View>
                                             </View>
 
-                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:5 }}>
+                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:10 }}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Men</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt} adjustsFontSizeToFit={true}>{men ? men : updated?.Men ||  0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Members</Text>
+                                                        </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Women</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{women ? women: updated?.Women || 0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Members</Text>
+                                                        </View>
+                                                </View>
+                                            </View> 
+
+                                             <View style={{flex:1,flexDirection:"row" ,marginBottom:10 }}>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Youth</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{youth ? youth : updated?.Youth ||  0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Members</Text>
+                                                        </View>
+                                                </View>
+                                                <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)", padding:18}}>
+                                                        <Text style={{fontSize:13, color:"white",}}>Children</Text>
+                                                        <View style={{flexDirection:"row",}}>
+                                                            <Text style={styles.updateTxt}>{children ? children : updated?.Children || 0}</Text>
+                                                            <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Members</Text>
+                                                        </View>
+                                                </View>
+                                            </View> 
+
+                                             <View style={{flex:1,flexDirection:"row" ,marginBottom:10 }}>
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
                                                         <Text style={{fontSize:13, color:"white",}}>Birthdays</Text>
                                                         <View style={{flexDirection:"row",}}>
@@ -734,14 +787,15 @@ export default function Home(){
                                                             <Text style={{color:"white" ,alignSelf:"flex-end",marginBottom:8, fontWeight:"normal", fontSize:10}}>Upcoming</Text>
                                                         </View>
                                                 </View>
-                                            </View>  
+                                            </View> 
+
                                         </View>
                                     }
                                 </Pressable>
 
-                                <Pressable onPress={() => showView(2)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 2 ? 480 : 260, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
+                                <Pressable onPress={() => showView(2)}  style={{ width: "100%",alignItems:"center",justifyContent:"space-between", backgroundColor:'#24739e', height: showDetails === 2 ? 500 : 280, margin: 10, elevation: 5, borderRadius: 25, alignSelf: "center", padding: 10, }}>
                                     
-                                    <View style={{borderBottomWidth:0.5,width:"100%",flex:1,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
+                                    <View style={{borderBottomWidth:0.5,width:"100%",height:55,alignItems:"center",flexDirection:"row",justifyContent:"space-between",marginBottom:35,padding:8, borderColor:"rgba(240, 240, 240, 0.5)"}}>
                                         <View style={{flexDirection:"row"}}>
                                             <Ionicons name="calculator-outline" size={40} style={{elevation:3}} color={"white"}/>
                                             <View style={{marginLeft:10}}>
@@ -749,7 +803,7 @@ export default function Home(){
                                                 <Text style={{fontSize:10, color:"rgba(240, 240, 240, 0.7)"}}>Monthly statistic updates</Text>
                                             </View>
                                         </View>
-                                        <MaterialIcons name={ showDetails ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
+                                        <MaterialIcons name={ showDetails === 2 ? "keyboard-arrow-up" :"keyboard-arrow-down"} size={26} color={"white"} />
                                     </View>
 
                                     <View style={{flex:3, width:"100%", marginBottom:35}}>
@@ -775,7 +829,7 @@ export default function Home(){
                                                 </View>
                                             </View>
 
-                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:5 }}>
+                                            <View style={{flex:1,flexDirection:"row" ,marginBottom:10 }}>
                                                 <View style={{width:"38%",borderTopWidth:0.5,borderColor:"rgba(240, 240, 240, 0.5)",borderRightWidth:0.5, paddingVertical:18}}>
                                                         <Text style={{fontSize:13, color:"white",}}>Birthdays</Text>
                                                         <View style={{flexDirection:"row",}}>
