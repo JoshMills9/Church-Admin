@@ -92,21 +92,22 @@ async function markAsPaid() {
             </View>
 
             <Paystack
-                paystackKey="pk_test_0d8cf25b58b9f091dea8e262fc221ad66acea268"
-                paystackSecretKey='sk_test_82a1acc2a1053e6b87dd02ace946446482bc5e03'
+                paystackKey="pk_live_a95ff80860ff5b1d69a43f28f6bc7ca955922a68"
+                paystackSecretKey='sk_live_c5da0c92c832d407dff50489fe3b23ae3f953c5a'
                 billingName='Church Administrator'
                 billingEmail="churchad9@gmail.com"
                 phone={'0241380745'}
                 currency='GHS'
-                amount={250}
+                amount={200}
                 channels={[mode]}
                 onCancel={(e) => {
-                  navigation.replace("Church Admin")
-                console.log(e)
+                  navigation.replace("Church Admin");
+                  Alert.alert("Church Administrator", "Payment cancelled!")
+                  console.log(e)
                 }}
                 onSuccess={(res) => {
-                 markAsPaid()
-                console.log(res)
+                  markAsPaid()
+                  console.log(res.transactionRef)
                 }}
                 ref={paystackWebViewRef}
             />

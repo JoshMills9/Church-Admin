@@ -88,7 +88,7 @@ async function registerDevice() {
 
       const user = userCredential.user;
       await sendEmailVerification(user);
-      Alert.alert("Church Administrator","Verification email sent!");
+      Alert.alert("Church Administrator","Verification email sent, check your mail!");
       setShowIndicator(false)
       setVerify(true)
     } catch (error) {
@@ -248,7 +248,7 @@ async function registerDevice() {
         <View style={{marginBottom:30}}>
             <TouchableOpacity onPress={() => {(verify ? showVerifyAgain() :  handleSignUp()); setShowIndicator(true)}} style={{width:"100%", height:55, marginTop:5, alignItems:"center",borderWidth:(signUpEmail && signUpPassword && Username) ? 1 :0, borderColor:(signUpEmail && signUpPassword && Username) ?  "rgba(100, 200, 255, 1)" : "",  justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : " rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
             { showIndicator || isVerified ? <ActivityIndicator size={"small"} color={isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}/> :
-                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>{verify ? "Connecting...":"Register"}</Text>
+                <Text style={[styles.text,{fontWeight:"500", fontSize:18,color:isDarkMode ? " rgba(100, 200, 255, 1)" : "white"}]}>{verify ? "Waiting for verification...":"Register"}</Text>
             }
             </TouchableOpacity>
             

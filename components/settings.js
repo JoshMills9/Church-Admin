@@ -397,30 +397,6 @@ export default function Settings ({route}){
                         
                         <View style={{backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF" ,elevation:4, marginTop:10, marginHorizontal:3, borderRadius:15, }}>
 
-                            <TouchableHighlight onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} style={{flexDirection:"row",  height:80, alignItems:"center",padding:20 ,borderTopRightRadius:15,borderTopLeftRadius:15, justifyContent:"space-between"}}>
-                                <> 
-                                <View style={{flexDirection:"row",alignItems:"center"}}>
-                                    <View style={{marginRight:15}}>
-                                        <Ionicons name="invert-mode" size={30} color={"gray"}/>
-                                    </View>
-
-                                    <View style={{paddingRight:25,}}>
-                                        <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                            Light mode
-                                        </Text>
-
-                                        <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                            Change app looks
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View>
-                                    <Switch value={true}  thumbColor={"rgba(240, 240, 240, 1)"}  trackColor={"lightgray"}/>
-                                </View>
-                                </>
-                            </TouchableHighlight>
-
                             <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {navigation.navigate("Notification",{username: username , ChurchName : ChurchName,events: events})}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20, justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
@@ -458,25 +434,8 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
+                            
                             <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  style={{flexDirection:"row", height:80, alignItems:"center",padding:20 , justifyContent:"flex-start"}}>
-                                <>
-                                <View style={{marginRight:15}}>
-                                    <Ionicons name="lock-closed-outline" size={30} color={"gray"}/>
-                                </View>
-
-                                <View style={{paddingRight:25,}}>
-                                    <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                        Security
-                                    </Text>
-
-                                    <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                        Customize security features to fit your needs
-                                    </Text>
-                                </View>
-                                </>
-                            </TouchableHighlight>
-
-                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> {ToastAndroid.show("Upcoming feature!", ToastAndroid.LONG)}}  style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"flex-start"}}>
                                 <>
                                 <View style={{marginRight:15}}>
                                     <Ionicons name="language-outline" size={30} color={"gray"} />
@@ -494,32 +453,34 @@ export default function Settings ({route}){
                                 </>
                             </TouchableHighlight>
 
+
+                            <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> { navigation.navigate("Payment",{username: username , ChurchName : ChurchName, events: events})}} style={{flexDirection:"row", height:80, alignItems:"center",padding:20 ,borderBottomLeftRadius:15,borderBottomRightRadius:15, justifyContent:"space-between"}}>
+                                        <>
+                                        <View style={{flexDirection:"row",alignItems:"center"}}>
+                                            <View style={{marginRight:15}}>
+                                                <Ionicons name="cash-outline" size={30} color={"gray"}/>
+                                            </View>
+
+                                            <View style={{paddingRight:25,}}>
+                                                <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
+                                                    Payments
+                                                </Text>
+
+                                                <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
+                                                    Mobile money
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        <View>
+                                            <MaterialIcons name="arrow-right" size={30} color={"gray"} />
+                                        </View>
+                                        </>
+                            </TouchableHighlight>
+
                         </View>
                     </View>
 
-                        <TouchableHighlight underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={()=> { navigation.navigate("Payment",{username: username , ChurchName : ChurchName, events: events})}} style={{flexDirection:"row", backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",elevation:4, borderRadius:15,marginTop:15, height:60,marginHorizontal:3, alignItems:"center",paddingHorizontal:25 , justifyContent:"space-between"}}>
-                                    <>
-                                    <View style={{flexDirection:"row",alignItems:"center"}}>
-                                        <View style={{marginRight:15}}>
-                                            <Ionicons name="cash-outline" size={30} color={"gray"}/>
-                                        </View>
-
-                                        <View style={{paddingRight:25,}}>
-                                            <Text style={{fontSize:19,fontWeight:"500",color:isDarkMode ? '#FFFFFF' : '#000000' }} adjustsFontSizeToFit={true} numberOfLines={1}>
-                                                Payments
-                                            </Text>
-
-                                            <Text style={{fontSize:14,fontWeight:"400",color:"gray",marginTop:2}}>
-                                                Mobile money
-                                            </Text>
-                                        </View>
-                                    </View>
-
-                                    <View>
-                                        <MaterialIcons name="arrow-right" size={30} color={"gray"} />
-                                    </View>
-                                    </>
-                        </TouchableHighlight>
 
                         
 
