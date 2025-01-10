@@ -67,12 +67,12 @@ const InvertedSemiCircularProgressBar = ({high, low, stats,attendancePercentage,
       </Svg>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 15, width: "100%", marginBottom: 10, alignItems: "center" }}>
-        <Text style={{ color: "white" }}>{high}</Text>
-        <Text style={{ color: "rgba(60, 208, 245, 1)", marginRight:15}}>{low}</Text>
+        <Text style={{ color: "white" ,position:"absolute" , right: WindowWidth > 400 ? 30 : 20, top:1}}>{high}</Text>
+        <Text style={{ color: "rgba(60, 208, 245, 1)", marginRight:15, position:"absolute" , left: WindowWidth > 400 ? 20 : 15, top:1}}>{low}</Text>
       </View>
 
       {/* Percentage Text */}
-      <View style={[styles.textContainer,{ right: WindowWidth > 400 ? (stats === "Members" ? 150 : 135) : (stats === "Members" ? 140 : 125) }]}>
+      <View style={[styles.textContainer,{ right: WindowWidth > 400 ? (stats === "Members" ? 150 : 135) : (stats === "Members" ? 140 : 120) }]}>
         <Text style={styles.percentageText}>{stats === "Members" ? percentage : (percentage&&present ?  ((Math.min(Math.max(present / percentage, 0), 1) * 100).toFixed(0))-10 :0)+"%"}</Text>
         <Text style={{ fontSize: 15, textAlign: "center", fontWeight: "400", color: "rgba(240, 240, 240, 0.6)" }}>
           {stats}

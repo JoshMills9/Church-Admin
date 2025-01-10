@@ -456,7 +456,7 @@ export default function SendSMS({navigation, route}){
                         />
                         :
                         <View style={{alignItems:"center",justifyContent:"center", backgroundColor:'rgba(100, 100, 100, 0.2)',width:230, height:45, borderRadius:10}}>
-                            <Text style={{color:"white"}}>{ seen ? "Loading ..." : "No Members"}</Text>
+                            <Text style={{color: isDarkMode ? "white" :"black"}}>{ seen ? "Loading ..." : "No Members"}</Text>
                         </View>
                         }
                     </View>

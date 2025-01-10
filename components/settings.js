@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState ,useRef} from "react";
-import { TextInput, View, Text,Pressable, useColorScheme, Image,ToastAndroid, TouchableOpacity,Alert, Switch, ScrollView } from "react-native";
+import { TextInput, View, Text,Pressable, useColorScheme, Image,ToastAndroid, TouchableOpacity,Alert, Switch, ScrollView, ActivityIndicator } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -35,7 +35,7 @@ export default function Settings ({route}){
     const [body, setBody ]= useState("")
     const [selectedImage, setSelectedImage] = useState(false);
     const db = getFirestore()
-
+    const [del, setDel] = useState(false)
 
 
     const [info, setInfo] = useState()
@@ -101,7 +101,8 @@ export default function Settings ({route}){
 
 
     //function to signout user
-    const handleSignOut = () => {
+    const handleSignOut = async() => {
+        await AsyncStorage.removeItem("Token")
         signOut(auth)
             .then(() => {
                 // Sign-out successful.
@@ -277,6 +278,7 @@ export default function Settings ({route}){
                 await Promise.all(deletions);
                 clearAllData();
                 ToastAndroid.show('Account deleted successfully!.', ToastAndroid.LONG);
+                setDel(false)
                 navigation.navigate("LogIn");  // Navigate to login screen after deletion
                 return true;  // Indicate success if deletion was successful
             } catch (error) {
@@ -369,11 +371,11 @@ export default function Settings ({route}){
                         </TouchableOpacity>
 
                         <View>
-                            <Text style={{fontSize:19,fontWeight:"800",color:isDarkMode ? '#FFFFFF' : '#000000' , width:280}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                            <Text style={{fontSize:19,fontWeight:"800",color:isDarkMode ? '#FFFFFF' : '#000000' , width:260}} adjustsFontSizeToFit={true} numberOfLines={1}>
                                 {info?.ChurchName?.toUpperCase()}
                             </Text>
 
-                            <Text style={{fontSize:15,fontWeight:"400",color:"gray",marginTop:2}} adjustsFontSizeToFit={true} numberOfLines={1}>
+                            <Text style={{fontSize:15,fontWeight:"400",color:"gray",marginTop:2,width:260}} adjustsFontSizeToFit={true} numberOfLines={1}>
                                {username}
                             </Text>
                         </View>
@@ -484,7 +486,7 @@ export default function Settings ({route}){
 
                         
 
-                        <TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => { clearAllData() ; handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",elevation:4,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 ,marginHorizontal:3, justifyContent:"flex-start"}}>
+                        <TouchableHighlight  underlayColor={isDarkMode ? "rgba(70, 70, 70, 1)" : "lightgray"} onPress={() => {handleSignOut()}} style={{flexDirection:"row" ,marginTop:15,backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" : "#FFFFFF",elevation:4,borderRadius:15, height:60, alignItems:"center",paddingHorizontal:25 ,marginHorizontal:3, justifyContent:"flex-start"}}>
                                 <>
                                     <View style={{marginRight:15}}>
                                         <Ionicons name="log-out-outline"  size={30} color={" rgba(100, 200, 255, 1)"}/>
@@ -500,17 +502,21 @@ export default function Settings ({route}){
                         <TouchableOpacity onPress={() => {
                                         Alert.alert("", "CONFIRM DELETE", [
                                         { text: "Cancel", onPress:() => {},style: "cancel" },
-                                        { text: "Yes", onPress:() => {deleteUserAccount(); deleteDocumentByEmail(ChurchName?.email)} },
+                                        { text: "Yes", onPress:() => {deleteUserAccount(); deleteDocumentByEmail(ChurchName?.email); setDel(true)} },
                                         ]);
                                     }} style={{flexDirection:"row" , marginTop:10, height:60, alignItems:"center" , justifyContent:"center",}}>
-                                
-                                <View style={{marginRight:10}}>
-                                    <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
-                                </View>    
-                                
-                                <View >
-                                    <Text style={{fontSize:18,fontWeight:"600", color:"orangered"}}>Delete account</Text>
-                                </View>
+                                    
+                                        <View style={{marginRight:10}}>
+                                            {del ? 
+                                            <ActivityIndicator color={"orangered"} />
+                                            :
+                                            <Ionicons name="remove-circle-outline"  size={28} color={"orangered"}/>
+                                            }
+                                            </View>    
+                                        
+                                        <View>
+                                            <Text style={{fontSize:18,fontWeight:"600", color:"orangered"}}>{del ? "Deleting account...":"Delete account"}</Text>
+                                        </View>
                     
                         </TouchableOpacity>
 

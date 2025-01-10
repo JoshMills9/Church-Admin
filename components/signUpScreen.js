@@ -51,25 +51,29 @@ export default function SignUp({isVerified}) {
     }
    })
 
+   setSignUpEmail("")
+   setSignUpPassword("")
+   setUsername("")
+
  };
 
 
 async function registerDevice() {
   const db = getFirestore();
-  const deviceToken = uuid.v4(); // Generate a unique UUID
+  const deviceToken = uuid.v4(); 
 
   await AsyncStorage.setItem('deviceToken', JSON.stringify(deviceToken));
     
-  const trialPeriod = 14; // Free trial period in days
+  const trialPeriod = 14; 
   const trialStart = new Date().toISOString();
   const trialEnd = new Date(Date.now() + trialPeriod * 24 * 60 * 60 * 1000).toISOString();
-
   const docRef = doc(db, "deviceTokens", deviceToken);
+
   await setDoc(docRef, {
     deviceToken: deviceToken,
     trialStart: trialStart,
     trialEnd: trialEnd,
-    isPaid: false, // Initial state
+    isPaid: false,
     lastChecked: trialStart,
     ChurchName: Username,
   });
@@ -85,13 +89,13 @@ async function registerDevice() {
       const  userCredential = await createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
       handleAddData();
       registerDevice();
-
       const user = userCredential.user;
       await sendEmailVerification(user);
-      Alert.alert("Church Administrator","Verification email sent, check your mail!");
+
+      Alert.alert("Church Administrator", "Verification email sent, check your mail!");
       setShowIndicator(false)
       setVerify(true)
-    } catch (error) {
+    }catch (error) {
       Alert.alert(error.message);
       setShowIndicator(false)
       setVerify(false)
@@ -99,18 +103,18 @@ async function registerDevice() {
     }
   }
 
+
+
   //function to alert user to verify
   const showVerifyAgain = () => {
       setShowIndicator(false)
-      Alert.alert("Church Administrator","Email is not verified. Please check your inbox.");
+      Alert.alert("Church Administrator", "Email is not verified. Please check your inbox.");
   }
 
 
 
   const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/djb8fanwt/image/upload';
-  const CLOUDINARY_UPLOAD_PRESET = 'my_images';  // Replace with your upload preset
-
-
+  const CLOUDINARY_UPLOAD_PRESET = 'my_images';
 
   //useEffect and function to select image
   useEffect(() => {

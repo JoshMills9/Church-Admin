@@ -12,7 +12,9 @@ import Animated, {
     withTiming,
     Easing,
 } from "react-native-reanimated";
-import { getAuth, signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged } from "firebase/auth";
+import { CheckBox } from "@rneui/themed";
+import { getAuth, signInWithEmailAndPassword,sendPasswordResetEmail,onAuthStateChanged, } from "firebase/auth";
+import { getFirestore, doc,getDoc} from "firebase/firestore";
 
 import SignUp from "./signUpScreen";
 
@@ -37,7 +39,9 @@ export default function LogIn ({navigation}){
     const WindowHeight = useWindowDimensions().height
     const isDarkMode = useColorScheme() === 'dark';
     const [isVerified, setIsVerified] = useState(false)
-     
+   
+
+
       useEffect(() => {
         if(step === 2 && !Switch){
         const interval = setInterval(async () => {
@@ -50,6 +54,7 @@ export default function LogIn ({navigation}){
               clearInterval(interval); // Stop checking once verified
               ToastAndroid.show("Account Created Succesfully!", ToastAndroid.LONG);
               await AsyncStorage.setItem('subscription', 'true');
+              setIsVerified(false)
               navigation.push("Church Admin")
               clearInterval(interval); 
             }
@@ -62,12 +67,10 @@ export default function LogIn ({navigation}){
         }
       }, [step, Switch]);
       
-
-
+   
 
     // Function to log in a user
     const auth = getAuth(app);
-
     const Login = async () => {
         try {
             await signInWithEmailAndPassword(auth, signUpEmail, loginPassword);
@@ -249,7 +252,7 @@ export default function LogIn ({navigation}){
                 
                         <Animated.View style={formStep1Style}>
                 
-                        <View style={[styles.searchView,{height: WindowHeight < 800 ? 200 : 210}]}>
+                        <View style={[styles.searchView,{height: WindowHeight < 800 ? 230 : 240}]}>
                             <View>
                                 <Feather style={{position:"absolute", left:20, top:20,zIndex:2}} name="at-sign" size={23} color={"dimgray"}/>
                                 <TextInput style={{ width:"100%",color:isDarkMode ? '#FFFFFF' : '#000000', height:60, borderRadius:50,paddingHorizontal:15,paddingLeft:55,fontSize:17,borderColor:isDarkMode ? "gray":"lightgray",borderWidth:1}}  inputMode="email" placeholder="Email" placeholderTextColor={isDarkMode ? '#FFFFFF' : '#000000'} value={signUpEmail} onChangeText={(text)=> setSignUpEmail(text)} textContentType="emailAddress" cursorColor={isDarkMode ? '#FFFFFF' : '#000000'}/>
@@ -261,19 +264,20 @@ export default function LogIn ({navigation}){
                                 <TouchableOpacity onPress={()=> setViewPass(!ViewPass)} style={{position:"absolute", right:20, top:20,zIndex:2}} ><MaterialCommunityIcons  name="eye-off" size={24} color={"dimgray"} /></TouchableOpacity>
                             </View>
 
-                            <View style={{flexDirection:"row",justifyContent:"flex-end", alignItems:"center"}}>
-                            <TouchableOpacity onPress={()=>{setShowForgotPassword(!showForgotPassword)}}>
+                            <View style={{flexDirection:"row",justifyContent:"flex-end",marginHorizontal:10, alignItems:"center"}}>
+                                <TouchableOpacity onPress={()=>{setShowForgotPassword(!showForgotPassword)}}>
                                     <Text style={[styles.text,{color:" rgba(100, 200, 255, 1)"}]}>
                                         Forgot Password?
                                     </Text>
                                 </TouchableOpacity>
+                               
                             </View>
                         </View>
 
 
 
 
-                        <View style={styles.loginbtnView}>
+                        <View style={{marginTop:60}}>
                             <TouchableOpacity onPress={() => {Login(); setActivity(true)}} style={{width:"100%", height:55, alignItems:"center",alignSelf:"center",borderWidth:(signUpEmail && loginPassword) ? 1 :0,borderColor:(signUpEmail && loginPassword) ?  "rgba(100, 200, 255, 1)" : "", justifyContent:"center",backgroundColor:isDarkMode ? "rgba(50, 50, 50, 1)" :"rgba(100, 200, 255, 1)", borderRadius:50,elevation:3}}>
                                 {showActivity ? <ActivityIndicator size={"small"} color={ isDarkMode ? "rgba(100, 200, 255, 1)" : "white"}/>
                                 :
@@ -282,16 +286,6 @@ export default function LogIn ({navigation}){
                                 </TouchableOpacity>
                         </View>
 
-                        <View style={styles.socialView}>
-                            <View >
-                                <Text style={{ color:isDarkMode ? "dimgray" : "gray", }}>————Or Login With————</Text>
-                            </View>
-
-                            <View style={{flexDirection:"row", justifyContent:"space-evenly", width:"100%", alignItems:"center"}}>
-                                <TouchableOpacity style={{borderWidth:1,borderColor:isDarkMode ? "gray" : "lightgray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25, marginRight:10}} source={require("../assets/google.png")}/><Text style={{fontSize:16, color:isDarkMode ? "lightgray" : "gray"}}>Google</Text></TouchableOpacity>
-                                <TouchableOpacity style={{borderWidth:1,borderColor:isDarkMode ? "gray" : "lightgray",width:"45%",justifyContent:"center",alignItems:"center",height:50,borderRadius:50,flexDirection:"row"}}><Image style={{width:25,height:25,marginRight:10, tintColor:isDarkMode ? "lightgray" : "gray"}}  source={require("../assets/apple.png")}/><Text style={{fontSize:16,color:isDarkMode ? "lightgray" : "gray"}}>Apple</Text></TouchableOpacity>
-                            </View>
-                        </View>
 
                         </Animated.View>
                         :
