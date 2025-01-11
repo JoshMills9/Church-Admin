@@ -387,7 +387,7 @@ export default function Settings ({route}){
 
                 </View>
 
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom:18, marginTop:15, justifyContent:"space-between" }}>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ justifyContent:"space-between" }}>
                     <View >
 
                         <View>

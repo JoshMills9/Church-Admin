@@ -677,7 +677,7 @@ export default function Home(){
                                                     <View style={{width:"100%",backgroundColor:isDarkMode ? '#000000' : '#FFFFFF',height:146,borderRadius:15}}>
                                                         <Animated.View  style={[slideInStyle]}>
                                                                     
-                                                            <Image source={{uri: item?.Image }}  style={{width:"100%",height:146,borderRadius:15}} resizeMode="stretch" />
+                                                            <Image source={{uri: item?.Image }}  style={{width:"100%",height:146,borderRadius:15}} resizeMode="cover" />
 
                                                             <TouchableOpacity onPress={()=> { navigation.replace("Events", {id: item.id ,image : item.Image, name: item.EventName, guest: item.Guests, About: item.About, start:item.StartDate , username: username, ChurchName: ChurchName, events: events})}} style={{position:"absolute",width:85,justifyContent:"center",flexDirection:"row",alignItems:"center",top:5,left:5,borderRadius:10, height:30,paddingHorizontal:5, backgroundColor:"rgba(0,0,0,0.5)"}}>
                                                                 <Text style={{fontSize:18,fontWeight:"600",color:"white", marginRight:10}}>edit</Text>
